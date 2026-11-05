@@ -1,6 +1,6 @@
 // Builds the Northern California data files from the Neaps tide database (NOAA harmonics).
 // Run from a folder with @neaps/tide-database installed:
-//   node extract.mjs <repo>/site/stations.json <repo>/docs/stations-all.json
+//   node extract.mjs <repo>/site/stations.json <repo>/site/stations-all.json
 import { stations, stationsById } from "@neaps/tide-database";
 import fs from "fs";
 const [outFav = "stations.json", outAll = "stations-all.json"] = process.argv.slice(2);

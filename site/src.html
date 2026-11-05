@@ -131,7 +131,8 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .strip { grid-column: 2 / 4; display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; height: 8px; border-radius: 2px; overflow: hidden; }
 .strip i { display: block; }
 .rmeta { grid-column: 2 / 4; display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
-.places { border-bottom: 1px solid var(--line); background: color-mix(in oklab, var(--accent) 5%, var(--surface)); }
+.places { background: var(--surface); border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--line)); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
+.places .psec { padding: 8px 14px 4px; border-top: 1px solid var(--line); }
 .phead { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; font-size: 14px; color: var(--muted); }
 .prow { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 10px 14px; }
 .prow:hover { background: color-mix(in oklab, var(--accent) 8%, transparent); }
@@ -275,6 +276,7 @@ footer a { color: var(--accent); }
     <button class="btn" id="near"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Near me</button>
     <span class="msg" id="msg" role="status"></span>
   </div>
+  <div class="places" id="places" role="region" aria-label="Search results" aria-live="polite" hidden></div>
   <nav class="filters" id="filters" aria-label="Region"></nav>
 
   <div class="main">
@@ -287,7 +289,6 @@ footer a { color: var(--accent); }
           <button id="sortAz" aria-pressed="false">A–Z</button>
         </div>
       </div>
-      <div class="places" id="places" hidden></div>
       <ul class="rows" id="rows" role="listbox" aria-label="Spots"></ul>
     </section>
 
@@ -304,6 +305,7 @@ footer a { color: var(--accent); }
 <script>/*__TP__*/</script>
 <script>
 const STATIONS = /*__STATIONS__*/;
+const ALL_STATIONS = /*__ALLSTATIONS__*/;
 
 /* ---------- regions, species and seasons ---------- */
 const REGIONS = ["SF Bay", "SF & South Coast", "Marin & Sonoma", "Mendocino", "Humboldt & Del Norte"];
@@ -637,7 +639,7 @@ function verdict(dd) {
 /* ---------- search any beach: all NOAA stations + place lookup ---------- */
 let DB = null, dbPromise = null;
 function loadDB() {
-  return dbPromise ||= getJSON("stations-all.json", 20000).then(j => {
+  return dbPromise ||= Promise.resolve(ALL_STATIONS).then(j => {
     const refs = {}, list = [];
     for (const [id, [name, lat, lon, z, off, gt, hc]] of Object.entries(j.r)) {
       const st = { id, name, lat, lon, tz: j.z[z], off, gt, hcRaw: hc };
@@ -704,40 +706,154 @@ function restorePlaces() {
 }
 function savePlacesList() { store.set("pt-places", PLACES.map(p => p.raw)); }
 
+// Well-known NorCal beaches, piers and parks, so search answers instantly, even offline.
+// [name, area, lat, lon, kind] (locations are approximate)
+const LOCAL_PLACES = [
+  ["Baker Beach", "San Francisco", 37.7936, -122.4836, "beach"],
+  ["China Beach", "San Francisco", 37.7880, -122.4910, "beach"],
+  ["Crissy Field East Beach", "San Francisco", 37.8050, -122.4560, "beach"],
+  ["Torpedo Wharf", "Presidio, San Francisco", 37.8075, -122.4700, "pier"],
+  ["Aquatic Park Pier", "San Francisco", 37.8085, -122.4245, "pier"],
+  ["Fort Mason", "San Francisco", 37.8065, -122.4310, "pier"],
+  ["Pier 7", "San Francisco", 37.7985, -122.3975, "pier"],
+  ["Fort Funston", "San Francisco", 37.7130, -122.5030, "beach"],
+  ["Mile Rock Beach", "Lands End, San Francisco", 37.7860, -122.5060, "beach"],
+  ["Candlestick Point", "San Francisco", 37.7120, -122.3810, "park"],
+  ["Heron's Head Park", "San Francisco", 37.7390, -122.3770, "park"],
+  ["Sharp Park Beach", "Pacifica", 37.6290, -122.4950, "beach"],
+  ["Rockaway Beach", "Pacifica", 37.6090, -122.4960, "beach"],
+  ["Linda Mar Beach", "Pacifica State Beach", 37.5960, -122.5020, "beach"],
+  ["Gray Whale Cove", "Montara", 37.5650, -122.5130, "beach"],
+  ["Montara State Beach", "Montara", 37.5470, -122.5150, "beach"],
+  ["Mavericks Beach", "Princeton", 37.4940, -122.4990, "beach"],
+  ["Surfer's Beach", "El Granada", 37.4960, -122.4710, "beach"],
+  ["Francis Beach", "Half Moon Bay State Beach", 37.4660, -122.4440, "beach"],
+  ["Pescadero State Beach", "Pescadero", 37.2650, -122.4120, "beach"],
+  ["Coyote Point", "San Mateo", 37.5900, -122.3150, "park"],
+  ["Natural Bridges State Beach", "Santa Cruz", 36.9520, -122.0580, "beach"],
+  ["Cowell Beach", "Santa Cruz", 36.9620, -122.0230, "beach"],
+  ["Seabright Beach", "Santa Cruz", 36.9630, -122.0080, "beach"],
+  ["Twin Lakes State Beach", "Santa Cruz", 36.9620, -121.9980, "beach"],
+  ["Capitola Wharf", "Capitola", 36.9720, -121.9520, "pier"],
+  ["Seacliff State Beach", "Aptos", 36.9720, -121.9150, "beach"],
+  ["Rio Del Mar Beach", "Aptos", 36.9680, -121.9020, "beach"],
+  ["Manresa State Beach", "La Selva Beach", 36.9300, -121.8620, "beach"],
+  ["Stinson Beach", "Marin", 37.9000, -122.6440, "beach"],
+  ["Bolinas Beach", "Bolinas", 37.9070, -122.6830, "beach"],
+  ["Muir Beach", "Marin", 37.8600, -122.5770, "beach"],
+  ["Rodeo Beach", "Marin Headlands", 37.8320, -122.5370, "beach"],
+  ["Kirby Cove", "Marin Headlands", 37.8270, -122.4900, "beach"],
+  ["Limantour Beach", "Point Reyes", 38.0270, -122.8820, "beach"],
+  ["Heart's Desire Beach", "Tomales Bay State Park", 38.1310, -122.8930, "beach"],
+  ["Chicken Ranch Beach", "Inverness", 38.1100, -122.8640, "beach"],
+  ["Millerton Point", "Tomales Bay", 38.1080, -122.8430, "park"],
+  ["Nick's Cove", "Tomales Bay", 38.1990, -122.9230, "pier"],
+  ["Dillon Beach", "Dillon Beach", 38.2500, -122.9660, "beach"],
+  ["China Camp State Park", "San Rafael", 38.0010, -122.4620, "park"],
+  ["McNears Beach", "San Rafael", 37.9950, -122.4520, "beach"],
+  ["Elephant Rock Pier", "Tiburon", 37.8720, -122.4600, "pier"],
+  ["Ayala Cove", "Angel Island", 37.8680, -122.4350, "beach"],
+  ["Point Molate Beach", "Richmond", 37.9450, -122.4180, "beach"],
+  ["Keller Beach", "Point Richmond", 37.9130, -122.3850, "beach"],
+  ["Point Isabel", "Richmond", 37.8990, -122.3220, "park"],
+  ["Cesar Chavez Park", "Berkeley", 37.8710, -122.3200, "park"],
+  ["Middle Harbor Shoreline Park", "Oakland", 37.8040, -122.3220, "park"],
+  ["Crown Memorial State Beach", "Alameda", 37.7620, -122.2620, "beach"],
+  ["San Leandro Marina", "San Leandro", 37.6960, -122.1920, "pier"],
+  ["Dumbarton Pier", "Fremont", 37.5050, -122.1180, "pier"],
+  ["Martinez Marina Pier", "Martinez", 38.0280, -122.1390, "pier"],
+  ["First Street Pier", "Benicia", 38.0440, -122.1580, "pier"],
+  ["Doran Beach", "Bodega Bay", 38.3130, -123.0420, "beach"],
+  ["Campbell Cove", "Bodega Bay", 38.3060, -123.0590, "beach"],
+  ["Spud Point Marina", "Bodega Bay", 38.3270, -123.0580, "pier"],
+  ["Salmon Creek Beach", "Bodega Bay", 38.3510, -123.0680, "beach"],
+  ["Goat Rock Beach", "Jenner", 38.4430, -123.1270, "beach"],
+  ["Gualala Point", "Gualala", 38.7590, -123.5250, "beach"],
+  ["Big River Beach", "Mendocino", 39.3030, -123.7930, "beach"],
+  ["Van Damme State Park", "Little River", 39.2740, -123.7920, "beach"],
+  ["Albion River", "Albion", 39.2260, -123.7690, "beach"],
+  ["Glass Beach", "Fort Bragg", 39.4520, -123.8130, "beach"],
+  ["Clam Beach", "McKinleyville", 40.9940, -124.1150, "beach"],
+  ["Moonstone Beach", "Westhaven", 41.0300, -124.1110, "beach"],
+  ["Agate Beach", "Sue-meg State Park", 41.1350, -124.1550, "beach"],
+  ["Samoa Beach", "Samoa", 40.8000, -124.2000, "beach"],
+  ["South Jetty", "Humboldt Bay", 40.7590, -124.2310, "beach"],
+  ["King Salmon", "Humboldt Bay", 40.7390, -124.2190, "pier"],
+  ["Klamath River Mouth", "Klamath", 41.5440, -124.0810, "beach"],
+  ["B Street Pier", "Crescent City", 41.7450, -124.1980, "pier"],
+  ["Kellogg Beach", "Crescent City", 41.8600, -124.2150, "beach"],
+].map(([name, area, lat, lon, kind]) => ({ name, area, lat, lon, kind, local: true, key: (name + " " + area + " " + kind).toLowerCase() }));
+function searchLocal(q) {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean); if (!words.length) return [];
+  return LOCAL_PLACES.filter(p => words.every(w => p.key.includes(w)))
+    .sort((a, b) => (b.name.toLowerCase().startsWith(words[0]) - a.name.toLowerCase().startsWith(words[0])) || a.name.localeCompare(b.name)).slice(0, 8);
+}
 function placeArea(a = {}) {
   const town = a.city || a.town || a.village || a.hamlet || a.suburb || a.county || "";
   const st = (a["ISO3166-2-lvl4"] || "").replace("US-", "");
   return [town, st].filter(Boolean).join(", ");
 }
-async function geocode(q) {
+// Online lookups, tried in order. Photon allows search-as-you-type; Nominatim only on Enter.
+async function geocodeOnline(q, typed) {
+  const errors = [];
   try {
-    const r = await getJSON(`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&countrycodes=us&viewbox=${NORCAL.w},${NORCAL.n},${NORCAL.e},${NORCAL.s}&bounded=1&q=${encodeURIComponent(q)}`);
-    if (Array.isArray(r) && r.length) return r.filter(x => inNorCal(+x.lat, +x.lon)).map(x => ({
-      name: x.name || x.display_name.split(",")[0], kind: (x.type || "").replace(/_/g, " "), area: placeArea(x.address),
-      state: (x.address?.["ISO3166-2-lvl4"] || "").replace("US-", ""), lat: +x.lat, lon: +x.lon,
-    }));
-  } catch (e) {}
-  const r = await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=20&language=en&countryCode=US`);
-  return (r.results || []).filter(x => inNorCal(x.latitude, x.longitude)).slice(0, 8).map(x => ({ name: x.name, kind: (x.feature_code || "").startsWith("PPL") ? "town" : "", area: [x.admin2, x.admin1].filter(Boolean).join(", "), state: "", lat: x.latitude, lon: x.longitude }));
+    const r = await getJSON(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10&lang=en&bbox=${NORCAL.w},${NORCAL.s},${NORCAL.e},${NORCAL.n}`, 8000);
+    const out = (r.features || []).map(f => ({ name: f.properties.name || f.properties.street || q, kind: (f.properties.osm_value || "").replace(/_/g, " "),
+      area: [f.properties.city || f.properties.county || "", f.properties.state === "California" ? "CA" : f.properties.state || ""].filter(Boolean).join(", "),
+      lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0] })).filter(p => inNorCal(p.lat, p.lon));
+    if (out.length) return out;
+  } catch (e) { errors.push(e); }
+  if (!typed) {
+    try {
+      const r = await getJSON(`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&countrycodes=us&viewbox=${NORCAL.w},${NORCAL.n},${NORCAL.e},${NORCAL.s}&bounded=1&q=${encodeURIComponent(q)}`, 8000);
+      const out = (Array.isArray(r) ? r : []).filter(x => inNorCal(+x.lat, +x.lon)).map(x => ({ name: x.name || x.display_name.split(",")[0], kind: (x.type || "").replace(/_/g, " "), area: placeArea(x.address), lat: +x.lat, lon: +x.lon }));
+      if (out.length) return out;
+    } catch (e) { errors.push(e); }
+  }
+  try {
+    const r = await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=20&language=en&countryCode=US`, 8000);
+    return (r.results || []).filter(x => inNorCal(x.latitude, x.longitude)).slice(0, 8).map(x => ({ name: x.name, kind: (x.feature_code || "").startsWith("PPL") ? "town" : "", area: [x.admin2, x.admin1 === "California" ? "CA" : x.admin1].filter(Boolean).join(", "), lat: x.latitude, lon: x.longitude }));
+  } catch (e) { errors.push(e); }
+  if (errors.length) throw errors[0];
+  return [];
 }
 const FAR_MI = 25;
-let lastPlaceResults = [];
-async function searchPlaces(q) {
-  q = q.trim(); if (q.length < 3) return;
+let lastPlaceResults = [], searchSeq = 0, typeTimer = 0;
+function renderPlaces(q, list, status) {
   const box = $("places"); box.hidden = false;
-  box.innerHTML = `<div class="phead"><span>Searching beaches and places for “${esc(q)}”…</span></div>`;
-  let results;
-  try { [results] = await Promise.all([geocode(q), loadDB()]); }
-  catch (e) { box.innerHTML = `<div class="phead"><span>Place search isn't available right now. Check your connection and try again.</span><button class="star" id="closeplaces" aria-label="Close place results">×</button></div>`; return; }
-  if (state.q.trim() !== q) return;
-  lastPlaceResults = results.map(r => ({ ...r, near: nearestStations(r.lat, r.lon, 1)[0] }));
-  if (!lastPlaceResults.length) { box.innerHTML = `<div class="phead"><span>No places in Northern California match “${esc(q)}”. Try a nearby town, like “${esc(q)} Bodega Bay”.</span><button class="star" id="closeplaces" aria-label="Close place results">×</button></div>`; return; }
-  box.innerHTML = `<div class="phead"><span class="eyebrow">Places matching “${esc(q)}”</span><button class="star" id="closeplaces" aria-label="Close place results">×</button></div>` +
-    lastPlaceResults.map((r, i) => {
-      const far = r.near.mi > FAR_MI;
-      return `<button class="prow" data-place="${i}" ${far ? 'aria-disabled="true"' : ""}><span class="pname"><b>${esc(r.name)}</b><small>${esc([r.kind, r.area].filter(Boolean).join(" · "))}</small></span><small class="pst">${far ? "Too far from tidal water" : `Tides ${r.near.mi < 10 ? r.near.mi.toFixed(1) : Math.round(r.near.mi)} mi away`}</small></button>`;
-    }).join("") + `<div class="pfoot">Place search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</div>`;
+  lastPlaceResults = list.map(r => ({ ...r, near: nearestStations(r.lat, r.lon, 1)[0] }));
+  const rows = lastPlaceResults.map((r, i) => {
+    const far = !r.near || r.near.mi > FAR_MI;
+    return `<button class="prow" data-place="${i}" ${far ? 'aria-disabled="true"' : ""}><span class="pname"><b>${esc(r.name)}</b><small>${esc([r.kind, r.area].filter(Boolean).join(" · "))}</small></span><small class="pst">${far ? "Too far from tidal water" : `Tides ${r.near.mi < 10 ? r.near.mi.toFixed(1) : Math.round(r.near.mi)} mi away`}</small></button>`;
+  }).join("");
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const favs = spots().filter(s => words.every(w => s.search.includes(w))).slice(0, 5);
+  const favRows = favs.map(s => { const dd = dayData(s, state.ymd); return `<button class="prow" data-fav="${s.slug}"><span class="pname"><b>${esc(s.name)}</b><small>${esc(s.area)} · ${saved.has(s.slug) ? "saved spot" : "favorite"}</small></span>${pill(dd.dayScore)}</button>`; }).join("");
+  box.innerHTML = `<div class="phead"><span class="eyebrow">Results${q ? ` for “${esc(q)}”` : ""}</span><button class="star" id="closeplaces" aria-label="Close search results">×</button></div>` +
+    (favRows ? favRows + (rows ? `<div class="psec eyebrow">Beaches and places</div>` : "") : "") + rows +
+    (status ? `<div class="phead"><span>${status}</span></div>` : "") +
+    (list.some(r => !r.local) ? `<div class="pfoot">Map search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</div>` : "");
 }
+async function searchPlaces(q, typed = false) {
+  q = q.trim(); if (q.length < 2) { $("places").hidden = true; return; }
+  const seq = ++searchSeq;
+  await loadDB();
+  const local = searchLocal(q);
+  const pending = q.length >= 3;
+  renderPlaces(q, local, pending ? "Searching the map for more…" : (local.length ? "" : "Keep typing to search the map."));
+  if (!pending) return;
+  let online = [], failed = false;
+  try { online = await geocodeOnline(q, typed); } catch (e) { failed = true; }
+  if (seq !== searchSeq) return;
+  // Drop online results that duplicate a built-in place (same spot within half a mile).
+  online = online.filter(o => !local.some(l => distMi(l, o) < .5 && l.name.toLowerCase().split(" ")[0] === (o.name || "").toLowerCase().split(" ")[0]));
+  const all = local.concat(online).slice(0, 12);
+  const status = all.length ? (failed && !online.length ? "Map search isn't reachable right now, so these are from the built-in list." : "")
+    : failed ? "Map search isn't reachable right now. Try a well-known beach or pier name, or tap Near me."
+    : `No places in Northern California match “${esc(q)}”. Try a nearby town, like “${esc(q)} Bodega Bay”.`;
+  renderPlaces(q, all, status);
+}
+
 function openPlace(p, scroll = true) {
   const s = makePlace(p);
   const existing = PLACES.find(x => x.slug === s.slug);
@@ -809,9 +925,9 @@ function renderList() {
   const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "short", month: "short", day: "numeric" });
   $("listtitle").textContent = state.sort === "now" && isToday() ? "Best spots right now" : state.sort === "near" ? "Closest to you" : state.sort === "az" ? "All spots A–Z" : "Best spots " + (isToday() ? "today" : "on " + when);
   const qq = state.q.trim();
-  const finder = qq.length >= 3 && $("places").hidden ? `<li><button class="findrow" id="findplace"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Search beaches and places for “${esc(qq)}”</button></li>` : "";
+  const finder = false ? `<li><button class="findrow" id="findplace"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Search beaches and places for “${esc(qq)}”</button></li>` : "";
   if (!items.length) {
-    $("rows").innerHTML = finder + `<li class="empty">${crab("puzzled", 90)}None of the ${STATIONS.length} built-in spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.${qq.length >= 3 ? "<br>Search beaches and places above to find it." : ""}<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
+    $("rows").innerHTML = finder + `<li class="empty">${crab("puzzled", 90)}None of the ${STATIONS.length} built-in spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.${qq.length >= 3 ? "<br>Pick one of the beaches and places above." : ""}<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
     return;
   }
   const ranked = state.sort === "day" || state.sort === "now";
@@ -1050,10 +1166,25 @@ $("date").onchange = e => { if (e.target.value) setDate(e.target.value); };
 $("sortDay").onclick = () => { state.sort = "day"; render(); };
 $("sortNow").onclick = () => { if (isToday()) { state.sort = "now"; render(); } };
 $("sortAz").onclick = () => { state.sort = "az"; render(); };
-$("q").oninput = e => { state.q = e.target.value; if (!state.q.trim()) $("places").hidden = true; else if (!$("places").hidden) $("places").hidden = true; renderList(); };
-$("q").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); if (state.q.trim().length >= 3) { searchPlaces(state.q); renderList(); } else { const first = $("rows").querySelector("[data-slug]"); if (first) pick(first.dataset.slug, true); } } };
+$("q").oninput = e => {
+  state.q = e.target.value; renderList();
+  clearTimeout(typeTimer);
+  const q = state.q.trim();
+  if (q.length < 2) { searchSeq++; $("places").hidden = true; return; }
+  const local = searchLocal(q);
+  loadDB().then(() => { if (state.q.trim() === q) renderPlaces(q, local, q.length >= 3 ? "Searching the map for more…" : (local.length ? "" : "Keep typing to search the map.")); });
+  if (q.length >= 3) typeTimer = setTimeout(() => searchPlaces(q, true), 700);
+};
+$("q").onkeydown = e => {
+  if (e.key !== "Enter") return;
+  e.preventDefault(); clearTimeout(typeTimer);
+  const q = state.q.trim();
+  if (q.length >= 2) { searchPlaces(q, false); $("q").blur(); }
+  else { const first = $("rows").querySelector("[data-slug]"); if (first) pick(first.dataset.slug, true); }
+};
 $("places").onclick = e => {
   if (e.target.closest("#closeplaces")) { $("places").hidden = true; renderList(); return; }
+  const fv = e.target.closest("[data-fav]"); if (fv) { $("places").hidden = true; pick(fv.dataset.fav, true); return; }
   const b = e.target.closest("[data-place]"); if (!b) return;
   const r = lastPlaceResults[+b.dataset.place]; if (!r) return;
   if (r.near.mi > FAR_MI) { $("msg").textContent = `${r.name} is ${Math.round(r.near.mi)} mi from the nearest tide station, so it may not be tidal water.`; return; }

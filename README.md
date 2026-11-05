@@ -4,7 +4,7 @@ A crabbing forecast website, hosted by Pinchy the Dungeness crab. Dungeness crab
 
 **Live site: https://hanan-pacha.github.io/Gettin-Crabby/**
 
-The site is static: `docs/index.html` plus `docs/stations-all.json` (the 155 NOAA tide stations between Santa Cruz and the Oregon border, downloaded when someone searches for a place). There is no server and no API key.
+The site is one static file, `docs/index.html`, which includes the 155 NOAA tide stations between Santa Cruz and the Oregon border plus a list of about 75 well-known beaches and piers. There is no server and no API key.
 
 ## What powers it
 
@@ -31,7 +31,7 @@ Each spot has its own link, such as `…/#seattle-wa`, so people can share a spe
 
 - Page source: `site/src.html` (HTML, CSS and JS). Station data and the tide library are placed into it at build time.
 - Build: `node site/build.mjs` writes `docs/index.html`.
-- Favorite spots and searchable stations: edit `FAV` (and the NorCal box) in `site/extract.mjs`, then in a folder with `@neaps/tide-database` installed run `node extract.mjs <repo>/site/stations.json <repo>/docs/stations-all.json`, then in a folder with `@neaps/tide-database` installed run `node extract.mjs` to regenerate `site/stations.json`. Each entry is a NOAA reference station id, a display name, an area, a region and a species.
+- Favorite spots and searchable stations: edit `FAV` (and the NorCal box) in `site/extract.mjs`, then in a folder with `@neaps/tide-database` installed run `node extract.mjs <repo>/site/stations.json <repo>/site/stations-all.json`, then `node site/build.mjs`, then in a folder with `@neaps/tide-database` installed run `node extract.mjs` to regenerate `site/stations.json`. Each entry is a NOAA reference station id, a display name, an area, a region and a species.
 - Scoring: see `STAGE`, `ACTIVITY` and `seasonOf`, `lightOf`, `rangeScore` and `wxFactor` in `site/src.html`.
 
 Not for navigation. Season dates are the usual ones; CDFW can delay the opener or restrict traps, so check CDFW before you go.
