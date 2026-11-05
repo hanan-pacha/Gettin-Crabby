@@ -1,6 +1,6 @@
 <title>Gettin’ Crabby!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Crabbing forecast: the best hours to crab at 37 US coastal spots, from tides, light, wind, moon and season.">
+<meta name="description" content="Crabbing forecast for any US beach: the best hours to crab from tides, light, wind, moon and season.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -131,6 +131,21 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .strip { grid-column: 2 / 4; display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; height: 8px; border-radius: 2px; overflow: hidden; }
 .strip i { display: block; }
 .rmeta { grid-column: 2 / 4; display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.places { border-bottom: 1px solid var(--line); background: color-mix(in oklab, var(--accent) 5%, var(--surface)); }
+.phead { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; font-size: 14px; color: var(--muted); }
+.prow { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 10px 14px; }
+.prow:hover { background: color-mix(in oklab, var(--accent) 8%, transparent); }
+.prow[aria-disabled="true"] { opacity: .55; }
+.pname { min-width: 0; }
+.pname b { display: block; font-weight: 600; }
+.pname small, .pst { color: var(--muted); font-size: 12.5px; }
+.pst { flex: none; }
+.pfoot { padding: 6px 14px 10px; font-size: 11.5px; color: var(--muted); }
+.pfoot a { color: inherit; }
+.findrow { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 11px 14px; color: var(--accent); font-weight: 600; text-align: left; }
+.findrow svg { flex: none; }
+.stationline { grid-column: 1 / -1; font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.stationline select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; max-width: 100%; }
 .empty { padding: 24px 16px; text-align: center; color: var(--muted); }
 .empty svg { width: 90px; height: auto; display: block; margin: 0 auto 6px; overflow: visible; }
 .star { border: 0; background: transparent; padding: 0; width: 22px; height: 22px; display: inline-grid; place-items: center; color: var(--muted); }
@@ -234,7 +249,7 @@ footer a { color: var(--accent); }
   <div class="bandin">
     <div class="brand">
       <h1>Gettin’ <span>Crabby!</span></h1>
-      <p>When to go crabbing at 37 spots on the Atlantic, Gulf and Pacific coasts. Pick a spot to see the best hours, then tap the chart to check any time of day.</p>
+      <p>When to go crabbing at any beach, pier or creek on the US coast. Search for your spot, or start with one of 37 favorites.</p>
       <div class="datebar" role="group" aria-label="Choose a date">
       <button class="btn" id="prev" aria-label="Previous day">‹</button>
       <input type="date" id="date" aria-label="Date">
@@ -255,7 +270,7 @@ footer a { color: var(--accent); }
   <div class="toolbar">
     <label class="search" for="q">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-      <input id="q" type="search" placeholder="Search spots" autocomplete="off" aria-label="Search spots">
+      <input id="q" type="search" placeholder="Search any beach" autocomplete="off" enterkeyhint="search" aria-label="Search spots, or press Enter to search any beach">
     </label>
     <button class="btn" id="near"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Near me</button>
     <span class="msg" id="msg" role="status"></span>
@@ -272,6 +287,7 @@ footer a { color: var(--accent); }
           <button id="sortAz" aria-pressed="false">A–Z</button>
         </div>
       </div>
+      <div class="places" id="places" hidden></div>
       <ul class="rows" id="rows" role="listbox" aria-label="Spots"></ul>
     </section>
 
@@ -452,6 +468,10 @@ async function getJSON(url, ms = 9000) {
   try { const r = await fetch(url, { signal: ctl.signal }); if (!r.ok) throw new Error(r.status); return await r.json(); }
   finally { clearTimeout(tm); }
 }
+function wxFrom(d) {
+  const h = d && d.hourly; if (!h || !h.time) return null;
+  return { t0: h.time[0] * 1000, n: h.time.length, temp: h.temperature_2m, rain: h.precipitation_probability, wind: h.wind_speed_10m, gust: h.wind_gusts_10m, dir: h.wind_direction_10m };
+}
 async function loadWeather() {
   const lat = STATIONS.map(s => s.lat).join(","), lon = STATIONS.map(s => s.lon).join(",");
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&timeformat=unixtime&timezone=GMT&past_days=1&forecast_days=8`;
@@ -459,8 +479,9 @@ async function loadWeather() {
     const data = await getJSON(url, 12000);
     const arr = Array.isArray(data) ? data : [data];
     const wx = {};
-    arr.forEach((d, i) => { const h = d.hourly; if (!h) return; wx[STATIONS[i].id] = { t0: h.time[0] * 1000, n: h.time.length, temp: h.temperature_2m, rain: h.precipitation_probability, wind: h.wind_speed_10m, gust: h.wind_gusts_10m, dir: h.wind_direction_10m }; });
+    arr.forEach((d, i) => { const w = wxFrom(d); if (w) wx[STATIONS[i].id] = w; });
     if (!Object.keys(wx).length) throw new Error("empty");
+    for (const [k, v] of Object.entries(LIVE.wx || {})) if (!(k in wx)) wx[k] = v;
     LIVE.wx = wx; LIVE.wxAt = Date.now(); dayCache.clear(); setLive(); render();
   } catch (e) { setLive(); }
 }
@@ -485,11 +506,11 @@ async function loadWater(s) {
   LIVE.water[s.id] = { at: Date.now(), pending: true };
   const pick = d => d && d.data && d.data[0] && d.data[0].v !== "" ? { v: +d.data[0].v, t: Date.parse(d.data[0].t.replace(" ", "T") + "Z") } : null;
   const [temp, level] = await Promise.all([
-    getJSON(NOAA + s.id + "&product=water_temperature").then(pick).catch(() => null),
-    getJSON(NOAA + s.id + "&product=water_level&datum=MLLW").then(pick).catch(() => null),
+    getJSON(NOAA + (s.noaa || s.id) + "&product=water_temperature").then(pick).catch(() => null),
+    getJSON(NOAA + (s.noaa || s.id) + "&product=water_level&datum=MLLW").then(pick).catch(() => null),
   ]);
   LIVE.water[s.id] = { at: Date.now(), temp, level };
-  if (temp || level) { setLive(); if (state.sel === s) renderDetail(); }
+  if (temp || level) { setLive(); if (state.sel && state.sel.id === s.id) renderDetail(); }
 }
 function setLive() {
   const el = $("live"), on = !!LIVE.wx || Object.values(LIVE.water).some(w => w.temp || w.level);
@@ -535,8 +556,8 @@ function dayData(s, ymd) {
   const [y, m, d] = ymdParse(ymd), [y2, m2, d2] = ymdParse(ymdAdd(ymd, 1));
   const start = zoned(y, m, d, 0, s.tz), end = zoned(y2, m2, d2, 0, s.tz);
   const p = predictor(s);
-  const ext = p.getExtremesPrediction({ start: new Date(start - 16 * 3600e3), end: new Date(end + 16 * 3600e3) }).map(e => ({ t: e.time.getTime(), ft: e.level * FT, high: e.high }));
-  const tl = p.getTimelinePrediction({ start: new Date(start), end: new Date(end), timeFidelity: 600 });
+  const ext = p.getExtremesPrediction({ start: new Date(start - 16 * 3600e3), end: new Date(end + 16 * 3600e3), offsets: s.offsets }).map(e => ({ t: e.time.getTime(), ft: e.level * FT, high: e.high }));
+  const tl = p.getTimelinePrediction({ start: new Date(start), end: new Date(end), timeFidelity: 600, offsets: s.offsets });
   const inDay = ext.filter(e => e.t >= start && e.t < end);
   const lv = tl.map(x => x.level * FT);
   const rangeFt = inDay.length >= 2 ? Math.max(...inDay.map(e => e.ft)) - Math.min(...inDay.map(e => e.ft)) : Math.max(...lv) - Math.min(...lv);
@@ -603,11 +624,136 @@ function verdict(dd) {
   return lead + tail;
 }
 
+/* ---------- search any beach: all NOAA stations + place lookup ---------- */
+let DB = null, dbPromise = null;
+function loadDB() {
+  return dbPromise ||= getJSON("stations-all.json", 20000).then(j => {
+    const refs = {}, list = [];
+    for (const [id, [name, lat, lon, z, off, gt, hc]] of Object.entries(j.r)) {
+      const st = { id, name, lat, lon, tz: j.z[z], off, gt, hcRaw: hc };
+      refs[id] = st; list.push(st);
+    }
+    for (const [id, name, lat, lon, z, ref, th, tl, hh, hl, fixed, gt] of j.s) {
+      list.push({ id, name, lat, lon, tz: j.z[z], ref, gt: gt ?? refs[ref].gt * ((hh + hl) / 2 || 1), offsets: { reference: ref, time: { high: th, low: tl }, height: { high: hh, low: hl, type: fixed ? "fixed" : "ratio" } } });
+    }
+    DB = { refs, list, cons: j.c };
+    return DB;
+  }).catch(e => { dbPromise = null; throw e; });
+}
+const refHc = r => r.hc ||= r.hcRaw.map(([i, amplitude, phase]) => [DB.cons[i], amplitude, phase]);
+function nearestStations(lat, lon, n = 6) {
+  return DB.list.map(st => ({ st, mi: distMi({ lat, lon }, st) })).sort((a, b) => a.mi - b.mi).slice(0, n);
+}
+// Which crab and which season table a coordinate falls under.
+function regionOf(lat, lon) {
+  if (lon < -115) return "Pacific";
+  if (lat < 31) return lon > -81.6 ? "Southeast" : "Gulf Coast";
+  if (lat >= 36.85 && lat <= 39.65 && lon >= -77.5 && lon <= -75.95) return "Chesapeake";
+  if (lat < 36.6) return "Southeast";
+  return "Mid-Atlantic";
+}
+const nameSlug = n => n.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+const placeSlug = (p, sid) => `at-${Math.round(Math.abs(p.lat) * 1000)}${p.lat >= 0 ? "n" : "s"}-${Math.round(Math.abs(p.lon) * 1000)}${p.lon < 0 ? "w" : "e"}-s${sid}${p.name ? "-" + nameSlug(p.name) : ""}`;
+function parsePlaceSlug(sl) {
+  const m = /^at-(\d+)([ns])-(\d+)([we])-s(\d+)(?:-(.*))?$/.exec(sl || ""); if (!m) return null;
+  const words = (m[6] || "").split("-").filter(Boolean);
+  return { lat: (+m[1] / 1000) * (m[2] === "s" ? -1 : 1), lon: (+m[3] / 1000) * (m[4] === "w" ? -1 : 1), stationId: m[5],
+    name: words.length ? words.map(w => w[0].toUpperCase() + w.slice(1)).join(" ") : "Pinned spot", area: "" };
+}
+// Turn a place (name + coordinates) into a spot the rest of the page can score.
+function makePlace(p) {
+  const near = nearestStations(p.lat, p.lon, 6);
+  const pickSt = (p.stationId && (near.find(x => x.st.id === p.stationId) || (() => { const st = DB.list.find(x => x.id === p.stationId); return st ? { st, mi: distMi(p, st) } : null; })())) || near[0];
+  const st = pickSt.st, ref = st.ref ? DB.refs[st.ref] : st;
+  const group = regionOf(p.lat, p.lon);
+  const s = {
+    place: true, name: p.name, area: p.area || `Near ${st.name}`, lat: p.lat, lon: p.lon, tz: st.tz, off: ref.off, gt: st.gt || ref.gt,
+    hc: refHc(ref), offsets: st.offsets, group, sp: group === "Pacific" ? "dungeness" : "blue",
+    noaa: st.id, stationName: st.name, stationMi: pickSt.mi, near, kind: p.kind || "", state: p.state || "",
+    raw: { name: p.name, area: p.area || "", lat: p.lat, lon: p.lon, state: p.state || "", kind: p.kind || "", stationId: st.id },
+  };
+  s.id = "p" + st.id + "_" + p.lat.toFixed(3) + "_" + p.lon.toFixed(3);
+  s.slug = placeSlug(p, st.id);
+  s.search = (s.name + " " + s.area + " " + group + " " + SPECIES[s.sp]).toLowerCase();
+  return s;
+}
+let PLACES = [];
+const spots = () => STATIONS.concat(PLACES);
+const spotBySlug = sl => spots().find(s => s.slug === sl) || (state.sel && state.sel.slug === sl ? state.sel : null);
+function restorePlaces() {
+  const stored = store.get("pt-places", []);
+  if (!stored.length) return Promise.resolve();
+  return loadDB().then(() => { PLACES = stored.map(p => { try { return makePlace(p); } catch (e) { return null; } }).filter(Boolean); });
+}
+function savePlacesList() { store.set("pt-places", PLACES.map(p => p.raw)); }
+
+function placeArea(a = {}) {
+  const town = a.city || a.town || a.village || a.hamlet || a.suburb || a.county || "";
+  const st = (a["ISO3166-2-lvl4"] || "").replace("US-", "");
+  return [town, st].filter(Boolean).join(", ");
+}
+async function geocode(q) {
+  try {
+    const r = await getJSON(`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&countrycodes=us&q=${encodeURIComponent(q)}`);
+    if (Array.isArray(r) && r.length) return r.map(x => ({
+      name: x.name || x.display_name.split(",")[0], kind: (x.type || "").replace(/_/g, " "), area: placeArea(x.address),
+      state: (x.address?.["ISO3166-2-lvl4"] || "").replace("US-", ""), lat: +x.lat, lon: +x.lon,
+    }));
+  } catch (e) {}
+  const r = await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=8&language=en&countryCode=US`);
+  return (r.results || []).map(x => ({ name: x.name, kind: (x.feature_code || "").startsWith("PPL") ? "town" : "", area: [x.admin2, x.admin1].filter(Boolean).join(", "), state: "", lat: x.latitude, lon: x.longitude }));
+}
+const FAR_MI = 40;
+let lastPlaceResults = [];
+async function searchPlaces(q) {
+  q = q.trim(); if (q.length < 3) return;
+  const box = $("places"); box.hidden = false;
+  box.innerHTML = `<div class="phead"><span>Searching beaches and places for “${esc(q)}”…</span></div>`;
+  let results;
+  try { [results] = await Promise.all([geocode(q), loadDB()]); }
+  catch (e) { box.innerHTML = `<div class="phead"><span>Place search isn't available right now. Check your connection and try again.</span><button class="star" id="closeplaces" aria-label="Close place results">×</button></div>`; return; }
+  if (state.q.trim() !== q) return;
+  lastPlaceResults = results.map(r => ({ ...r, near: nearestStations(r.lat, r.lon, 1)[0] }));
+  if (!lastPlaceResults.length) { box.innerHTML = `<div class="phead"><span>No places found for “${esc(q)}”. Try adding the state, like “${esc(q)} NJ”.</span><button class="star" id="closeplaces" aria-label="Close place results">×</button></div>`; return; }
+  box.innerHTML = `<div class="phead"><span class="eyebrow">Places matching “${esc(q)}”</span><button class="star" id="closeplaces" aria-label="Close place results">×</button></div>` +
+    lastPlaceResults.map((r, i) => {
+      const far = r.near.mi > FAR_MI;
+      return `<button class="prow" data-place="${i}" ${far ? 'aria-disabled="true"' : ""}><span class="pname"><b>${esc(r.name)}</b><small>${esc([r.kind, r.area].filter(Boolean).join(" · "))}</small></span><small class="pst">${far ? "No tide station nearby" : `Tides ${r.near.mi < 10 ? r.near.mi.toFixed(1) : Math.round(r.near.mi)} mi away`}</small></button>`;
+    }).join("") + `<div class="pfoot">Place search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</div>`;
+}
+function openPlace(p, scroll = true) {
+  const s = makePlace(p);
+  const existing = PLACES.find(x => x.slug === s.slug);
+  state.sel = existing || s; store.set("pt-last", state.sel.slug);
+  try { history.replaceState(null, "", "#" + state.sel.slug); } catch (e) {}
+  renderList(); renderDetail(); loadWater(state.sel); loadPlaceWeather(state.sel);
+  if (scroll && narrow()) $("detail").scrollIntoView({ behavior: smooth(), block: "start" });
+}
+async function loadPlaceWeather(s) {
+  if (!s.place || (LIVE.wx && LIVE.wx[s.id]) || s.wxLoading) return;
+  s.wxLoading = true;
+  try {
+    const d = await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lon}&hourly=temperature_2m,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&timeformat=unixtime&timezone=GMT&past_days=1&forecast_days=8`);
+    const w = wxFrom(d); if (!w) return;
+    LIVE.wx = LIVE.wx || {}; LIVE.wx[s.id] = w; if (!LIVE.wxAt) LIVE.wxAt = Date.now();
+    for (const k of [...dayCache.keys()]) if (k.startsWith(s.id)) dayCache.delete(k);
+    setLive(); if (state.sel && state.sel.id === s.id) { renderDetail(); renderList(); }
+  } catch (e) {} finally { s.wxLoading = false; }
+}
+function openSlug(sl, scroll) {
+  const s = spotBySlug(sl);
+  if (s) { pick(s.slug, scroll); return true; }
+  const p = parsePlaceSlug(sl); if (!p) return false;
+  loadDB().then(() => openPlace(p, scroll)).catch(() => { $("msg").textContent = "Couldn't load that spot. Check your connection and try again."; });
+  return true;
+}
+
 /* ---------- state ---------- */
 const state = { ymd: localToday(), region: store.get("pt-region", "All"), sort: "day", sel: null, q: "", weekAnchor: null, here: null, hover: null };
 if (state.region !== "All" && state.region !== "Saved" && !REGIONS.includes(state.region)) state.region = "All";
 let saved = new Set(store.get("pt-saved", []));
 const fromHash = () => STATIONS.find(s => s.slug === location.hash.slice(1));
+const startSlug = location.hash.slice(1) || store.get("pt-last", "");
 state.sel = fromHash() || STATIONS.find(s => s.slug === store.get("pt-last", "")) || null;
 if (state.sel && state.region !== "All" && (state.region === "Saved" ? !saved.has(state.sel.slug) : state.sel.group !== state.region)) state.region = "All";
 if (state.region === "Saved" && !saved.size) state.region = "All";
@@ -630,7 +776,7 @@ function renderFilters() {
 }
 function visible() {
   const q = state.q.trim().toLowerCase();
-  return STATIONS.filter(s => (state.region === "All" || (state.region === "Saved" ? saved.has(s.slug) : s.group === state.region)) && (!q || q.split(/\s+/).every(w => s.search.includes(w))));
+  return spots().filter(s => (state.region === "All" || (state.region === "Saved" ? saved.has(s.slug) : s.group === state.region)) && (!q || q.split(/\s+/).every(w => s.search.includes(w))));
 }
 function renderList() {
   const now = Date.now();
@@ -644,17 +790,19 @@ function renderList() {
   $("sortNow").title = isToday() ? "" : "Switch to today to rank by right now";
   const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "short", month: "short", day: "numeric" });
   $("listtitle").textContent = state.sort === "now" && isToday() ? "Best spots right now" : state.sort === "near" ? "Closest to you" : state.sort === "az" ? "All spots A–Z" : "Best spots " + (isToday() ? "today" : "on " + when);
+  const qq = state.q.trim();
+  const finder = qq.length >= 3 && $("places").hidden ? `<li><button class="findrow" id="findplace"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Search beaches and places for “${esc(qq)}”</button></li>` : "";
   if (!items.length) {
-    $("rows").innerHTML = `<li class="empty">${crab("puzzled", 90)}No spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
+    $("rows").innerHTML = finder + `<li class="empty">${crab("puzzled", 90)}None of the ${STATIONS.length} built-in spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.${qq.length >= 3 ? "<br>Search beaches and places above to find it." : ""}<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
     return;
   }
   const ranked = state.sort === "day" || state.sort === "now";
-  $("rows").innerHTML = items.map(({ s, dd, nowScore, mi }, i) => {
+  $("rows").innerHTML = finder + items.map(({ s, dd, nowScore, mi }, i) => {
     const hours = []; for (let h = 0; h < 24; h++) { const sl = dd.samples.slice(h * 6, h * 6 + 6); hours.push(Math.round(sl.reduce((a, x) => a + x.score, 0) / (sl.length || 1))); }
     const w = dd.windows[0];
     const shown = state.sort === "now" && nowScore != null ? nowScore : dd.dayScore;
     const right = mi != null ? `${mi < 10 ? mi.toFixed(1) : Math.round(mi)} mi away` : nowScore != null && state.sort !== "now" ? `Now ${nowScore}` : "";
-    return `<li class="row" role="option" tabindex="0" data-slug="${s.slug}" aria-selected="${s === state.sel}">
+    return `<li class="row" role="option" tabindex="0" data-slug="${s.slug}" aria-selected="${!!state.sel && s.slug === state.sel.slug}">
       <span class="rank">${ranked ? i + 1 : ""}</span>
       <span class="rname"><b>${esc(s.name)}</b><small>${esc(s.area)} · ${SPECIES[s.sp]}</small></span>
       <span style="display:inline-flex;align-items:center;gap:6px">${pill(shown)}<button class="star" data-star="${s.slug}" aria-pressed="${saved.has(s.slug)}" aria-label="${saved.has(s.slug) ? "Remove from" : "Add to"} saved spots">${STAR}</button></span>
@@ -756,7 +904,7 @@ function renderDetail() {
     let line = `<span>Right now: <b>${p.score}, ${nl.toLowerCase()}</b>. ${stageName(p.c)} tide at <span class="mono">${p.ft.toFixed(1)} ft</span>. ${p.next.high ? "High" : "Low"} tide in ${dur(p.next.t - now)} (${fmtTime(p.next.t, s.tz)}).</span>`;
     const extra = [];
     if (water.level && now - water.level.t < 3 * 3600e3) {
-      const pred = predictor(s).getTimelinePrediction({ start: new Date(water.level.t), end: new Date(water.level.t + 60000), timeFidelity: 60 })[0].level * FT;
+      const pred = sampleAt(dd, water.level.t).ft;
       const diff = water.level.v - pred;
       extra.push(Math.abs(diff) < .3 ? "Water is running close to the prediction" : `Water is running <b>${Math.abs(diff).toFixed(1)} ft ${diff > 0 ? "above" : "below"}</b> the prediction${diff > 0 ? " (often onshore wind or rain runoff)" : " (often offshore wind)"}`);
     }
@@ -787,9 +935,10 @@ function renderDetail() {
   $("detail").innerHTML = `
     <div class="card hero">
       <div>
-        <span class="eyebrow">${esc(s.group)} · ${SPECIES[s.sp]}</span>
+        <span class="eyebrow">${s.place ? "Your search · " : ""}${esc(s.group)} · ${SPECIES[s.sp]}</span>
         <div class="titlerow"><h2>${esc(s.name)}</h2><button class="star" data-star="${s.slug}" aria-pressed="${isSaved}" aria-label="${isSaved ? "Remove from" : "Add to"} saved spots" title="${isSaved ? "Saved" : "Save this spot"}">${STAR}</button></div>
         <div class="where">${esc(s.area)} · ${ymdLabel(state.ymd, { weekday: "long", month: "long", day: "numeric" })}</div>
+        ${s.place ? `<div class="stationline" style="margin-top:6px"><span>Tides from NOAA station <b>${esc(s.stationName)}</b>, ${s.stationMi < 10 ? s.stationMi.toFixed(1) : Math.round(s.stationMi)} mi away${s.stationMi > 15 ? ". Times may differ a little here" : ""}.</span><label><span class="eyebrow" style="margin-right:6px">Station</span><select id="stationpick" aria-label="Choose a tide station">${s.near.map(x => `<option value="${x.st.id}" ${x.st.id === s.noaa ? "selected" : ""}>${esc(x.st.name)} · ${x.mi < 10 ? x.mi.toFixed(1) : Math.round(x.mi)} mi</option>`).join("")}</select></label></div>` : ""}
       </div>
       <div class="big q-${qk}" aria-label="Score ${dd.dayScore} out of 100, ${ql}">${ring(dd.dayScore)}<div class="lbl">${ql} day</div></div>
       <div class="say"><div class="saycrab">${crab(moodOf(dd.dayScore), 88)}</div><p class="verdict">${verdict(dd)}</p></div>
@@ -823,7 +972,7 @@ function renderDetail() {
         ${dd.S < .35 ? `<div class="note">${MONTHS[dd.month]} is usually slow here. Crabs go deep or bury in mud when the water is cold.</div>` : ""}
         <div class="eyebrow">Tides for ${isToday() ? "today" : ymdLabel(state.ymd, { month: "short", day: "numeric" })}</div>
         <div class="mono tidetable">${dd.inDay.map(e => `<span>${e.high ? "High" : "Low"}</span><span>${fmtTime(e.t, s.tz)}</span><span>${e.ft.toFixed(1)} ft</span>`).join("")}</div>
-        <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=${s.id}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13.5px">NOAA station ${s.id} →</a>
+        <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=${s.noaa || s.id}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13.5px">NOAA station ${s.noaa || s.id}${s.place ? ` (${esc(s.stationName)})` : ""} →</a>
       </div>
     </div>
     <details class="card explain" id="gloss">
@@ -841,13 +990,14 @@ function renderDetail() {
 }
 
 function renderBubble() {
-  const pool = saved.size ? STATIONS.filter(s => saved.has(s.slug)) : STATIONS;
+  const savedSpots = spots().filter(s => saved.has(s.slug));
+  const pool = savedSpots.length ? savedSpots : STATIONS;
   const best = pool.map(s => dayData(s, state.ymd)).reduce((a, b) => b.dayScore > a.dayScore ? b : a);
   const w = best.windows[0];
   const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "long" });
   $("bubble").dataset.slug = best.s.slug;
-  $("bubble").innerHTML = `<span class="eyebrow">${saved.size ? "Your best saved spot" : "Pinchy's pick"} ${when}</span><b>${esc(best.s.name)}</b>, ${esc(best.s.state)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
-  $("bubble").setAttribute("aria-label", `Open ${best.s.name}, the best ${saved.size ? "saved " : ""}spot ${when}`);
+  $("bubble").innerHTML = `<span class="eyebrow">${savedSpots.length ? "Your best saved spot" : "Pinchy's pick"} ${when}</span><b>${esc(best.s.name)}</b>, ${esc(best.s.state)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
+  $("bubble").setAttribute("aria-label", `Open ${best.s.name}, the best ${savedSpots.length ? "saved " : ""}spot ${when}`);
   $("pinch").innerHTML = crab(moodOf(best.dayScore) === "sleepy" ? "sleepy" : "party", 150);
 }
 $("bubble").onclick = () => { const sl = $("bubble").dataset.slug; if (sl) { if (state.region !== "All" && state.region !== "Saved") state.region = "All"; renderFilters(); pick(sl, true); } };
@@ -871,25 +1021,35 @@ $("date").onchange = e => { if (e.target.value) setDate(e.target.value); };
 $("sortDay").onclick = () => { state.sort = "day"; render(); };
 $("sortNow").onclick = () => { if (isToday()) { state.sort = "now"; render(); } };
 $("sortAz").onclick = () => { state.sort = "az"; render(); };
-$("q").oninput = e => { state.q = e.target.value; renderList(); };
-$("q").onkeydown = e => { if (e.key === "Enter") { const first = $("rows").querySelector("[data-slug]"); if (first) pick(first.dataset.slug, true); } };
+$("q").oninput = e => { state.q = e.target.value; if (!state.q.trim()) $("places").hidden = true; else if (!$("places").hidden) $("places").hidden = true; renderList(); };
+$("q").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); if (state.q.trim().length >= 3) { searchPlaces(state.q); renderList(); } else { const first = $("rows").querySelector("[data-slug]"); if (first) pick(first.dataset.slug, true); } } };
+$("places").onclick = e => {
+  if (e.target.closest("#closeplaces")) { $("places").hidden = true; renderList(); return; }
+  const b = e.target.closest("[data-place]"); if (!b) return;
+  const r = lastPlaceResults[+b.dataset.place]; if (!r) return;
+  if (r.near.mi > FAR_MI) { $("msg").textContent = `${r.name} is ${Math.round(r.near.mi)} mi from the nearest tide station, so it may not be tidal water.`; return; }
+  $("msg").textContent = ""; openPlace(r);
+};
 $("filters").onclick = e => { const b = e.target.closest("[data-region]"); if (!b) return; state.region = b.dataset.region; store.set("pt-region", state.region); render(); };
 function toggleSave(sl) {
-  saved.has(sl) ? saved.delete(sl) : saved.add(sl);
+  const sp = spotBySlug(sl);
+  if (saved.has(sl)) { saved.delete(sl); if (sp && sp.place) { PLACES = PLACES.filter(x => x.slug !== sl); savePlacesList(); } }
+  else { saved.add(sl); if (sp && sp.place && !PLACES.some(x => x.slug === sl)) { PLACES.push(sp); savePlacesList(); } }
   store.set("pt-saved", [...saved]);
   if (state.region === "Saved" && !saved.size) state.region = "All";
   renderFilters(); renderList(); renderDetail(); renderBubble();
 }
 function pick(sl, scroll) {
-  const s = STATIONS.find(x => x.slug === sl); if (!s) return;
+  const s = spotBySlug(sl); if (!s) return;
   state.sel = s; store.set("pt-last", s.slug);
   if (location.hash.slice(1) !== s.slug) { try { history.replaceState(null, "", "#" + s.slug); } catch (e) { location.hash = s.slug; } }
-  renderList(); renderDetail(); loadWater(s);
+  renderList(); renderDetail(); loadWater(s); loadPlaceWeather(s);
   if (scroll !== false && narrow()) $("detail").scrollIntoView({ behavior: smooth(), block: "start" });
 }
 $("rows").onclick = e => {
   const st = e.target.closest("[data-star]"); if (st) { e.stopPropagation(); toggleSave(st.dataset.star); return; }
   if (e.target.closest("#clearq")) { state.q = ""; $("q").value = ""; state.region = "All"; render(); return; }
+  if (e.target.closest("#findplace")) { searchPlaces(state.q); renderList(); return; }
   const r = e.target.closest("[data-slug]"); if (r) pick(r.dataset.slug);
 };
 $("rows").onkeydown = e => {
@@ -902,11 +1062,21 @@ $("detail").onclick = e => {
   if (e.target.closest("#change")) { $("list").scrollIntoView({ behavior: smooth(), block: "start" }); setTimeout(() => $("q").focus({ preventScroll: true }), 350); return; }
   const d = e.target.closest("[data-ymd]"); if (d) { if (!state.weekAnchor) { const a = state.ymd; state.weekAnchor = a; } setDate(d.dataset.ymd, true); }
 };
+$("detail").addEventListener("change", e => {
+  if (e.target.id !== "stationpick" || !state.sel || !state.sel.place) return;
+  const old = state.sel, wasSaved = saved.has(old.slug);
+  const s = makePlace({ ...old.raw, stationId: e.target.value });
+  if (wasSaved) { saved.delete(old.slug); saved.add(s.slug); store.set("pt-saved", [...saved]); PLACES = PLACES.map(x => x.slug === old.slug ? s : x); savePlacesList(); }
+  state.sel = s; store.set("pt-last", s.slug);
+  try { history.replaceState(null, "", "#" + s.slug); } catch (err) {}
+  if (LIVE.wx && LIVE.wx[old.id]) LIVE.wx[s.id] = LIVE.wx[old.id];
+  renderList(); renderDetail(); renderBubble(); loadWater(s); loadPlaceWeather(s);
+});
 $("detail").addEventListener("toggle", e => { if (e.target.id === "gloss") state.glossOpen = e.target.open; }, true);
 $("detail").addEventListener("pointermove", e => { if (e.target.closest("#chart")) moveGuide(e); });
 $("detail").addEventListener("pointerdown", e => { if (e.target.closest("#chart")) moveGuide(e); });
 $("detail").addEventListener("pointerleave", e => { if (e.target.id === "chart" && e.pointerType === "mouse") hideGuide(); }, true);
-addEventListener("hashchange", () => { const s = fromHash(); if (s && s !== state.sel) { if (state.region !== "All") state.region = "All"; state.sel = s; render(); loadWater(s); } });
+addEventListener("hashchange", () => { const sl = location.hash.slice(1); if (sl && (!state.sel || sl !== state.sel.slug)) { if (state.region !== "All") state.region = "All"; renderFilters(); openSlug(sl, false); } });
 
 $("near").onclick = () => {
   const msg = $("msg");
@@ -916,9 +1086,15 @@ $("near").onclick = () => {
     state.here = { lat: pos.coords.latitude, lon: pos.coords.longitude };
     state.sort = "near"; state.region = "All"; state.q = ""; $("q").value = "";
     const nearest = STATIONS.reduce((a, b) => distMi(state.here, b) < distMi(state.here, a) ? b : a);
-    msg.textContent = `Closest spot: ${nearest.name}, ${Math.round(distMi(state.here, nearest))} mi away.`;
     ["sortDay", "sortNow", "sortAz"].forEach(id => $(id).setAttribute("aria-pressed", "false"));
-    state.sel = nearest; renderFilters(); renderList(); renderDetail(); loadWater(nearest);
+    $("places").hidden = true; renderFilters();
+    const useBuiltIn = () => { msg.textContent = `Closest spot: ${nearest.name}, ${Math.round(distMi(state.here, nearest))} mi away.`; state.sel = nearest; renderList(); renderDetail(); loadWater(nearest); };
+    loadDB().then(() => {
+      const st = nearestStations(state.here.lat, state.here.lon, 1)[0];
+      if (!st || st.mi > FAR_MI) { useBuiltIn(); return; }
+      msg.textContent = `Tides from NOAA ${st.st.name}, ${st.mi < 10 ? st.mi.toFixed(1) : Math.round(st.mi)} mi from you.`;
+      openPlace({ name: "Near you", area: "Your location", lat: +state.here.lat.toFixed(4), lon: +state.here.lon.toFixed(4) }, false);
+    }).catch(useBuiltIn);
   }, () => { msg.textContent = "Location isn't available here. Search for a town or bay instead."; }, { timeout: 10000, maximumAge: 600000 });
 };
 
@@ -926,6 +1102,10 @@ render();
 setLive();
 if (state.sel) loadWater(state.sel);
 loadWeather();
+restorePlaces().then(() => {
+  if (startSlug && (!state.sel || state.sel.slug !== startSlug) && !STATIONS.some(s => s.slug === startSlug)) openSlug(startSlug, false);
+  render();
+}).catch(() => {});
 // Keep "now" current: refresh every minute, roll over at midnight, refresh live data every 30 minutes.
 let lastToday = localToday();
 setInterval(() => {
