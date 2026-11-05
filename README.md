@@ -1,6 +1,6 @@
-# Pot & Tide
+# Gett’n Crabby!
 
-A crabbing forecast website. For 37 coastal spots (blue crab on the Atlantic and Gulf coasts, Dungeness on the Pacific), it shows the best hours to crab, a tide chart you can tap, and a 7-day outlook.
+A crabbing forecast website, hosted by Pinchy the Dungeness crab. For 37 coastal spots (blue crab on the Atlantic and Gulf coasts, Dungeness on the Pacific), it shows the best hours to crab, a tide chart you can tap, and a 7-day outlook.
 
 The whole site is one static file, `docs/index.html`. There is no server and no API key.
 

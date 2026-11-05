@@ -1,6 +1,6 @@
 // Builds two copies of the page from src.html:
 //   docs/index.html            full HTML document for GitHub Pages
-//   ../.artifact/pot-and-tide.html  body-only page for a Claude artifact
+//   <artifactOutPath>  body-only page for a Claude artifact
 // Usage: node site/build.mjs [artifactOutPath]
 import fs from "fs";
 import path from "path";

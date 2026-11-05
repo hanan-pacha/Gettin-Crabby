@@ -1,4 +1,4 @@
-<title>Pot &amp; Tide</title>
+<title>Gett’n Crabby!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Crabbing forecast: the best hours to crab at 37 US coastal spots, from tides, light, wind, moon and season.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
   --deep-ink: #f2f7f9;
   --wave: #7fa0b0;
   --sun: #f4c55b;
-  --crab: #d4613f;        /* Pinch's shell */
+  --crab: #d4613f;        /* Pinchy's shell */
   --crab-dark: #9c3f2b;
   --claw: #fff1de;
   --cheek: #ff9e9e;
@@ -233,7 +233,7 @@ footer a { color: var(--accent); }
 <header class="band">
   <div class="bandin">
     <div class="brand">
-      <h1>Pot <span>&amp;</span> Tide</h1>
+      <h1>Gett’n <span>Crabby!</span></h1>
       <p>When to go crabbing at 37 spots on the Atlantic, Gulf and Pacific coasts. Pick a spot to see the best hours, then tap the chart to check any time of day.</p>
       <div class="datebar" role="group" aria-label="Choose a date">
       <button class="btn" id="prev" aria-label="Previous day">‹</button>
@@ -255,7 +255,7 @@ footer a { color: var(--accent); }
   <div class="toolbar">
     <label class="search" for="q">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-      <input id="q" type="search" placeholder="Search spots, towns, bays" autocomplete="off" aria-label="Search spots">
+      <input id="q" type="search" placeholder="Search spots" autocomplete="off" aria-label="Search spots">
     </label>
     <button class="btn" id="near"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Near me</button>
     <span class="msg" id="msg" role="status"></span>
@@ -317,7 +317,7 @@ const TIPS = {
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" stroke-linejoin="round"/></svg>';
 
-/* ---------- Pinch, the Dungeness crab ---------- */
+/* ---------- Pinchy, the Dungeness crab ---------- */
 // Moods: party (excellent), happy (good), ok (fair), sleepy (slow), puzzled (no results).
 function crab(mood = "happy", size = 120) {
   const top = x => 58 - 20 * Math.sqrt(Math.max(0, 1 - ((x - 60) / 40) ** 2));
@@ -349,7 +349,7 @@ function crab(mood = "happy", size = 120) {
   const extra = mood === "party" ? star(28, 12, 1) + star(96, 8, .8) + star(104, 24, .55)
     : mood === "sleepy" ? `<text x="80" y="20" font-family="var(--font-display)" font-weight="700" font-size="11" fill="var(--muted)">z</text><text x="88" y="11" font-family="var(--font-display)" font-weight="700" font-size="8" fill="var(--muted)">z</text>`
     : mood === "puzzled" ? `<text x="84" y="16" font-family="var(--font-display)" font-weight="700" font-size="15" fill="var(--muted)">?</text>` : "";
-  return `<svg class="crab" width="${size}" height="${Math.round(size * 96 / 136)}" viewBox="-8 0 136 96" role="img" aria-label="Pinch the crab">
+  return `<svg class="crab" width="${size}" height="${Math.round(size * 96 / 136)}" viewBox="-8 0 136 96" role="img" aria-label="Pinchy the crab">
     ${extra}<g class="bob">
     <g fill="none" stroke="var(--crab-dark)" stroke-width="4.2" stroke-linecap="round">${legs}</g>
     <g fill="none" stroke="var(--crab)" stroke-width="5.5" stroke-linecap="round">${arms}</g>
@@ -478,7 +478,7 @@ function wxFactor(x) {
 }
 const windWord = x => { const e = Math.max(x.wind, (x.gust || 0) * .7); return e < 8 ? "Light wind" : e < 12 ? "Breezy" : e < 16 ? "Windy" : e < 20 ? "Very windy" : "Too windy"; };
 const wxText = x => `${Math.round(x.wind)} mph ${compass(x.dir)}${x.gust > x.wind + 5 ? `, gusts ${Math.round(x.gust)}` : ""}`;
-const NOAA = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?application=pot_and_tide&format=json&time_zone=gmt&units=english&date=latest&station=";
+const NOAA = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?application=gettn_crabby&format=json&time_zone=gmt&units=english&date=latest&station=";
 async function loadWater(s) {
   const rec = LIVE.water[s.id];
   if (rec && Date.now() - rec.at < 10 * 60000) return;
@@ -846,7 +846,7 @@ function renderBubble() {
   const w = best.windows[0];
   const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "long" });
   $("bubble").dataset.slug = best.s.slug;
-  $("bubble").innerHTML = `<span class="eyebrow">${saved.size ? "Your best saved spot" : "Pinch's pick"} ${when}</span><b>${esc(best.s.name)}</b>, ${esc(best.s.state)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
+  $("bubble").innerHTML = `<span class="eyebrow">${saved.size ? "Your best saved spot" : "Pinchy's pick"} ${when}</span><b>${esc(best.s.name)}</b>, ${esc(best.s.state)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
   $("bubble").setAttribute("aria-label", `Open ${best.s.name}, the best ${saved.size ? "saved " : ""}spot ${when}`);
   $("pinch").innerHTML = crab(moodOf(best.dayScore) === "sleepy" ? "sleepy" : "party", 150);
 }
