@@ -81,8 +81,8 @@
    "pass": true,
    "detail": {
     "status": 200,
-    "deployed": "fca4511f9befdcfa",
-    "committed": "fca4511f9befdcfa",
+    "deployed": "e1d6ee4c1ea7892c",
+    "committed": "e1d6ee4c1ea7892c",
     "workingCopy": "e1d6ee4c1ea7892c"
    }
   },
@@ -94,7 +94,7 @@
   {
    "label": "End to end: Fort Point shows NOAA's live water reading",
    "pass": true,
-   "detail": "Right now: 59, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 43 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 11 min ago"
+   "detail": "Right now: 58, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 39 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 9 min ago"
   },
   {
    "label": "End to end: typing 'baker' finds Baker Beach",
@@ -311,13 +311,13 @@
   ],
   "deployed": {
    "status": 200,
-   "deployed": "fca4511f9befdcfa",
-   "committed": "fca4511f9befdcfa",
+   "deployed": "e1d6ee4c1ea7892c",
+   "committed": "e1d6ee4c1ea7892c",
    "workingCopy": "e1d6ee4c1ea7892c"
   },
   "e2e": {
    "live": "Live water data",
-   "nowLine": "Right now: 59, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 43 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 11 min ago",
+   "nowLine": "Right now: 58, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 39 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 9 min ago",
    "weatherFact": [
     "SURF Sheltered Ocean swell doesn't reach this spot"
    ],

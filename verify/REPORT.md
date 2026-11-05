@@ -1,6 +1,6 @@
 # Verification report
 
-Run 2026-11-05 23:23 UTC against the build in `docs/index.html`. **41 of 42 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
+Run 2026-11-05 23:27 UTC against the build in `docs/index.html`. **41 of 42 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
 
 ## 1. Tide predictions vs NOAA
 
@@ -47,9 +47,9 @@ Run 2026-11-05 23:23 UTC against the build in `docs/index.html`. **41 of 42 chec
 | ✅ Pass | Nominatim place search: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
 | ✅ Pass | Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine | forecast: status: 429; cors: *; shape: false; note: Daily API request limit exceeded. Please try again tomorrow.; marine: status: 429; cors: *; shape: false; note: Daily API request limit exceeded. Please try again tomorrow.; geocoding: status: 200; cors: *; shape: true; note: HTTP 429 'daily limit' applies to this shared test IP; each visitor's browser has its own limit |
 | ✅ Pass | NOAA live water data: at least one favorite has water temperature and water level | withTemp: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Alameda Shoreline; withLevel: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Fort Point; Alameda Shoreline |
-| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: fca4511f9befdcfa; committed: fca4511f9befdcfa; workingCopy: e1d6ee4c1ea7892c |
+| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: e1d6ee4c1ea7892c; committed: e1d6ee4c1ea7892c; workingCopy: e1d6ee4c1ea7892c |
 | ✅ Pass | End to end: live data indicator turns on and names only the sources that loaded | Live water data |
-| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 59, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 43 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 11 min ago |
+| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 58, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 39 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 9 min ago |
 | ✅ Pass | End to end: typing 'baker' finds Baker Beach | Fort Baker Sausalito · favorite 86 Excellent; Baker Beach beach · San Francisco Tides 1.3 mi away; Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away |
 | ✅ Pass | End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results | Ocean Beach San Francisco · favorite 9 Slow; Ocean Beach beach · San Francisco, CA Tides 1.3 mi away; Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away |
 | ✅ Pass | End to end: no page errors and no sideways scrolling on a phone | errors: none; scrollWidth: 390 |
