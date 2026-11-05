@@ -1,0 +1,100 @@
+{
+ "checks": [
+  {
+   "label": "Sunrise vs astral (95th pct \u2264 2 min, max \u2264 4 min)",
+   "pass": true,
+   "detail": {
+    "n": 8946,
+    "median": 0.28,
+    "p95": 0.63,
+    "max": 0.69
+   }
+  },
+  {
+   "label": "Sunset vs astral (95th pct \u2264 2 min, max \u2264 4 min)",
+   "pass": true,
+   "detail": {
+    "n": 8946,
+    "median": 0.6,
+    "p95": 1.47,
+    "max": 1.67
+   }
+  },
+  {
+   "label": "Moon illuminated fraction vs PyEphem (max error \u2264 0.08)",
+   "pass": true,
+   "detail": {
+    "n": 426,
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 0.0
+   }
+  },
+  {
+   "label": "Moon phase name matches on the day of every new, quarter and full moon",
+   "pass": true,
+   "detail": {
+    "events": 58,
+    "mismatches": []
+   }
+  },
+  {
+   "label": "Local midnight matches zoneinfo for every day, including clock changes",
+   "pass": true,
+   "detail": {
+    "days": 426,
+    "mismatches": []
+   }
+  },
+  {
+   "label": "Dungeness season matches the regulation for every favorite and day (Oct 2026 \u2013 Dec 2029)",
+   "pass": true,
+   "detail": {
+    "spotDays": 24948,
+    "mismatches": []
+   }
+  },
+  {
+   "label": "Opener rule reproduces past opening days (2021\u20132026)",
+   "pass": true,
+   "detail": {
+    "page": {
+     "2021": 6,
+     "2022": 5,
+     "2023": 4,
+     "2024": 2,
+     "2025": 1,
+     "2026": 7,
+     "2027": 6
+    },
+    "known": {
+     "2021": 6,
+     "2022": 5,
+     "2023": 4,
+     "2024": 2,
+     "2025": 1,
+     "2026": 7
+    }
+   }
+  },
+  {
+   "label": "Every favorite's region matches the region rules",
+   "pass": true,
+   "detail": []
+  },
+  {
+   "label": "SF Bay outline contains exactly the SF Bay favorites",
+   "pass": true,
+   "detail": []
+  },
+  {
+   "label": "SF Bay outline puts the 20 bay-side places inside and Golden Gate ocean beaches outside",
+   "pass": true,
+   "detail": {
+    "unexpectedInside": [],
+    "missingInside": [],
+    "oceanWronglyInside": []
+   }
+  }
+ ]
+}

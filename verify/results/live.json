@@ -1,0 +1,342 @@
+{
+ "checks": [
+  {
+   "label": "NOAA tide predictions: answers, matches the parsed shape, allows browser access (CORS)",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "cors": "*",
+    "shape": true,
+    "note": ""
+   }
+  },
+  {
+   "label": "Photon place search: answers, matches the parsed shape, allows browser access (CORS)",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "cors": "*",
+    "shape": true,
+    "note": ""
+   }
+  },
+  {
+   "label": "Nominatim place search: answers, matches the parsed shape, allows browser access (CORS)",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "cors": "*",
+    "shape": true,
+    "note": ""
+   }
+  },
+  {
+   "label": "Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine",
+   "pass": true,
+   "detail": {
+    "forecast": {
+     "status": 429,
+     "cors": "*",
+     "shape": false,
+     "note": "Daily API request limit exceeded. Please try again tomorrow."
+    },
+    "marine": {
+     "status": 429,
+     "cors": "*",
+     "shape": false,
+     "note": "Daily API request limit exceeded. Please try again tomorrow."
+    },
+    "geocoding": {
+     "status": 200,
+     "cors": "*",
+     "shape": true,
+     "note": ""
+    },
+    "note": "HTTP 429 'daily limit' applies to this shared test IP; each visitor's browser has its own limit"
+   }
+  },
+  {
+   "label": "NOAA live water data: at least one favorite has water temperature and water level",
+   "pass": true,
+   "detail": {
+    "withTemp": [
+     "Crescent City Harbor",
+     "North Jetty",
+     "Point Arena Pier",
+     "Drakes Beach",
+     "Alameda Shoreline"
+    ],
+    "withLevel": [
+     "Crescent City Harbor",
+     "North Jetty",
+     "Point Arena Pier",
+     "Drakes Beach",
+     "Fort Point",
+     "Alameda Shoreline"
+    ]
+   }
+  },
+  {
+   "label": "GitHub Pages serves the committed docs/index.html",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "deployed": "fca4511f9befdcfa",
+    "committed": "fca4511f9befdcfa",
+    "workingCopy": "e1d6ee4c1ea7892c"
+   }
+  },
+  {
+   "label": "End to end: live data indicator turns on and names only the sources that loaded",
+   "pass": true,
+   "detail": "Live water data"
+  },
+  {
+   "label": "End to end: Fort Point shows NOAA's live water reading",
+   "pass": true,
+   "detail": "Right now: 59, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 43 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 11 min ago"
+  },
+  {
+   "label": "End to end: typing 'baker' finds Baker Beach",
+   "pass": true,
+   "detail": [
+    "Fort Baker Sausalito · favorite 86 Excellent",
+    "Baker Beach beach · San Francisco Tides 1.3 mi away",
+    "Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away"
+   ]
+  },
+  {
+   "label": "End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results",
+   "pass": true,
+   "detail": [
+    "Ocean Beach San Francisco · favorite 9 Slow",
+    "Ocean Beach beach · San Francisco, CA Tides 1.3 mi away",
+    "Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away"
+   ]
+  },
+  {
+   "label": "End to end: no page errors and no sideways scrolling on a phone",
+   "pass": true,
+   "detail": {
+    "errors": [],
+    "scrollWidth": 390
+   }
+  }
+ ],
+ "info": {
+  "NOAA predictions": {
+   "status": 200,
+   "cors": "*",
+   "shape": true,
+   "note": ""
+  },
+  "Photon search": {
+   "status": 200,
+   "cors": "*",
+   "shape": true,
+   "note": ""
+  },
+  "Nominatim search": {
+   "status": 200,
+   "cors": "*",
+   "shape": true,
+   "note": ""
+  },
+  "Open-Meteo geocoding": {
+   "status": 200,
+   "cors": "*",
+   "shape": true,
+   "note": ""
+  },
+  "Open-Meteo forecast": {
+   "status": 429,
+   "cors": "*",
+   "shape": false,
+   "note": "Daily API request limit exceeded. Please try again tomorrow."
+  },
+  "Open-Meteo marine": {
+   "status": 429,
+   "cors": "*",
+   "shape": false,
+   "note": "Daily API request limit exceeded. Please try again tomorrow."
+  },
+  "water": [
+   {
+    "name": "Crescent City Harbor",
+    "id": "9419750",
+    "waterTemp": true,
+    "waterLevel": true,
+    "cors": "*"
+   },
+   {
+    "name": "Trinidad Pier",
+    "id": "9419059",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Woodley Island",
+    "id": "9418801",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "North Jetty",
+    "id": "9418767",
+    "waterTemp": true,
+    "waterLevel": true,
+    "cors": "*"
+   },
+   {
+    "name": "Shelter Cove",
+    "id": "9418024",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Noyo Harbor",
+    "id": "9417426",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Point Arena Pier",
+    "id": "9416841",
+    "waterTemp": true,
+    "waterLevel": true,
+    "cors": "*"
+   },
+   {
+    "name": "Bodega Bay",
+    "id": "9415625",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Lawson's Landing",
+    "id": "9415469",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Marshall",
+    "id": "9415339",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Drakes Beach",
+    "id": "9415020",
+    "waterTemp": true,
+    "waterLevel": true,
+    "cors": "*"
+   },
+   {
+    "name": "Fort Point",
+    "id": "9414290",
+    "waterTemp": false,
+    "waterLevel": true,
+    "cors": "*"
+   },
+   {
+    "name": "Fort Baker",
+    "id": "9414806",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Paradise Beach",
+    "id": "9414837",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Berkeley Marina",
+    "id": "9414816",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Point Pinole Shoreline",
+    "id": "9415056",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Alameda Shoreline",
+    "id": "9414750",
+    "waterTemp": true,
+    "waterLevel": true,
+    "cors": "*"
+   },
+   {
+    "name": "Ocean Beach",
+    "id": "9414275",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Pacifica Pier",
+    "id": "9414275",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Pillar Point Harbor",
+    "id": "9414131",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   },
+   {
+    "name": "Santa Cruz Wharf",
+    "id": "9413745",
+    "waterTemp": false,
+    "waterLevel": false,
+    "cors": "*"
+   }
+  ],
+  "deployed": {
+   "status": 200,
+   "deployed": "fca4511f9befdcfa",
+   "committed": "fca4511f9befdcfa",
+   "workingCopy": "e1d6ee4c1ea7892c"
+  },
+  "e2e": {
+   "live": "Live water data",
+   "nowLine": "Right now: 59, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 43 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 11 min ago",
+   "weatherFact": [
+    "SURF Sheltered Ocean swell doesn't reach this spot"
+   ],
+   "searchBaker": [
+    "Fort Baker Sausalito · favorite 86 Excellent",
+    "Baker Beach beach · San Francisco Tides 1.3 mi away",
+    "Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away"
+   ],
+   "searchOcean": [
+    "Ocean Beach San Francisco · favorite 9 Slow",
+    "Ocean Beach beach · San Francisco, CA Tides 1.3 mi away",
+    "Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away"
+   ],
+   "opened": [
+    "Ocean Beach",
+    "SPOT TYPE Beach Jetty or rocks Pier Harbor or bay Open to ocean swell"
+   ],
+   "errors": [],
+   "scrollWidth": 390
+  }
+ }
+}

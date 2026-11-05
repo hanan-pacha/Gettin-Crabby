@@ -1,6 +1,6 @@
 <title>Gettin’ Crabby!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Dungeness crabbing forecast for Northern California: the best hours to crab at any beach, pier or harbor from Santa Cruz to Crescent City.">
+<meta name="description" content="Crab snaring forecast for Northern California: the best hours to snare Dungeness or rock crab at any beach, pier or harbor from Santa Cruz to Crescent City.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -117,6 +117,8 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .listhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .sort { display: flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 2px; }
 .sort button { border: 0; background: transparent; padding: 5px 10px; border-radius: 6px; font-size: 13px; color: var(--muted); }
+.sort.target { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+.sort.target button { font-size: 14px; padding: 6px 12px; }
 .sort button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .rows { list-style: none; margin: 0; padding: 0; max-height: 1000px; overflow-y: auto; }
 @media (max-width: 900px) { .rows { max-height: none; } }
@@ -250,7 +252,7 @@ footer a { color: var(--accent); }
   <div class="bandin">
     <div class="brand">
       <h1>Gettin’ <span>Crabby!</span></h1>
-      <p>When to go Dungeness crabbing in Northern California, from Santa Cruz to Crescent City. Search any beach, pier or harbor, or start with a local favorite.</p>
+      <p>When to go crab snaring in Northern California, from Santa Cruz to Crescent City. Search any beach, pier or harbor, or start with a local favorite.</p>
       <div class="datebar" role="group" aria-label="Choose a date">
       <button class="btn" id="prev" aria-label="Previous day">‹</button>
       <input type="date" id="date" aria-label="Date">
@@ -274,6 +276,10 @@ footer a { color: var(--accent); }
       <input id="q" type="search" placeholder="Search any beach" autocomplete="off" enterkeyhint="search" aria-label="Search spots, or press Enter to search any beach">
     </label>
     <button class="btn" id="near"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Near me</button>
+    <div class="sort target" role="group" aria-label="Which crab">
+      <button id="tDung" aria-pressed="true">Dungeness</button>
+      <button id="tRock" aria-pressed="false">Rock crab</button>
+    </div>
     <span class="msg" id="msg" role="status"></span>
   </div>
   <div class="places" id="places" role="region" aria-label="Search results" aria-live="polite" hidden></div>
@@ -296,9 +302,9 @@ footer a { color: var(--accent); }
   </div>
 
   <footer>
-    <div><b>How the score works.</b> Every 10 minutes of the day gets a score from 0 to 100. It weighs the tide (which way the water is moving and how fast), the light (crabs feed more at dawn and dusk), how big the day's tides are compared with normal for that spot, how active crabs usually are that month, and wind and rain when a forecast is available. The best window is the strongest two hours between first light and an hour after sunset.</div>
-    <div><b>Tides</b> are computed from NOAA harmonic constants (via the open <a href="https://github.com/openwatersio/tide-database" target="_blank" rel="noopener">Neaps tide database</a>), in feet above MLLW and in each spot's local time. Live wind is from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>; water temperature and observed water level are from <a href="https://tidesandcurrents.noaa.gov" target="_blank" rel="noopener">NOAA Tides &amp; Currents</a>. Predictions can't see storms or river flow. Not for navigation.</div>
-    <div><b>Check CDFW before you go.</b> Season dates shown here are the usual ones. The California Department of Fish and Wildlife can delay the opener or restrict crab traps (often to protect whales), and sets size limits, bag limits and licence rules.</div>
+    <div><b>How the score works.</b> Every 10 minutes of the day gets a score from 0 to 100 for crab snaring. It weighs how fast the water is moving (snares drag in strong current), how high the water is (high water brings crabs within casting range), the light (crabs feed most at dawn and dusk), the season, and, when forecasts are available, surf at spots open to the ocean, wind for casting, rain, and muddy water after heavy rain. The best window is the strongest two hours between first light and an hour after sunset. <a href="https://github.com/hanan-pacha/Gettin-Crabby/blob/main/METHODOLOGY.md" target="_blank" rel="noopener">Full methodology and verification</a>.</div>
+    <div><b>Tides</b> are computed from NOAA harmonic constants (via the open <a href="https://github.com/openwatersio/tide-database" target="_blank" rel="noopener">Neaps tide database</a>), in feet above MLLW and in each spot's local time. Live wind and surf are from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>; water temperature and observed water level are from <a href="https://tidesandcurrents.noaa.gov" target="_blank" rel="noopener">NOAA Tides &amp; Currents</a>. Predictions can't see storms or river flow. Not for navigation.</div>
+    <div><b>Check CDFW before you go.</b> Rules here follow 14 CCR §29.80, §29.85 and §632 and CDFW's in-season notices as checked on Nov 5, 2026: Dungeness opens the first Saturday in November and closes June 30 (July 30 in Del Norte, Humboldt and Mendocino), never in San Francisco or San Pablo Bay; rock crabs are open all year. CDFW can delay or close the season (for example for domoic acid) at any time. Protected-area boundaries shown are approximate.</div>
   </footer>
 </div>
 
@@ -306,42 +312,51 @@ footer a { color: var(--accent); }
 <script>
 const STATIONS = /*__STATIONS__*/;
 const ALL_STATIONS = /*__ALLSTATIONS__*/;
+const MPAS = /*__MPAS__*/;
 
 /* ---------- regions, species and seasons ---------- */
 const REGIONS = ["SF Bay", "SF & South Coast", "Marin & Sonoma", "Mendocino", "Humboldt & Del Norte"];
-const SPECIES = { blue: "Blue crab", dungeness: "Dungeness" };
-// California recreational Dungeness: usually opens the first Saturday in November and closes June 30,
-// or July 30 north of the Sonoma–Mendocino county line. Values are how good crabbing usually is while open (Jan..Dec).
+const SPECIES = { dungeness: "Dungeness", rock: "Rock crab" };
+// California recreational crab rules, from 14 CCR §29.85 and CDFW's in-season notices (checked Nov 5, 2026).
+// Dungeness: first Saturday in November through July 30 in Del Norte, Humboldt and Mendocino counties,
+// through June 30 elsewhere; never in San Francisco or San Pablo Bay. Rock crabs (other Cancer crabs): all year.
+const RULES_CHECKED = "Nov 5, 2026";
 const NORTH = new Set(["Mendocino", "Humboldt & Del Norte"]);
+// How good Dungeness crabbing usually is while the season is open, Jan..Dec (crabs are fullest early in the season).
 const ACTIVITY = {
   south: [.90,.80,.70,.62,.55,.45,.40,.40,.40,.40,1,.95],
   north: [.90,.82,.74,.66,.60,.55,.48,.40,.40,.40,1,.95],
 };
+// In-season closures announced by CDFW. Add or end entries when CDFW posts changes.
+const CLOSURES = [
+  { species: "dungeness", s: 39.555, n: 40.1667, from: "2026-10-30", until: null, name: "Domoic acid closure",
+    text: "CDFW delayed the Dungeness opener from Cape Mendocino to Ten Mile State Marine Reserve because of unhealthy domoic acid levels in the crab. Taking or keeping Dungeness there is prohibited until health officials lift the closure.",
+    url: "https://wildlife.ca.gov/fishing/ocean/regulations/inseason" },
+];
+const pad2 = n => String(n).padStart(2, "0");
 function firstSaturdayNov(y) { const d = new Date(Date.UTC(y, 10, 1)); return 1 + (6 - d.getUTCDay() + 7) % 7; }
-function seasonOf(group, y, m, d) {
-  const north = NORTH.has(group), open = firstSaturdayNov(y);
-  const closeM = north ? 7 : 6, closeD = north ? 30 : 30;
-  const isOpen = (m > 11 || (m === 11 && d >= open)) || (m < closeM || (m === closeM && d <= closeD));
-  const closes = `${MONTHS[closeM - 1]} ${closeD}`;
-  if (isOpen) return { S: ACTIVITY[north ? "north" : "south"][m - 1], open: true, text: `Open through ${closes}` };
-  const oy = y;
-  return { S: .08, open: false, opens: `Sat, Nov ${firstSaturdayNov(oy)}`, opensYmd: `${oy}-11-${String(firstSaturdayNov(oy)).padStart(2, "0")}`, text: `Usually opens Sat, Nov ${firstSaturdayNov(oy)}` };
+function seasonOf(s, sp, y, m, d) {
+  if (sp === "rock") return { S: 1, open: true, text: "Open all year" };
+  const ymd = `${y}-${pad2(m)}-${pad2(d)}`;
+  const closure = CLOSURES.find(c => c.species === sp && s.lat >= c.s && s.lat < c.n && ymd >= c.from && (!c.until || ymd < c.until));
+  if (closure) return { S: .1, open: false, closure, text: closure.name };
+  const north = NORTH.has(s.group), opens = firstSaturdayNov(y), closeM = north ? 7 : 6;
+  const isOpen = m > 11 || (m === 11 && d >= opens) || m < closeM || (m === closeM && d <= 30);
+  if (isOpen) return { S: ACTIVITY[north ? "north" : "south"][m - 1], open: true, text: `Open through ${MONTHS[closeM - 1]} 30` };
+  return { S: .1, open: false, opens: `Sat, Nov ${opens}`, opensYmd: `${y}-11-${pad2(opens)}`, text: `Opens Sat, Nov ${opens}` };
 }
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const TIPS = {
-  blue: { title: "Blue crab tips", items: [
-    "The incoming tide is prime. Crabs ride rising water into shallows and creek mouths to feed.",
-    "Work the last couple of hours of the incoming tide through the high-tide turn, then follow them out early on the outgoing tide.",
-    "Chicken necks or bunker on a hand line or collapsible trap. Check traps every 15–30 minutes.",
-    "Blue crabs slow down below about 60°F water and mostly stop feeding below 50°F.",
-  ] },
-  dungeness: { title: "Dungeness tips", items: [
-    "Fish around the tide turn, especially at high tide. Strong current drags rings and buries pots.",
-    "Small tides (around the quarter moons) give longer calm windows than big tides.",
-    "Fish carcasses, turkey legs or clam bait in a bait box. Soak rings 15–20 minutes and pots an hour or more.",
-    "Crabs are fullest early in the season, in November and December. Soft-shell crabs right after a molt have little meat.",
-    "Hoop nets and crab snares from piers and jetties are the easy start. Measure every crab and check CDFW for size and bag limits.",
-  ] },
+  title: "Snaring tips",
+  items: [
+    "Fish the tide turn, especially around high tide. A snare drags and rolls in strong current, and high water brings crabs within casting range.",
+    "California allows crab loop traps (snares) with up to six loops, north of Point Arguello. Cut off extra loops on store-bought snares.",
+    "Use fresh, oily bait (sardine, mackerel or squid) in the cage. Cast to sandy bottom near structure, keep the line tight, and check every 10–15 minutes.",
+    "When you feel weight, reel in slowly and steadily so the loops cinch. A jerk or slack line lets the crab drop off.",
+    "Measure every crab right away and release undersize ones. Dungeness: 10 a day, at least 5¾ inches. Rock crabs: 35 a day, at least 4 inches in most areas.",
+    "Snares aren't affected by CDFW's crab trap restrictions and don't need a trap validation. A fishing license is required except on public piers.",
+    "Never turn your back on the ocean. Sneaker waves hit beaches and jetties without warning, especially in long-period swell.",
+  ],
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" stroke-linejoin="round"/></svg>';
 
@@ -396,7 +411,7 @@ function ring(n) {
 }
 
 const slug = s => (s.name + " " + s.area.split(",").pop()).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-STATIONS.forEach(s => { s.slug = slug(s); s.state = s.area.split(",").pop().trim(); s.search = (s.name + " " + s.area + " " + s.group + " " + SPECIES[s.sp]).toLowerCase(); });
+STATIONS.forEach(s => { s.slug = slug(s); s.state = s.area.split(",").pop().trim(); s.bay = s.group === "SF Bay"; s.search = (s.name + " " + s.area + " " + s.group).toLowerCase(); });
 
 /* ---------- small storage helpers (per viewer, optional) ---------- */
 const store = {
@@ -456,12 +471,36 @@ function sunTimes(y, m, d, lat, lon) {
   const toMs = j => (j - 2440587.5) * 86400000;
   return { rise: toMs(jt - w / 360), set: toMs(jt + w / 360) };
 }
-const SYNODIC = 29.530588853, NEW_MOON = Date.UTC(2000, 0, 6, 18, 14);
-function moon(ms) {
-  const age = (((ms - NEW_MOON) / 86400000) % SYNODIC + SYNODIC) % SYNODIC;
-  const p = age / SYNODIC, k = (1 - Math.cos(2 * Math.PI * p)) / 2;
-  const names = ["New moon","Waxing crescent","First quarter","Waxing gibbous","Full moon","Waning gibbous","Last quarter","Waning crescent"];
-  return { p, k, name: names[Math.round(p * 8) % 8] };
+// Moon phase from low-precision Sun and Moon positions (after Meeus): lit fraction within about 0.01, phase timing within minutes.
+function moonIllum(ms) {
+  const rad = Math.PI / 180, d = ms / 864e5 + 2440587.5 - 2451545, e = rad * 23.4397;
+  const M = rad * (357.5291 + 0.98560028 * d);
+  // Longitude of perihelion grows 1.71946° per century (precession), which keeps the Sun on the same equinox-of-date frame as the Moon.
+  const Ls = M + rad * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M)) + rad * (102.9372 + 1.71946 * d / 36525) + Math.PI;
+  const sDec = Math.asin(Math.sin(e) * Math.sin(Ls)), sRa = Math.atan2(Math.sin(Ls) * Math.cos(e), Math.cos(Ls));
+  const L = rad * (218.316 + 13.176396 * d), Mm = rad * (134.963 + 13.064993 * d), F = rad * (93.272 + 13.22935 * d), D = rad * (297.850 + 12.190749 * d);
+  // Largest periodic terms of the Moon's longitude, latitude and distance (Meeus, ch. 47).
+  const l = L + rad * (6.289 * Math.sin(Mm) + 1.274 * Math.sin(2 * D - Mm) + 0.658 * Math.sin(2 * D) + 0.214 * Math.sin(2 * Mm) - 0.186 * Math.sin(M) - 0.114 * Math.sin(2 * F));
+  const b = rad * (5.128 * Math.sin(F) + 0.281 * Math.sin(Mm + F) + 0.278 * Math.sin(Mm - F));
+  const dist = 385001 - 20905 * Math.cos(Mm) - 3699 * Math.cos(2 * D - Mm) - 2956 * Math.cos(2 * D);
+  const mRa = Math.atan2(Math.sin(l) * Math.cos(e) - Math.tan(b) * Math.sin(e), Math.cos(l));
+  const mDec = Math.asin(Math.sin(b) * Math.cos(e) + Math.cos(b) * Math.sin(e) * Math.sin(l));
+  const sd = 149598000, phi = Math.acos(Math.sin(sDec) * Math.sin(mDec) + Math.cos(sDec) * Math.cos(mDec) * Math.cos(sRa - mRa));
+  const inc = Math.atan2(sd * Math.sin(phi), dist - sd * Math.cos(phi));
+  // Phase = Moon's ecliptic longitude minus the Sun's (the standard definition of new, quarter and full moon).
+  const el = ((l - Ls) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+  return { k: (1 + Math.cos(inc)) / 2, p: el / (2 * Math.PI) };
+}
+// p: 0 new, .25 first quarter, .5 full, .75 last quarter. A main phase is named only on the day it happens.
+function moon(ms, dayStart, dayEnd) {
+  const { k, p } = moonIllum(ms);
+  let name = p < .25 ? "Waxing crescent" : p < .5 ? "Waxing gibbous" : p < .75 ? "Waning gibbous" : "Waning crescent";
+  if (dayStart != null) {
+    const a = moonIllum(dayStart).p, b = moonIllum(dayEnd).p;
+    const hit = [[0, "New moon"], [.25, "First quarter"], [.5, "Full moon"], [.75, "Last quarter"]].find(([q]) => q === 0 ? b < a : a < q && b >= q);
+    if (hit) name = hit[1];
+  }
+  return { p, k, name };
 }
 function moonSvg(mo, size = 18) {
   const r = size / 2 - 1, c = size / 2, waxing = mo.p < .5, cres = mo.k < .5;
@@ -472,7 +511,7 @@ function moonSvg(mo, size = 18) {
 }
 
 /* ---------- live data (only where the page may reach the internet) ---------- */
-const LIVE = { wx: null, wxAt: 0, water: {} };
+const LIVE = { wx: null, wxAt: 0, water: {}, sea: {} };
 const COMPASS = ["N","NE","E","SE","S","SW","W","NW"];
 const compass = deg => COMPASS[Math.round(((deg % 360) + 360) % 360 / 45) % 8];
 async function getJSON(url, ms = 9000) {
@@ -482,11 +521,11 @@ async function getJSON(url, ms = 9000) {
 }
 function wxFrom(d) {
   const h = d && d.hourly; if (!h || !h.time) return null;
-  return { t0: h.time[0] * 1000, n: h.time.length, temp: h.temperature_2m, rain: h.precipitation_probability, wind: h.wind_speed_10m, gust: h.wind_gusts_10m, dir: h.wind_direction_10m };
+  return { t0: h.time[0] * 1000, n: h.time.length, temp: h.temperature_2m, rain: h.precipitation_probability, precip: h.precipitation || [], wind: h.wind_speed_10m, gust: h.wind_gusts_10m, dir: h.wind_direction_10m };
 }
 async function loadWeather() {
   const lat = STATIONS.map(s => s.lat).join(","), lon = STATIONS.map(s => s.lon).join(",");
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&timeformat=unixtime&timezone=GMT&past_days=1&forecast_days=8`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch&timeformat=unixtime&timezone=GMT&past_days=2&forecast_days=8`;
   try {
     const data = await getJSON(url, 12000);
     const arr = Array.isArray(data) ? data : [data];
@@ -500,12 +539,44 @@ async function loadWeather() {
 function wxAt(s, t) {
   const w = LIVE.wx && LIVE.wx[s.id]; if (!w) return null;
   const i = Math.floor((t - w.t0) / 3600000); if (i < 0 || i >= w.n || w.wind[i] == null) return null;
-  return { wind: w.wind[i], gust: w.gust[i], dir: w.dir[i], temp: w.temp[i], rain: w.rain[i] };
+  let r48 = 0; for (let k = Math.max(0, i - 48); k < i; k++) r48 += w.precip[k] || 0;
+  return { wind: w.wind[i], gust: w.gust[i], dir: w.dir[i], temp: w.temp[i], rain: w.rain[i], r48 };
 }
+// Ocean swell from Open-Meteo Marine, for spots open to the ocean.
+async function loadSurf(list) {
+  list = list.filter(s => exposedOf(s) && !LIVE.sea[s.id] && !s.seaLoading);
+  if (!list.length) return;
+  list.forEach(s => { s.seaLoading = true; });
+  const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${list.map(s => s.lat).join(",")}&longitude=${list.map(s => s.lon).join(",")}&hourly=wave_height,wave_period&length_unit=imperial&timeformat=unixtime&timezone=GMT&past_days=1&forecast_days=8`;
+  try {
+    const data = await getJSON(url, 12000);
+    (Array.isArray(data) ? data : [data]).forEach((d, i) => { const h = d && d.hourly; if (h && h.time && list[i]) LIVE.sea[list[i].id] = { t0: h.time[0] * 1000, n: h.time.length, h: h.wave_height || [], p: h.wave_period || [] }; });
+    for (const k of [...dayCache.keys()]) if (list.some(s => k.startsWith(s.id + "|"))) dayCache.delete(k);
+    setLive(); renderList(); renderDetail(); renderBubble();
+  } catch (e) {} finally { list.forEach(s => { s.seaLoading = false; }); }
+}
+function surfAt(s, t) {
+  const w = LIVE.sea[s.id]; if (!w) return null;
+  const i = Math.floor((t - w.t0) / 3600000); if (i < 0 || i >= w.n || w.h[i] == null) return null;
+  return { h: w.h[i], p: w.p[i] };
+}
+// How much surf gets in the way of snaring, by spot type. Sheltered spots ignore swell.
+function surfFactor(setting, x) {
+  if (!x) return 1;
+  const H = x.h, long = x.p >= 14 && H >= 5 ? .85 : 1;
+  const f = setting === "pier" ? (H < 4 ? 1 : H < 6 ? .9 : H < 8 ? .75 : H < 10 ? .6 : .45)
+    : setting === "jetty" ? (H < 3 ? 1 : H < 4 ? .9 : H < 5 ? .8 : H < 6 ? .65 : H < 8 ? .4 : .15)
+    : (H < 2 ? 1 : H < 3 ? .95 : H < 4 ? .85 : H < 5 ? .72 : H < 6 ? .6 : H < 8 ? .4 : .2);
+  return f * long;
+}
+const surfWord = x => x.h < 2 ? "Calm" : x.h < 4 ? "Small surf" : x.h < 6 ? "Moderate surf" : x.h < 8 ? "Big surf" : "Dangerous surf";
+const surfText = x => `${x.h.toFixed(1)} ft${x.p ? ` @ ${Math.round(x.p)} s` : ""}`;
+// Muddy water after heavy rain makes it harder for crabs to find bait.
+const clarityFactor = x => !x || x.r48 == null ? 1 : x.r48 > 1 ? .85 : x.r48 > .4 ? .93 : 1;
 function wxFactor(x) {
   if (!x) return 1;
   const eff = Math.max(x.wind, (x.gust || 0) * .7);
-  const wf = eff < 8 ? 1 : eff < 12 ? .93 : eff < 16 ? .82 : eff < 20 ? .68 : eff < 25 ? .52 : .4;
+  const wf = eff < 8 ? 1 : eff < 12 ? .92 : eff < 16 ? .78 : eff < 20 ? .6 : eff < 25 ? .45 : .3;   // casting a light snare into wind
   const rf = x.rain > 70 ? .88 : x.rain > 40 ? .95 : 1;
   return wf * rf;
 }
@@ -525,10 +596,15 @@ async function loadWater(s) {
   if (temp || level) { setLive(); if (state.sel && state.sel.id === s.id) renderDetail(); }
 }
 function setLive() {
-  const el = $("live"), on = !!LIVE.wx || Object.values(LIVE.water).some(w => w.temp || w.level);
+  const parts = [];
+  if (LIVE.wx && Object.keys(LIVE.wx).length) parts.push("wind");
+  if (Object.keys(LIVE.sea).length) parts.push("surf");
+  if (Object.values(LIVE.water).some(w => w.temp || w.level)) parts.push("water");
+  const el = $("live"), on = parts.length > 0;
+  const list = parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts.at(-1) : parts[0];
   el.classList.toggle("on", on);
-  el.querySelector("span").textContent = on ? "Live wind and water data" : "Tide forecast";
-  el.title = on ? "Scores include the wind and rain forecast" : "Live wind and water data aren't available here, so scores use tides, light, moon and season.";
+  el.querySelector("span").textContent = on ? `Live ${list} data` : "Tide forecast";
+  el.title = on ? `Using live ${list} data.${parts.includes("wind") ? "" : " The wind forecast isn't available right now."}${parts.includes("surf") ? "" : " The surf forecast isn't available right now."}` : "Live wind, surf and water data aren't available right now, so scores use tides, light and season.";
 }
 
 /* ---------- tides and scoring ---------- */
@@ -537,34 +613,50 @@ const predictors = {};
 function predictor(s) {
   return predictors[s.id] ||= TidePredictor.createTidePredictor(s.hc.map(([name, amplitude, phase]) => ({ name, amplitude, phase })), { offset: s.off });
 }
-// Tide stage curves over one cycle: 0 = low-tide turn, .5 = high-tide turn, back to 1.
-const STAGE = {
-  blue:      [[0,.30],[.12,.50],[.30,.82],[.42,.95],[.50,.95],[.58,.82],[.72,.55],[.88,.32],[1,.30]],
-  dungeness: [[0,.80],[.10,.62],[.25,.28],[.40,.72],[.50,1],[.60,.72],[.75,.28],[.90,.62],[1,.80]],
-};
 const interp = (pts, x) => { for (let i = 1; i < pts.length; i++) if (x <= pts[i][0]) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; return y0 + (y1 - y0) * (x - x0) / (x1 - x0); } return pts[pts.length - 1][1]; };
+const SHORE = new Set(["beach", "jetty"]);
+// Every tunable number in the snaring score, in one place (see METHODOLOGY.md).
+const MODEL = {
+  wTide: .62,            // weight of the tide factor; light gets the rest
+  exp: 1.4,              // spreads scores so that good and great hours separate
+  kMove: .55, moveFloor: .25, moveExp: .8,   // water movement: 1 − kMove × m, floored, then softened
+  shoreLevel: [.6, .4],  // beach and jetty: 0.6 at low water, 1.0 at high water
+  deepLevel: [.85, .15], // pier and harbor: water depth matters less
+  ebb: .95,              // falling tide slightly behind rising
+  dayMin: .85, daySpan: .07, darkShore: .6, darkDeep: .8,   // light
+};
+// Tide factor for a snare: slow water (the snare stays put) and high water (crabs within casting range).
+// m = rate of rise or fall relative to this spot's typical peak rate (π × mean range / 12.42 h);
+// about 0 at the turn, about 1 at mid-tide on an average day, more on big-tide days.
+function tideFactor(m, hn, rising, setting) {
+  const M = Math.max(MODEL.moveFloor, Math.min(1, 1 - MODEL.kMove * m));
+  const [l0, l1] = SHORE.has(setting) ? MODEL.shoreLevel : MODEL.deepLevel;
+  return Math.pow(M, MODEL.moveExp) * (l0 + l1 * hn) * (rising ? 1 : MODEL.ebb);
+}
+const movementWord = m => m < .25 ? "Slack water" : m < .6 ? "Slow current" : m < 1 ? "Moving water" : "Strong current";
 function stageName(c) {
   if (c < .08 || c >= .92) return "Low-tide turn";
   if (c < .2) return "Early incoming"; if (c < .38) return "Incoming"; if (c < .46) return "Late incoming";
   if (c < .54) return "High-tide turn"; if (c < .62) return "Early outgoing"; if (c < .8) return "Outgoing"; return "Late outgoing";
 }
-function lightOf(t, sun, sp) {
+// Crabs feed most at dawn and dusk. After dark, shore spots lose points for safety and visibility.
+function lightOf(t, sun, setting) {
   const D = 75 * 60000;
   if (Math.abs(t - sun.rise) <= D) return { name: "Dawn", v: 1 };
   if (Math.abs(t - sun.set) <= D) return { name: "Dusk", v: 1 };
   if (t > sun.rise && t < sun.set) {
     const x = Math.abs(t - (sun.rise + sun.set) / 2) / ((sun.set - sun.rise) / 2);
-    return { name: "Daylight", v: sp === "blue" ? .62 + .3 * x : .78 + .15 * x };
+    return { name: "Daylight", v: MODEL.dayMin + MODEL.daySpan * x };
   }
-  return { name: "Dark", v: sp === "blue" ? .8 : .85 };
+  return { name: "Dark", v: SHORE.has(setting) ? MODEL.darkShore : MODEL.darkDeep };
 }
-const rangeScore = (r, sp) => sp === "dungeness" ? Math.max(.35, Math.min(1, 1.3 - .55 * r)) : Math.max(.4, 1 - .55 * Math.abs(r - 1));
 const rangeName = r => r > 1.15 ? "Big tides" : r < .85 ? "Small tides" : "Normal tides";
 const quality = n => n >= 80 ? ["excellent", "Excellent"] : n >= 65 ? ["good", "Good"] : n >= 50 ? ["fair", "Fair"] : ["slow", "Slow"];
 
 const dayCache = new Map();
 function dayData(s, ymd) {
-  const key = s.id + ymd; if (dayCache.has(key)) return dayCache.get(key);
+  const sp = spOf(s), setting = settingOf(s), exposed = exposedOf(s), mpa = mpaOf(s);
+  const key = s.id + "|" + ymd + "|" + sp + "|" + setting; if (dayCache.has(key)) return dayCache.get(key);
   const [y, m, d] = ymdParse(ymd), [y2, m2, d2] = ymdParse(ymdAdd(ymd, 1));
   const start = zoned(y, m, d, 0, s.tz), end = zoned(y2, m2, d2, 0, s.tz);
   const p = predictor(s);
@@ -574,8 +666,10 @@ function dayData(s, ymd) {
   const lv = tl.map(x => x.level * FT);
   const rangeFt = inDay.length >= 2 ? Math.max(...inDay.map(e => e.ft)) - Math.min(...inDay.map(e => e.ft)) : Math.max(...lv) - Math.min(...lv);
   const ratio = rangeFt / (s.gt * FT);
-  const R = rangeScore(ratio, s.sp);
-  const season = seasonOf(s.group, y, m, d), S = season.S;
+  const season = seasonOf(s, sp, y, m, d), S = season.S;
+  const seasonMult = season.open ? .3 + .7 * S : .1;
+  const noTake = !!mpa && mpa.c !== "ok";
+  const rateTyp = Math.PI * (s.gt * FT) / 12.42;   // typical peak rise/fall rate, ft per hour
   const sun = sunTimes(y, m, d, s.lat, s.lon);
   let hasWx = false;
   const samples = tl.map((x, i) => {
@@ -584,12 +678,17 @@ function dayData(s, ymd) {
     const e0 = ext[j - 1], e1 = ext[j] || e0;
     const f = e1.t > e0.t ? Math.min(1, Math.max(0, (t - e0.t) / (e1.t - e0.t))) : 0;
     const c = e0.high ? .5 + .5 * f : .5 * f;
-    const T = interp(STAGE[s.sp], c);
-    const L = lightOf(t, sun, s.sp);
+    const a = lv[Math.max(0, i - 1)], b = lv[Math.min(lv.length - 1, i + 1)], dtH = ((Math.min(lv.length - 1, i + 1) - Math.max(0, i - 1)) * 10) / 60;
+    const mv = Math.abs(b - a) / dtH / (rateTyp || 1);
+    const lo = Math.min(e0.ft, e1.ft), hi = Math.max(e0.ft, e1.ft);
+    const hn = hi > lo ? Math.min(1, Math.max(0, (lv[i] - lo) / (hi - lo))) : .5;
+    const T = tideFactor(mv, hn, !e0.high, setting);
+    const L = lightOf(t, sun, setting);
     const wx = wxAt(s, t); if (wx) hasWx = true;
-    const base = .55 * T + .25 * L.v + .20 * R;
-    const score = Math.round(100 * Math.pow(base, 1.6) * (.15 + .85 * S) * wxFactor(wx));
-    return { t, ft: lv[i], c, T, L, wx, score, next: e1 };
+    const sea = exposed ? surfAt(s, t) : null;
+    const base = MODEL.wTide * T + (1 - MODEL.wTide) * L.v;
+    const score = noTake ? 0 : Math.round(100 * Math.pow(base, MODEL.exp) * seasonMult * wxFactor(wx) * surfFactor(setting, sea) * clarityFactor(wx));
+    return { t, ft: lv[i], c, mv, T, L, wx, sea, score, next: e1 };
   });
   // Best two-hour windows (12 samples) between first light and an hour after sunset.
   const W = 12, lo = sun.rise - 90 * 60000, hi = sun.set + 60 * 60000;
@@ -604,10 +703,10 @@ function dayData(s, ymd) {
   for (const cnd of cands) { if (wins.every(w => Math.abs(w.i - cnd.i) >= W + 6)) wins.push(cnd); if (wins.length === 2) break; }
   const windows = wins.map(w => {
     const mid = samples[w.i + W / 2];
-    return { start: samples[w.i].t, end: samples[w.i + W - 1].t + 600000, score: Math.round(w.avg), stage: stageName(mid.c), c: mid.c, light: mid.L.name, T: mid.T, L: mid.L.v, wx: mid.wx };
+    return { start: samples[w.i].t, end: samples[w.i + W - 1].t + 600000, score: Math.round(w.avg), stage: stageName(mid.c), c: mid.c, mv: mid.mv, light: mid.L.name, T: mid.T, L: mid.L.v, wx: mid.wx, sea: mid.sea };
   }).sort((a, b) => b.score - a.score);
-  const out = { s, ymd, start, end, ext, inDay, samples, sun, rangeFt, ratio, R, S, season, month: m - 1, windows, hasWx,
-    dayScore: windows[0] ? windows[0].score : Math.max(...samples.map(x => x.score)), moon: moon((start + end) / 2) };
+  const out = { s, ymd, sp, setting, exposed, mpa, noTake, start, end, ext, inDay, samples, sun, rangeFt, ratio, S, season, month: m - 1, windows, hasWx,
+    dayScore: windows[0] ? windows[0].score : Math.max(...samples.map(x => x.score)), moon: moon((start + end) / 2, start, end) };
   dayCache.set(key, out);
   if (dayCache.size > 400) dayCache.delete(dayCache.keys().next().value);
   return out;
@@ -627,10 +726,14 @@ function verdict(dd) {
   else tide = w.c < .5 ? "The tide is coming in" : "The tide is going out";
   if (!turn && w.c < .5) { const nx = dd.ext.find(e => e.t > w.start); if (nx) tide += `, high at ${fmtTime(nx.t, tz)}`; }
   const light = { Dawn: ", right around sunrise", Dusk: ", as the sun goes down", Dark: ", after dark", Daylight: "" }[w.light];
+  if (dd.noTake) return `<b>No snaring here.</b> This spot is in or right next to ${esc(dd.mpa.n)}, where ${dd.mpa.c === "no" ? "taking crabs is prohibited" : "crabs may only be taken with other gear, not snares"}. Pick a spot outside the protected area.`;
   let lead = `<b>Go ${fmtRange(w.start, w.end, tz)}.</b> ${tide}${light}.`;
+  if (w.sea && dd.exposed) lead += ` ${surfWord(w.sea)} (${surfText(w.sea)}).`;
   if (w.wx) lead += ` ${windWord(w.wx)} (${wxText(w.wx)}).`;
   let tail = "";
-  if (!dd.season.open) tail = ` Dungeness season is closed until ${dd.season.opens}, so treat this as a tide guide. Rock crab stays open year-round.`;
+  if (w.sea && dd.exposed && w.sea.h >= 8 && dd.setting !== "pier") tail = " Surf is dangerous for shore snaring. Stay off the jetty and back from the waterline.";
+  else if (dd.season.closure) tail = ` Dungeness is closed here (${dd.season.closure.name.toLowerCase()}), so treat this as a tide guide or switch to rock crab.`;
+  else if (!dd.season.open) tail = ` Dungeness season is closed until ${dd.season.opens}, so treat this as a tide guide or switch to rock crab.`;
   else if (ql === "Slow") tail = " A slow day overall. Another day this week may be better.";
   else if (ql === "Excellent") tail = " One of the better days to go.";
   return lead + tail;
@@ -660,13 +763,67 @@ function nearestStations(lat, lon, n = 6) {
 // Northern California only: Santa Cruz (36.9°N) to the Oregon border.
 const NORCAL = { s: 36.9, n: 42.05, w: -124.7, e: -121.0 };
 const inNorCal = (lat, lon) => lat >= NORCAL.s && lat <= NORCAL.n && lon >= NORCAL.w && lon <= NORCAL.e;
+function inPoly(lat, lon, poly) {
+  let c = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [y1, x1] = poly[i], [y2, x2] = poly[j];
+    if ((y1 > lat) !== (y2 > lat) && lon < (x2 - x1) * (lat - y1) / (y2 - y1) + x1) c = !c;
+  }
+  return c;
+}
+// San Francisco and San Pablo bays from the Golden Gate Bridge to the Carquinez Bridge (rough outline).
+// Dungeness may not be taken here (14 CCR §29.85(b)(1)), so bay spots are scored for rock crab.
+const SF_BAY = [[37.8107,-122.4771],[37.8324,-122.4795],[37.86,-122.52],[37.90,-122.535],[38.00,-122.545],[38.10,-122.52],[38.13,-122.30],[38.066,-122.226],[38.057,-122.226],[37.95,-122.15],[37.40,-121.90],[37.40,-122.20],[37.55,-122.36],[37.70,-122.43],[37.79,-122.44]];
+const inSfBay = (lat, lon) => inPoly(lat, lon, SF_BAY);
+// Water the ocean swell doesn't reach (rough outlines): Tomales Bay, Humboldt Bay, Bodega Harbor,
+// Pillar Point Harbor, Crescent City Harbor, Bolinas Lagoon, Noyo Harbor.
+const SHELTERED = [
+  [[38.245,-122.99],[38.24,-122.93],[38.04,-122.78],[38.04,-122.83],[38.15,-122.92],[38.22,-123.0]],
+  [[40.885,-124.15],[40.84,-124.168],[40.775,-124.205],[40.768,-124.218],[40.765,-124.212],[40.745,-124.225],[40.70,-124.245],[40.62,-124.25],[40.62,-124.20],[40.70,-124.10],[40.80,-124.06],[40.885,-124.07]],
+  [[38.336,-123.07],[38.336,-123.025],[38.318,-123.025],[38.316,-123.045],[38.309,-123.056],[38.302,-123.062],[38.306,-123.072]],
+  [[37.506,-122.495],[37.506,-122.474],[37.494,-122.474],[37.490,-122.484],[37.494,-122.495]],
+  [[41.752,-124.205],[41.752,-124.18],[41.736,-124.18],[41.738,-124.205]],
+  [[37.935,-122.68],[37.935,-122.655],[37.905,-122.665],[37.905,-122.68]],
+  [[39.433,-123.81],[39.433,-123.78],[39.42,-123.78],[39.42,-123.805]],
+];
+const inSheltered = (lat, lon) => SHELTERED.some(poly => inPoly(lat, lon, poly));
 function regionOf(lat, lon) {
   if (lat >= 40.0) return "Humboldt & Del Norte";
-  if (lat >= 38.77) return "Mendocino";
-  if (lat < 37.81 && (lon < -122.47 || lat < 37.35)) return "SF & South Coast";
-  if (lon >= -122.5 && lat < 38.25) return "SF Bay";
+  if (lat >= 38.76875) return "Mendocino";            // Sonoma/Mendocino county line, 38°46.125' N
+  if (inSfBay(lat, lon)) return "SF Bay";
+  if (lat < 37.81) return "SF & South Coast";
   return "Marin & Sonoma";
 }
+const SETTINGS = { beach: "Beach", jetty: "Jetty or rocks", pier: "Pier", harbor: "Harbor or bay" };
+function guessSetting(name, kind) {
+  const t = `${name} ${kind || ""}`.toLowerCase();
+  if (/pier|wharf|dock/.test(t)) return "pier";
+  if (/jetty|breakwater|groyne|groin|seawall|\brocks?\b|\bpoint\b/.test(t)) return "jetty";
+  if (/harbou?r|marina|lagoon|slough|estuary|estero|channel|basin|landing/.test(t)) return "harbor";
+  return "beach";
+}
+let settingOverrides = store.get("pt-settings", {});
+const settingOf = s => settingOverrides[s.slug] || s.setting || "beach";
+const spOf = s => s.bay ? "rock" : state.target;
+const exposedOf = s => settingOf(s) !== "harbor" && (typeof s.exp === "boolean" ? s.exp : !s.bay && !inSheltered(s.lat, s.lon));
+// Marine protected areas from 14 CCR §632. Boundaries are approximate (the inshore edge is the shoreline),
+// so a spot counts if it is inside an area or within a few hundred yards of its edge.
+function mpaAt(lat, lon) {
+  const k = Math.cos(lat * Math.PI / 180) * 69.17, X = l => l * k, Y = l => l * 69.05;
+  const px = X(lon), py = Y(lat), TOL = { poly: .15, strip: .2, line: .3 };
+  const segD = (ax, ay, bx, by) => { const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy; const t = L ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / L)) : 0; return Math.hypot(px - ax - t * dx, py - ay - t * dy); };
+  const hits = [];
+  for (const a of MPAS) {
+    const P = a.p.map(([la, lo]) => [X(lo), Y(la)]), closed = a.s === "poly";
+    let d = Infinity;
+    for (let i = 0; i < P.length - (closed ? 0 : 1); i++) { const [ax, ay] = P[i], [bx, by] = P[(i + 1) % P.length]; d = Math.min(d, segD(ax, ay, bx, by)); }
+    const inside = closed && inPoly(lat, lon, a.p);
+    if (inside || d <= TOL[a.s]) hits.push({ ...a, d: inside ? 0 : d });
+  }
+  const rank = { no: 0, other: 1, ok: 2 };
+  return hits.sort((a, b) => rank[a.c] - rank[b.c] || a.d - b.d)[0] || null;
+}
+const mpaOf = s => s.mpa === undefined ? (s.mpa = mpaAt(s.lat, s.lon)) : s.mpa;
 const nameSlug = n => n.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
 const placeSlug = (p, sid) => `at-${Math.round(Math.abs(p.lat) * 1000)}${p.lat >= 0 ? "n" : "s"}-${Math.round(Math.abs(p.lon) * 1000)}${p.lon < 0 ? "w" : "e"}-s${sid}${p.name ? "-" + nameSlug(p.name) : ""}`;
 function parsePlaceSlug(sl) {
@@ -683,13 +840,13 @@ function makePlace(p) {
   const group = regionOf(p.lat, p.lon);
   const s = {
     place: true, name: p.name, area: p.area || `Near ${st.name}`, lat: p.lat, lon: p.lon, tz: st.tz, off: ref.off, gt: st.gt || ref.gt,
-    hc: refHc(ref), offsets: st.offsets, group, sp: "dungeness",
+    hc: refHc(ref), offsets: st.offsets, group, bay: inSfBay(p.lat, p.lon), setting: p.setting || guessSetting(p.name, p.kind),
     noaa: st.id, stationName: st.name, stationMi: pickSt.mi, near, kind: p.kind || "", state: p.state || "",
-    raw: { name: p.name, area: p.area || "", lat: p.lat, lon: p.lon, state: p.state || "", kind: p.kind || "", stationId: st.id },
+    raw: { name: p.name, area: p.area || "", lat: p.lat, lon: p.lon, state: p.state || "", kind: p.kind || "", setting: p.setting || "", stationId: st.id },
   };
   s.id = "p" + st.id + "_" + p.lat.toFixed(3) + "_" + p.lon.toFixed(3);
   s.slug = placeSlug(p, st.id);
-  s.search = (s.name + " " + s.area + " " + group + " " + SPECIES[s.sp]).toLowerCase();
+  s.search = (s.name + " " + s.area + " " + group).toLowerCase();
   return s;
 }
 let PLACES = [];
@@ -725,18 +882,15 @@ const LOCAL_PLACES = [
   ["Linda Mar Beach", "Pacifica State Beach", 37.5960, -122.5020, "beach"],
   ["Gray Whale Cove", "Montara", 37.5650, -122.5130, "beach"],
   ["Montara State Beach", "Montara", 37.5470, -122.5150, "beach"],
-  ["Mavericks Beach", "Princeton", 37.4940, -122.4990, "beach"],
-  ["Surfer's Beach", "El Granada", 37.4960, -122.4710, "beach"],
   ["Francis Beach", "Half Moon Bay State Beach", 37.4660, -122.4440, "beach"],
   ["Pescadero State Beach", "Pescadero", 37.2650, -122.4120, "beach"],
   ["Coyote Point", "San Mateo", 37.5900, -122.3150, "park"],
-  ["Natural Bridges State Beach", "Santa Cruz", 36.9520, -122.0580, "beach"],
   ["Cowell Beach", "Santa Cruz", 36.9620, -122.0230, "beach"],
   ["Seabright Beach", "Santa Cruz", 36.9630, -122.0080, "beach"],
   ["Twin Lakes State Beach", "Santa Cruz", 36.9620, -121.9980, "beach"],
   ["Capitola Wharf", "Capitola", 36.9720, -121.9520, "pier"],
   ["Seacliff State Beach", "Aptos", 36.9720, -121.9150, "beach"],
-  ["Rio Del Mar Beach", "Aptos", 36.9680, -121.9020, "beach"],
+  ["Rio Del Mar Beach", "Aptos", 36.9689, -121.9053, "beach"],
   ["Manresa State Beach", "La Selva Beach", 36.9300, -121.8620, "beach"],
   ["Stinson Beach", "Marin", 37.9000, -122.6440, "beach"],
   ["Bolinas Beach", "Bolinas", 37.9070, -122.6830, "beach"],
@@ -761,27 +915,23 @@ const LOCAL_PLACES = [
   ["Crown Memorial State Beach", "Alameda", 37.7620, -122.2620, "beach"],
   ["San Leandro Marina", "San Leandro", 37.6960, -122.1920, "pier"],
   ["Dumbarton Pier", "Fremont", 37.5050, -122.1180, "pier"],
-  ["Martinez Marina Pier", "Martinez", 38.0280, -122.1390, "pier"],
-  ["First Street Pier", "Benicia", 38.0440, -122.1580, "pier"],
   ["Doran Beach", "Bodega Bay", 38.3130, -123.0420, "beach"],
   ["Campbell Cove", "Bodega Bay", 38.3060, -123.0590, "beach"],
   ["Spud Point Marina", "Bodega Bay", 38.3270, -123.0580, "pier"],
   ["Salmon Creek Beach", "Bodega Bay", 38.3510, -123.0680, "beach"],
   ["Goat Rock Beach", "Jenner", 38.4430, -123.1270, "beach"],
   ["Gualala Point", "Gualala", 38.7590, -123.5250, "beach"],
-  ["Big River Beach", "Mendocino", 39.3030, -123.7930, "beach"],
   ["Van Damme State Park", "Little River", 39.2740, -123.7920, "beach"],
   ["Albion River", "Albion", 39.2260, -123.7690, "beach"],
   ["Glass Beach", "Fort Bragg", 39.4520, -123.8130, "beach"],
   ["Clam Beach", "McKinleyville", 40.9940, -124.1150, "beach"],
   ["Moonstone Beach", "Westhaven", 41.0300, -124.1110, "beach"],
-  ["Agate Beach", "Sue-meg State Park", 41.1350, -124.1550, "beach"],
-  ["Samoa Beach", "Samoa", 40.8000, -124.2000, "beach"],
-  ["South Jetty", "Humboldt Bay", 40.7590, -124.2310, "beach"],
+  ["Agate Beach", "Sue-meg State Park", 41.1529, -124.1380, "beach"],
+  ["Samoa Dunes", "Samoa", 40.7681, -124.2220, "beach"],
   ["King Salmon", "Humboldt Bay", 40.7390, -124.2190, "pier"],
   ["Klamath River Mouth", "Klamath", 41.5440, -124.0810, "beach"],
   ["B Street Pier", "Crescent City", 41.7450, -124.1980, "pier"],
-  ["Kellogg Beach", "Crescent City", 41.8600, -124.2150, "beach"],
+  ["Kellogg Beach", "Crescent City", 41.8693, -124.2126, "beach"],
 ].map(([name, area, lat, lon, kind]) => ({ name, area, lat, lon, kind, local: true, key: (name + " " + area + " " + kind).toLowerCase() }));
 function searchLocal(q) {
   const words = q.toLowerCase().split(/\s+/).filter(Boolean); if (!words.length) return [];
@@ -798,7 +948,8 @@ async function geocodeOnline(q, typed) {
   const errors = [];
   try {
     const r = await getJSON(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10&lang=en&bbox=${NORCAL.w},${NORCAL.s},${NORCAL.e},${NORCAL.n}`, 8000);
-    const out = (r.features || []).map(f => ({ name: f.properties.name || f.properties.street || q, kind: (f.properties.osm_value || "").replace(/_/g, " "),
+    // Skip businesses, roads and buildings: people search for beaches, piers, parks and towns.
+    const out = (r.features || []).filter(f => !/^(amenity|shop|office|craft|healthcare|building|highway|railway|emergency|aeroway)$/.test(f.properties.osm_key || "")).map(f => ({ name: f.properties.name || f.properties.street || q, kind: (f.properties.osm_value || "").replace(/_/g, " "),
       area: [f.properties.city || f.properties.county || "", f.properties.state === "California" ? "CA" : f.properties.state || ""].filter(Boolean).join(", "),
       lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0] })).filter(p => inNorCal(p.lat, p.lon));
     if (out.length) return out;
@@ -821,10 +972,11 @@ const FAR_MI = 25;
 let lastPlaceResults = [], searchSeq = 0, typeTimer = 0;
 function renderPlaces(q, list, status) {
   const box = $("places"); box.hidden = false;
-  lastPlaceResults = list.map(r => ({ ...r, near: nearestStations(r.lat, r.lon, 1)[0] }));
+  // Anything more than 60 miles from a tide station is inland (lakes, mountain towns), so leave it out.
+  lastPlaceResults = list.map(r => ({ ...r, near: nearestStations(r.lat, r.lon, 1)[0] })).filter(r => r.near && r.near.mi <= 60);
   const rows = lastPlaceResults.map((r, i) => {
     const far = !r.near || r.near.mi > FAR_MI;
-    return `<button class="prow" data-place="${i}" ${far ? 'aria-disabled="true"' : ""}><span class="pname"><b>${esc(r.name)}</b><small>${esc([r.kind, r.area].filter(Boolean).join(" · "))}</small></span><small class="pst">${far ? "Too far from tidal water" : `Tides ${r.near.mi < 10 ? r.near.mi.toFixed(1) : Math.round(r.near.mi)} mi away`}</small></button>`;
+    return `<button class="prow" data-place="${i}" ${far ? 'aria-disabled="true"' : ""}><span class="pname"><b>${esc(r.name)}</b><small>${esc([r.kind, r.area].filter(Boolean).join(" · "))}</small></span><small class="pst">${far ? "Too far from tidal water" : (mp => mp && mp.c !== "ok" ? "Protected area: no snaring" : `Tides ${r.near.mi < 10 ? r.near.mi.toFixed(1) : Math.round(r.near.mi)} mi away`)(mpaAt(r.lat, r.lon))}</small></button>`;
   }).join("");
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
   const favs = spots().filter(s => words.every(w => s.search.includes(w))).slice(0, 5);
@@ -859,7 +1011,7 @@ function openPlace(p, scroll = true) {
   const existing = PLACES.find(x => x.slug === s.slug);
   state.sel = existing || s; store.set("pt-last", state.sel.slug);
   try { history.replaceState(null, "", "#" + state.sel.slug); } catch (e) {}
-  renderList(); renderDetail(); loadWater(state.sel); loadPlaceWeather(state.sel);
+  renderList(); renderDetail(); loadWater(state.sel); loadPlaceWeather(state.sel); loadSurf([state.sel]);
   if (scroll && narrow()) $("detail").scrollIntoView({ behavior: smooth(), block: "start" });
 }
 async function loadPlaceWeather(s) {
@@ -883,7 +1035,7 @@ function openSlug(sl, scroll) {
 }
 
 /* ---------- state ---------- */
-const state = { ymd: localToday(), region: store.get("pt-region", "All"), sort: "day", sel: null, q: "", weekAnchor: null, here: null, hover: null };
+const state = { ymd: localToday(), region: store.get("pt-region", "All"), sort: "day", sel: null, q: "", weekAnchor: null, here: null, hover: null, target: store.get("pt-target", "dungeness") === "rock" ? "rock" : "dungeness" };
 if (state.region !== "All" && state.region !== "Saved" && !REGIONS.includes(state.region)) state.region = "All";
 let saved = new Set(store.get("pt-saved", []).filter(sl => sl.startsWith("at-") || STATIONS.some(x => x.slug === sl)));
 const fromHash = () => STATIONS.find(s => s.slug === location.hash.slice(1));
@@ -932,15 +1084,16 @@ function renderList() {
   }
   const ranked = state.sort === "day" || state.sort === "now";
   $("rows").innerHTML = finder + items.map(({ s, dd, nowScore, mi }, i) => {
-    const hours = []; for (let h = 0; h < 24; h++) { const sl = dd.samples.slice(h * 6, h * 6 + 6); hours.push(Math.round(sl.reduce((a, x) => a + x.score, 0) / (sl.length || 1))); }
+    const nh = Math.max(1, Math.round((dd.samples.length - 1) / 6)), hours = [];   // 23 or 25 hours on clock-change days
+    for (let h = 0; h < nh; h++) { const sl = dd.samples.slice(h * 6, h * 6 + 6); hours.push(Math.round(sl.reduce((a, x) => a + x.score, 0) / (sl.length || 1))); }
     const w = dd.windows[0];
     const shown = state.sort === "now" && nowScore != null ? nowScore : dd.dayScore;
     const right = mi != null ? `${mi < 10 ? mi.toFixed(1) : Math.round(mi)} mi away` : nowScore != null && state.sort !== "now" ? `Now ${nowScore}` : "";
     return `<li class="row" role="option" tabindex="0" data-slug="${s.slug}" aria-selected="${!!state.sel && s.slug === state.sel.slug}">
       <span class="rank">${ranked ? i + 1 : ""}</span>
-      <span class="rname"><b>${esc(s.name)}</b><small>${esc(s.area)} · ${SPECIES[s.sp]}</small></span>
+      <span class="rname"><b>${esc(s.name)}</b><small>${esc(s.area)} · ${SETTINGS[settingOf(s)]}${s.bay ? " · rock crab" : ""}${dd.noTake ? " · protected area" : dd.season.closure ? " · closed" : ""}</small></span>
       <span style="display:inline-flex;align-items:center;gap:6px">${pill(shown)}<button class="star" data-star="${s.slug}" aria-pressed="${saved.has(s.slug)}" aria-label="${saved.has(s.slug) ? "Remove from" : "Add to"} saved spots">${STAR}</button></span>
-      <span class="strip" aria-hidden="true">${hours.map(n => `<i style="background:${heat(n)}"></i>`).join("")}</span>
+      <span class="strip" aria-hidden="true" style="grid-template-columns:repeat(${hours.length},1fr)">${hours.map(n => `<i style="background:${heat(n)}"></i>`).join("")}</span>
       <span class="rmeta"><span>Best <span class="mono">${w ? fmtRange(w.start, w.end, s.tz) : "—"}</span></span><span>${right}</span></span>
     </li>`;
   }).join("");
@@ -997,7 +1150,8 @@ function chartSvg(dd) {
 }
 function readoutText(dd, p) {
   const tz = dd.s.tz, [, ql] = quality(p.score);
-  let t = `<b>${fmtTime(p.t, tz)}</b> · ${p.ft.toFixed(1)} ft, ${stageName(p.c).toLowerCase()} · ${p.L.name.toLowerCase()} · <b>score ${p.score}</b> (${ql.toLowerCase()})`;
+  let t = `<b>${fmtTime(p.t, tz)}</b> · ${p.ft.toFixed(1)} ft, ${stageName(p.c).toLowerCase()}, ${movementWord(p.mv).toLowerCase()} · ${p.L.name.toLowerCase()} · <b>score ${p.score}</b> (${ql.toLowerCase()})`;
+  if (p.sea && dd.exposed) t += ` · ${surfText(p.sea)} surf`;
   if (p.wx) t += ` · ${wxText(p.wx)}, ${Math.round(p.temp ?? p.wx.temp)}°F`;
   return t;
 }
@@ -1029,13 +1183,13 @@ function renderDetail() {
   const s = state.sel;
   if (!s) { $("detail").innerHTML = `<div class="card">Pick a spot from the list to see its best crabbing times.</div>`; return; }
   const dd = dayData(s, state.ymd);
-  const [qk, ql] = quality(dd.dayScore);
+  const [qk, ql0] = quality(dd.dayScore), ql = dd.noTake ? "Protected area" : ql0;
   const now = Date.now();
   const water = LIVE.water[s.id] || {};
   let nowLine = "";
   if (now >= dd.start && now < dd.end) {
     const p = sampleAt(dd, now), [, nl] = quality(p.score);
-    let line = `<span>Right now: <b>${p.score}, ${nl.toLowerCase()}</b>. ${stageName(p.c)} tide at <span class="mono">${p.ft.toFixed(1)} ft</span>. ${p.next.high ? "High" : "Low"} tide in ${dur(p.next.t - now)} (${fmtTime(p.next.t, s.tz)}).</span>`;
+    let line = `<span>Right now: <b>${p.score}, ${nl.toLowerCase()}</b>. ${stageName(p.c)} tide at <span class="mono">${p.ft.toFixed(1)} ft</span>, ${movementWord(p.mv).toLowerCase()}. ${p.next.high ? "High" : "Low"} tide in ${dur(p.next.t - now)} (${fmtTime(p.next.t, s.tz)}).</span>`;
     const extra = [];
     if (water.level && now - water.level.t < 3 * 3600e3) {
       const pred = sampleAt(dd, water.level.t).ft;
@@ -1044,36 +1198,39 @@ function renderDetail() {
     }
     if (water.temp && now - water.temp.t < 6 * 3600e3) {
       const wt = water.temp.v;
-      const comment = s.sp === "blue" ? (wt < 50 ? ", too cold for most blue crabs" : wt < 60 ? ", cool, so crabs will be sluggish" : wt > 85 ? ", very warm" : ", good for blue crabs") : (wt > 62 ? ", warm for Dungeness" : "");
+      const comment = dd.sp === "dungeness" && wt > 62 ? ", warm for Dungeness" : "";
       extra.push(`Water temperature <b>${wt.toFixed(0)}°F</b>${comment}`);
     }
     if (extra.length) line += `<span>${extra.join(". ")}. <span style="font-size:12px">NOAA, ${Math.round((now - Math.max(water.level?.t || 0, water.temp?.t || 0)) / 60000)} min ago</span></span>`;
     nowLine = `<div class="nowline">${line}</div>`;
   }
-  const winHtml = dd.windows.map((w, i) => `<div class="win${i ? "" : " primary"}"><span class="eyebrow">${i ? "Also good" : "Best time"}</span><span class="t">${fmtRange(w.start, w.end, s.tz)}</span><small>${w.stage} · ${w.light}${w.wx ? " · " + Math.round(w.wx.wind) + " mph" : ""} · score ${w.score}</small></div>`).join("");
+  const winHtml = dd.noTake ? "" : dd.windows.map((w, i) => `<div class="win${i ? "" : " primary"}"><span class="eyebrow">${i ? "Also good" : "Best time"}</span><span class="t">${fmtRange(w.start, w.end, s.tz)}</span><small>${w.stage} · ${w.light}${w.sea && dd.exposed ? " · " + w.sea.h.toFixed(0) + " ft surf" : ""}${w.wx ? " · " + Math.round(w.wx.wind) + " mph" : ""} · score ${w.score}</small></div>`).join("");
   const best = dd.windows[0];
+  const setting = dd.setting;
   const facts = [
-    ["Tide", best ? best.stage : "—", s.sp === "blue" ? "Blue crabs move in on rising water" : "Pots hold best when the current is slack", best ? best.T : 0],
+    ["Tide", best ? best.stage : "—", best ? `${movementWord(best.mv)} · ${rangeName(dd.ratio).toLowerCase()} today (${dd.rangeFt.toFixed(1)} ft)` : "", best ? best.T : 0],
     ["Light", best ? best.light : "—", `Sunrise ${fmtTime(dd.sun.rise, s.tz)} · Sunset ${fmtTime(dd.sun.set, s.tz)}`, best ? best.L : 0],
-    ["Tide size", rangeName(dd.ratio), `${dd.rangeFt.toFixed(1)} ft today, ${(s.gt * FT).toFixed(1)} ft usual`, dd.R],
-    ["Season", dd.season.open ? `${MONTHS[dd.month]}: ${dd.S >= .9 ? "opening rush" : dd.S >= .7 ? "good" : dd.S >= .5 ? "steady" : "late season"}` : "Closed", dd.season.text, dd.S],
+    dd.exposed ? ["Surf", best && best.sea ? surfWord(best.sea) : LIVE.sea[s.id] ? "No surf data here" : "Not available", best && best.sea ? `${surfText(best.sea)} · ${SETTINGS[setting].toLowerCase()}` : "The score leaves surf out. Check the surf before you go.", best && best.sea ? surfFactor(setting, best.sea) : 1]
+      : ["Surf", "Sheltered", "Ocean swell doesn't reach this spot", 1],
+    ["Season", dd.sp === "rock" ? "Rock crab: open" : dd.season.open ? `${MONTHS[dd.month]}: ${dd.S >= .9 ? "opening rush" : dd.S >= .7 ? "good" : dd.S >= .5 ? "steady" : "late season"}` : "Closed", dd.season.text, dd.season.open ? .3 + .7 * dd.S : .1],
   ];
-  if (best && best.wx) facts.push(["Weather", windWord(best.wx), `${wxText(best.wx)} · ${Math.round(best.wx.temp)}°F · ${best.wx.rain ?? 0}% rain`, wxFactor(best.wx)]);
+  if (best && best.wx) facts.push(["Weather", windWord(best.wx), `${wxText(best.wx)} · ${Math.round(best.wx.temp)}°F · ${best.wx.rain ?? 0}% rain${best.wx.r48 > .4 ? ` · ${best.wx.r48.toFixed(1)} in rain in 48 h` : ""}`, wxFactor(best.wx) * clarityFactor(best.wx)]);
   const ws = state.weekAnchor && daysBetween(state.weekAnchor, state.ymd) >= 0 && daysBetween(state.weekAnchor, state.ymd) < 7 ? state.weekAnchor : state.ymd;
   const week = []; for (let i = 0; i < 7; i++) week.push(dayData(s, ymdAdd(ws, i)));
   const bestDay = week.reduce((a, b) => b.dayScore > a.dayScore ? b : a);
-  const tip = TIPS[s.sp];
+  const tip = TIPS;
   const shallow = s.gt * FT < 2;
   const isSaved = saved.has(s.slug);
   $("detail").innerHTML = `
     <div class="card hero">
       <div>
-        <span class="eyebrow">${s.place ? "Your search · " : ""}${esc(s.group)} · ${SPECIES[s.sp]}</span>
+        <span class="eyebrow">${s.place ? "Your search · " : ""}${esc(s.group)} · ${SPECIES[dd.sp]}${s.bay ? " only" : ""}</span>
         <div class="titlerow"><h2>${esc(s.name)}</h2><button class="star" data-star="${s.slug}" aria-pressed="${isSaved}" aria-label="${isSaved ? "Remove from" : "Add to"} saved spots" title="${isSaved ? "Saved" : "Save this spot"}">${STAR}</button></div>
         <div class="where">${esc(s.area)} · ${ymdLabel(state.ymd, { weekday: "long", month: "long", day: "numeric" })}</div>
+        <div class="stationline" style="margin-top:6px"><label><span class="eyebrow" style="margin-right:6px">Spot type</span><select id="settingpick" aria-label="Spot type">${Object.entries(SETTINGS).map(([k, v]) => `<option value="${k}" ${k === setting ? "selected" : ""}>${v}</option>`).join("")}</select></label><span>${dd.exposed ? "Open to ocean swell" : "Sheltered from ocean swell"}</span></div>
         ${s.place ? `<div class="stationline" style="margin-top:6px"><span>Tides from NOAA station <b>${esc(s.stationName)}</b>, ${s.stationMi < 10 ? s.stationMi.toFixed(1) : Math.round(s.stationMi)} mi away${s.stationMi > 15 ? ". Times may differ a little here" : ""}.</span><label><span class="eyebrow" style="margin-right:6px">Station</span><select id="stationpick" aria-label="Choose a tide station">${s.near.map(x => `<option value="${x.st.id}" ${x.st.id === s.noaa ? "selected" : ""}>${esc(x.st.name)} · ${x.mi < 10 ? x.mi.toFixed(1) : Math.round(x.mi)} mi</option>`).join("")}</select></label></div>` : ""}
       </div>
-      <div class="big q-${qk}" aria-label="Score ${dd.dayScore} out of 100, ${ql}">${ring(dd.dayScore)}<div class="lbl">${ql} day</div></div>
+      <div class="big q-${qk}" aria-label="Score ${dd.dayScore} out of 100, ${ql}">${ring(dd.dayScore)}<div class="lbl">${dd.noTake ? ql : ql + " day"}</div></div>
       <div class="say"><div class="saycrab">${crab(moodOf(dd.dayScore), 88)}</div><p class="verdict">${verdict(dd)}</p></div>
       <div class="windows">${winHtml}</div>
       ${nowLine}
@@ -1102,7 +1259,9 @@ function renderDetail() {
       <div><h3>${tip.title}</h3><ul>${tip.items.map(t => `<li>${t}</li>`).join("")}</ul></div>
       <div style="display:flex;flex-direction:column;gap:10px">
         ${shallow ? `<div class="note">Tides here only rise and fall about ${(s.gt * FT).toFixed(1)} ft, so wind often moves more water than the tide does. Treat the times as a guide.</div>` : ""}
-        ${!dd.season.open ? `<div class="note">Dungeness season is usually closed now. It normally opens ${dd.season.opens}. Check CDFW for delays or trap restrictions. Red rock crab is open year-round.</div>` : ""}
+        ${dd.mpa && dd.mpa.c !== "ok" ? `<div class="note"><b>${esc(dd.mpa.n)}.</b> ${dd.mpa.c === "no" ? "Taking crabs is prohibited in this protected area." : "Crabs may only be taken here with the gear the regulation lists, and snares aren't on that list."} Boundaries here are approximate: check the <a href="https://wildlife.ca.gov/Conservation/Marine/MPAs" target="_blank" rel="noopener">CDFW MPA maps</a>.</div>` : ""}
+        ${s.bay ? `<div class="note">Dungeness can't be taken in San Francisco or San Pablo Bay, so this forecast is for red rock crab (open all year, 35 a day, at least 4 inches).</div>` : ""}
+        ${dd.season.closure ? `<div class="note"><b>${dd.season.closure.name}.</b> ${dd.season.closure.text} <a href="${dd.season.closure.url}" target="_blank" rel="noopener">CDFW updates</a></div>` : !dd.season.open ? `<div class="note">Dungeness season is closed now. It opens ${dd.season.opens}. Rock crab is open all year: switch to it above.</div>` : ""}
         <div class="eyebrow">Tides for ${isToday() ? "today" : ymdLabel(state.ymd, { month: "short", day: "numeric" })}</div>
         <div class="mono tidetable">${dd.inDay.map(e => `<span>${e.high ? "High" : "Low"}</span><span>${fmtTime(e.t, s.tz)}</span><span>${e.ft.toFixed(1)} ft</span>`).join("")}</div>
         <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=${s.noaa || s.id}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13.5px">NOAA station ${s.noaa || s.id}${s.place ? ` (${esc(s.stationName)})` : ""} →</a>
@@ -1116,6 +1275,7 @@ function renderDetail() {
         <dt>Tide turn</dt><dd>The quiet half hour or so around high or low tide when the current stops before changing direction. Also called slack water.</dd>
         <dt>Big tides</dt><dd>Larger than usual rises and falls, with stronger currents. They happen near the new and full moon (spring tides).</dd>
         <dt>Small tides</dt><dd>Gentler tides with weaker currents, near the half moons (neap tides).</dd>
+        <dt>Crab snare</dt><dd>A bait cage covered in nylon loops, cast on a rod and reel. The loops cinch around a crab's legs as you reel in. California calls it a crab loop trap and allows up to six loops.</dd>
         <dt>Feet above low water</dt><dd>Heights are measured from the average of the lowest daily tide (MLLW), the zero on nautical charts. A negative number means an extra-low tide.</dd>
       </dl>
     </details>`;
@@ -1128,7 +1288,7 @@ function renderBubble() {
   const bestOn = ymd => pool.map(s => dayData(s, ymd)).reduce((a, b) => b.dayScore > a.dayScore ? b : a);
   let best = bestOn(state.ymd), eyebrow, label;
   const bub = $("bubble");
-  if (!best.season.open) {
+  if (!best.season.open && best.season.opensYmd) {
     // Season closed: look ahead to opening day.
     const oy = best.season.opensYmd; best = bestOn(oy);
     eyebrow = `Season opens ${ymdLabel(oy, { weekday: "short", month: "short", day: "numeric" })}`;
@@ -1149,6 +1309,7 @@ $("bubble").onclick = () => { const b = $("bubble"), sl = b.dataset.slug; if (!s
 
 function render() {
   $("date").value = state.ymd;
+  $("tDung").setAttribute("aria-pressed", state.target === "dungeness"); $("tRock").setAttribute("aria-pressed", state.target === "rock");
   $("today").classList.toggle("on", isToday());
   if (state.sort === "now" && !isToday()) state.sort = "day";
   ["sortDay", "sortNow", "sortAz"].forEach(id => $(id).setAttribute("aria-pressed", { sortDay: "day", sortNow: "now", sortAz: "az" }[id] === state.sort));
@@ -1164,6 +1325,9 @@ $("next").onclick = () => setDate(ymdAdd(state.ymd, 1));
 $("today").onclick = () => setDate(localToday());
 $("date").onchange = e => { if (e.target.value) setDate(e.target.value); };
 $("sortDay").onclick = () => { state.sort = "day"; render(); };
+function setTarget(t) { if (state.target === t) return; state.target = t; store.set("pt-target", t); render(); }
+$("tDung").onclick = () => setTarget("dungeness");
+$("tRock").onclick = () => setTarget("rock");
 $("sortNow").onclick = () => { if (isToday()) { state.sort = "now"; render(); } };
 $("sortAz").onclick = () => { state.sort = "az"; render(); };
 $("q").oninput = e => {
@@ -1203,7 +1367,7 @@ function pick(sl, scroll) {
   const s = spotBySlug(sl); if (!s) return;
   state.sel = s; store.set("pt-last", s.slug);
   if (location.hash.slice(1) !== s.slug) { try { history.replaceState(null, "", "#" + s.slug); } catch (e) { location.hash = s.slug; } }
-  renderList(); renderDetail(); loadWater(s); loadPlaceWeather(s);
+  renderList(); renderDetail(); loadWater(s); loadPlaceWeather(s); loadSurf([s]);
   if (scroll !== false && narrow()) $("detail").scrollIntoView({ behavior: smooth(), block: "start" });
 }
 $("rows").onclick = e => {
@@ -1223,6 +1387,13 @@ $("detail").onclick = e => {
   const d = e.target.closest("[data-ymd]"); if (d) { if (!state.weekAnchor) { const a = state.ymd; state.weekAnchor = a; } setDate(d.dataset.ymd, true); }
 };
 $("detail").addEventListener("change", e => {
+  if (e.target.id === "settingpick" && state.sel) {
+    const sel = state.sel, v = e.target.value;
+    if (v === (sel.setting || "beach")) delete settingOverrides[sel.slug]; else settingOverrides[sel.slug] = v;
+    store.set("pt-settings", settingOverrides);
+    renderList(); renderDetail(); renderBubble(); loadSurf([sel]);
+    return;
+  }
   if (e.target.id !== "stationpick" || !state.sel || !state.sel.place) return;
   const old = state.sel, wasSaved = saved.has(old.slug);
   const s = makePlace({ ...old.raw, stationId: e.target.value });
@@ -1262,6 +1433,7 @@ render();
 setLive();
 if (state.sel) loadWater(state.sel);
 loadWeather();
+loadSurf(STATIONS);
 restorePlaces().then(() => {
   if (startSlug && (!state.sel || state.sel.slug !== startSlug) && !STATIONS.some(s => s.slug === startSlug)) openSlug(startSlug, false);
   render();
@@ -1272,7 +1444,7 @@ setInterval(() => {
   const t = localToday();
   if (t !== lastToday) { if (state.ymd === lastToday) state.ymd = t; lastToday = t; dayCache.clear(); render(); return; }
   if (isToday()) { renderList(); renderDetail(); }
-  if (LIVE.wx && Date.now() - LIVE.wxAt > 30 * 60000) loadWeather();
+  if (LIVE.wx && Date.now() - LIVE.wxAt > 30 * 60000) { loadWeather(); LIVE.sea = {}; loadSurf(STATIONS); if (state.sel && state.sel.place) loadSurf([state.sel]); }
   if (state.sel && isToday()) loadWater(state.sel);
 }, 60000);
 </script>

@@ -1,0 +1,1344 @@
+{
+ "checks": [
+  {
+   "label": "Every built-in place is within 1 mile of its OpenStreetMap location",
+   "pass": true,
+   "detail": {
+    "places": 66,
+    "outside": []
+   }
+  },
+  {
+   "label": "Every built-in place has a tide station within 25 miles",
+   "pass": true,
+   "detail": []
+  },
+  {
+   "label": "No built-in place is in or next to a protected area that bans snaring",
+   "pass": true,
+   "detail": []
+  }
+ ],
+ "rows": [
+  {
+   "name": "Baker Beach",
+   "area": "San Francisco",
+   "lat": 37.7936,
+   "lon": -122.4836,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "San Francisco (Golden Gate)",
+   "stationMi": 1.3,
+   "mpa": null,
+   "osm": {
+    "name": "Baker Beach",
+    "lat": 37.7931,
+    "lon": -122.4838,
+    "src": "photon",
+    "mi": 0.04
+   }
+  },
+  {
+   "name": "China Beach",
+   "area": "San Francisco",
+   "lat": 37.788,
+   "lon": -122.491,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Ocean Beach",
+   "stationMi": 1.5,
+   "mpa": null,
+   "osm": {
+    "name": "China Beach",
+    "lat": 37.7881,
+    "lon": -122.4908,
+    "src": "photon",
+    "mi": 0.01
+   }
+  },
+  {
+   "name": "Crissy Field East Beach",
+   "area": "San Francisco",
+   "lat": 37.805,
+   "lon": -122.456,
+   "kind": "beach",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "San Francisco (Golden Gate)",
+   "stationMi": 0.5,
+   "mpa": null,
+   "osm": {
+    "name": "Crissy Field Center",
+    "lat": 37.8058,
+    "lon": -122.4491,
+    "src": "photon",
+    "mi": 0.38
+   }
+  },
+  {
+   "name": "Torpedo Wharf",
+   "area": "Presidio, San Francisco",
+   "lat": 37.8075,
+   "lon": -122.47,
+   "kind": "pier",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "pier",
+   "station": "San Francisco (Golden Gate)",
+   "stationMi": 0.2,
+   "mpa": null,
+   "osm": {
+    "name": "Torpedo Wharf",
+    "lat": 37.8088,
+    "lon": -122.4704,
+    "src": "photon",
+    "mi": 0.1
+   }
+  },
+  {
+   "name": "Aquatic Park Pier",
+   "area": "San Francisco",
+   "lat": 37.8085,
+   "lon": -122.4245,
+   "kind": "pier",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "pier",
+   "station": "San Francisco",
+   "stationMi": 0.6,
+   "mpa": null,
+   "osm": {
+    "name": "Aquatic Cove",
+    "lat": 37.8086,
+    "lon": -122.4242,
+    "src": "photon",
+    "mi": 0.02
+   }
+  },
+  {
+   "name": "Fort Mason",
+   "area": "San Francisco",
+   "lat": 37.8065,
+   "lon": -122.431,
+   "kind": "pier",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "pier",
+   "station": "San Francisco",
+   "stationMi": 1,
+   "mpa": null,
+   "osm": {
+    "name": "City College of San Francisco (CCSF) Fort Mason",
+    "lat": 37.8066,
+    "lon": -122.4318,
+    "src": "photon",
+    "mi": 0.04
+   }
+  },
+  {
+   "name": "Pier 7",
+   "area": "San Francisco",
+   "lat": 37.7985,
+   "lon": -122.3975,
+   "kind": "pier",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "pier",
+   "station": "Rincon Point",
+   "stationMi": 0.8,
+   "mpa": null,
+   "osm": {
+    "name": "Pier 7",
+    "lat": 37.7994,
+    "lon": -122.3955,
+    "src": "photon",
+    "mi": 0.13
+   }
+  },
+  {
+   "name": "Fort Funston",
+   "area": "San Francisco",
+   "lat": 37.713,
+   "lon": -122.503,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Ocean Beach",
+   "stationMi": 4.3,
+   "mpa": null,
+   "osm": {
+    "name": "Fort Funston Road",
+    "lat": 37.7131,
+    "lon": -122.5,
+    "src": "photon",
+    "mi": 0.17
+   }
+  },
+  {
+   "name": "Mile Rock Beach",
+   "area": "Lands End, San Francisco",
+   "lat": 37.786,
+   "lon": -122.506,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "jetty",
+   "station": "Ocean Beach",
+   "stationMi": 0.9,
+   "mpa": null,
+   "osm": {
+    "name": "Mile Rock Beach",
+    "lat": 37.7874,
+    "lon": -122.5062,
+    "src": "photon",
+    "mi": 0.1
+   }
+  },
+  {
+   "name": "Candlestick Point",
+   "area": "San Francisco",
+   "lat": 37.712,
+   "lon": -122.381,
+   "kind": "park",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "jetty",
+   "station": "Hunters Point",
+   "stationMi": 1.8,
+   "mpa": null,
+   "osm": {
+    "name": "Candlestick Innovation District",
+    "lat": 37.7136,
+    "lon": -122.3847,
+    "src": "photon",
+    "mi": 0.23
+   }
+  },
+  {
+   "name": "Heron's Head Park",
+   "area": "San Francisco",
+   "lat": 37.739,
+   "lon": -122.377,
+   "kind": "park",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "Hunters Point",
+   "stationMi": 1.3,
+   "mpa": null,
+   "osm": {
+    "name": "EcoCenter at Heron's Head Park",
+    "lat": 37.7397,
+    "lon": -122.3753,
+    "src": "photon",
+    "mi": 0.1
+   }
+  },
+  {
+   "name": "Sharp Park Beach",
+   "area": "Pacifica",
+   "lat": 37.629,
+   "lon": -122.495,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Seaplane Harbor",
+   "stationMi": 6.2,
+   "mpa": null,
+   "osm": {
+    "name": "Sharp Park Beach",
+    "lat": 37.6284,
+    "lon": -122.4948,
+    "src": "photon",
+    "mi": 0.04
+   }
+  },
+  {
+   "name": "Rockaway Beach",
+   "area": "Pacifica",
+   "lat": 37.609,
+   "lon": -122.496,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Seaplane Harbor",
+   "stationMi": 6.5,
+   "mpa": null,
+   "osm": {
+    "name": "Rockaway Beach Avenue",
+    "lat": 37.6093,
+    "lon": -122.4962,
+    "src": "photon",
+    "mi": 0.02
+   }
+  },
+  {
+   "name": "Linda Mar Beach",
+   "area": "Pacifica State Beach",
+   "lat": 37.596,
+   "lon": -122.502,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Pillar Point Harbor",
+   "stationMi": 6.6,
+   "mpa": null,
+   "osm": {
+    "name": "Linda Mar Station Pacifica Post Office",
+    "lat": 37.5987,
+    "lon": -122.4978,
+    "src": "photon",
+    "mi": 0.3
+   }
+  },
+  {
+   "name": "Gray Whale Cove",
+   "area": "Montara",
+   "lat": 37.565,
+   "lon": -122.513,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Pillar Point Harbor",
+   "stationMi": 4.6,
+   "mpa": null,
+   "osm": {
+    "name": "Gray Whale Cove State Beach",
+    "lat": 37.5645,
+    "lon": -122.514,
+    "src": "photon",
+    "mi": 0.06
+   }
+  },
+  {
+   "name": "Montara State Beach",
+   "area": "Montara",
+   "lat": 37.547,
+   "lon": -122.515,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Pillar Point Harbor",
+   "stationMi": 3.6,
+   "mpa": null,
+   "osm": {
+    "name": "Montara State Beach",
+    "lat": 37.5505,
+    "lon": -122.5141,
+    "src": "photon",
+    "mi": 0.24
+   }
+  },
+  {
+   "name": "Francis Beach",
+   "area": "Half Moon Bay State Beach",
+   "lat": 37.466,
+   "lon": -122.444,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Pillar Point Harbor",
+   "stationMi": 3.3,
+   "mpa": null,
+   "osm": {
+    "name": "Francis Beach Campground",
+    "lat": 37.468,
+    "lon": -122.4461,
+    "src": "photon",
+    "mi": 0.18
+   }
+  },
+  {
+   "name": "Pescadero State Beach",
+   "area": "Pescadero",
+   "lat": 37.265,
+   "lon": -122.412,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Ano Nuevo Island",
+   "stationMi": 11.6,
+   "mpa": null,
+   "osm": {
+    "name": "Pescadero Beach",
+    "lat": 37.2622,
+    "lon": -122.4133,
+    "src": "photon",
+    "mi": 0.21
+   }
+  },
+  {
+   "name": "Coyote Point",
+   "area": "San Mateo",
+   "lat": 37.59,
+   "lon": -122.315,
+   "kind": "park",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "jetty",
+   "station": "Coyote Point Marina",
+   "stationMi": 0.2,
+   "mpa": null,
+   "osm": {
+    "name": "Coyote Point Drive",
+    "lat": 37.5889,
+    "lon": -122.3198,
+    "src": "photon",
+    "mi": 0.27
+   }
+  },
+  {
+   "name": "Cowell Beach",
+   "area": "Santa Cruz",
+   "lat": 36.962,
+   "lon": -122.023,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Santa Cruz",
+   "stationMi": 0.4,
+   "mpa": null,
+   "osm": {
+    "name": "Cowell Beach Parking",
+    "lat": 36.9629,
+    "lon": -122.0246,
+    "src": "photon",
+    "mi": 0.11
+   }
+  },
+  {
+   "name": "Seabright Beach",
+   "area": "Santa Cruz",
+   "lat": 36.963,
+   "lon": -122.008,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Santa Cruz",
+   "stationMi": 0.6,
+   "mpa": null,
+   "osm": {
+    "name": "Seabright Beach",
+    "lat": 36.9629,
+    "lon": -122.0059,
+    "src": "photon",
+    "mi": 0.11
+   }
+  },
+  {
+   "name": "Twin Lakes State Beach",
+   "area": "Santa Cruz",
+   "lat": 36.962,
+   "lon": -121.998,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Santa Cruz",
+   "stationMi": 1.1,
+   "mpa": null,
+   "osm": {
+    "name": "Twin Lakes Beach",
+    "lat": 36.962,
+    "lon": -121.9985,
+    "src": "photon",
+    "mi": 0.03
+   }
+  },
+  {
+   "name": "Capitola Wharf",
+   "area": "Capitola",
+   "lat": 36.972,
+   "lon": -121.952,
+   "kind": "pier",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "pier",
+   "station": "Santa Cruz",
+   "stationMi": 3.7,
+   "mpa": null,
+   "osm": {
+    "name": "Wharf Road",
+    "lat": 36.9723,
+    "lon": -121.9536,
+    "src": "photon",
+    "mi": 0.09
+   }
+  },
+  {
+   "name": "Seacliff State Beach",
+   "area": "Aptos",
+   "lat": 36.972,
+   "lon": -121.915,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Santa Cruz",
+   "stationMi": 5.7,
+   "mpa": null,
+   "osm": {
+    "name": "Seacliff Plaza Store",
+    "lat": 36.9746,
+    "lon": -121.9128,
+    "src": "photon",
+    "mi": 0.22
+   }
+  },
+  {
+   "name": "Rio Del Mar Beach",
+   "area": "Aptos",
+   "lat": 36.9689,
+   "lon": -121.9053,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Santa Cruz",
+   "stationMi": 6.2,
+   "mpa": null,
+   "osm": {
+    "name": "Rio Del Mar State Beach",
+    "lat": 36.9689,
+    "lon": -121.9053,
+    "src": "photon",
+    "mi": 0
+   }
+  },
+  {
+   "name": "Manresa State Beach",
+   "area": "La Selva Beach",
+   "lat": 36.93,
+   "lon": -121.862,
+   "kind": "beach",
+   "region": "SF & South Coast",
+   "bay": false,
+   "setting": "beach",
+   "station": "Santa Cruz",
+   "stationMi": 8.8,
+   "mpa": null,
+   "osm": {
+    "name": "Manresa State Beach",
+    "lat": 36.9276,
+    "lon": -121.8595,
+    "src": "photon",
+    "mi": 0.22
+   }
+  },
+  {
+   "name": "Stinson Beach",
+   "area": "Marin",
+   "lat": 37.9,
+   "lon": -122.644,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Bolinas Lagoon",
+   "stationMi": 2,
+   "mpa": null,
+   "osm": {
+    "name": "Stinson Beach",
+    "lat": 37.9008,
+    "lon": -122.6451,
+    "src": "photon",
+    "mi": 0.08
+   }
+  },
+  {
+   "name": "Bolinas Beach",
+   "area": "Bolinas",
+   "lat": 37.907,
+   "lon": -122.683,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Bolinas Lagoon",
+   "stationMi": 0.3,
+   "mpa": null,
+   "osm": {
+    "name": "Bolinas Beach",
+    "lat": 37.9057,
+    "lon": -122.6833,
+    "src": "photon",
+    "mi": 0.09
+   }
+  },
+  {
+   "name": "Muir Beach",
+   "area": "Marin",
+   "lat": 37.86,
+   "lon": -122.577,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Point Bonita",
+   "stationMi": 3.9,
+   "mpa": null,
+   "osm": {
+    "name": "Muir Beach",
+    "lat": 37.8591,
+    "lon": -122.5755,
+    "src": "photon",
+    "mi": 0.1
+   }
+  },
+  {
+   "name": "Rodeo Beach",
+   "area": "Marin Headlands",
+   "lat": 37.832,
+   "lon": -122.537,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Point Bonita",
+   "stationMi": 1.1,
+   "mpa": null,
+   "osm": {
+    "name": "Rodeo Beach",
+    "lat": 37.8305,
+    "lon": -122.5365,
+    "src": "photon",
+    "mi": 0.1
+   }
+  },
+  {
+   "name": "Kirby Cove",
+   "area": "Marin Headlands",
+   "lat": 37.827,
+   "lon": -122.49,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Sausalito",
+   "stationMi": 1.5,
+   "mpa": null,
+   "osm": {
+    "name": "Battery Kirby",
+    "lat": 37.8273,
+    "lon": -122.4905,
+    "src": "photon",
+    "mi": 0.03
+   }
+  },
+  {
+   "name": "Limantour Beach",
+   "area": "Point Reyes",
+   "lat": 38.027,
+   "lon": -122.882,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Point Reyes",
+   "stationMi": 5.5,
+   "mpa": null,
+   "osm": {
+    "name": "Limantour Beach",
+    "lat": 38.0244,
+    "lon": -122.8791,
+    "src": "photon",
+    "mi": 0.24
+   }
+  },
+  {
+   "name": "Heart's Desire Beach",
+   "area": "Tomales Bay State Park",
+   "lat": 38.131,
+   "lon": -122.893,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Reynolds",
+   "stationMi": 1.2,
+   "mpa": null,
+   "osm": {
+    "name": "Heart's Desire Beach",
+    "lat": 38.1324,
+    "lon": -122.8932,
+    "src": "photon",
+    "mi": 0.1
+   }
+  },
+  {
+   "name": "Chicken Ranch Beach",
+   "area": "Inverness",
+   "lat": 38.11,
+   "lon": -122.864,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Inverness",
+   "stationMi": 0.3,
+   "mpa": null,
+   "osm": {
+    "name": "Chicken Ranch Beach",
+    "lat": 38.1102,
+    "lon": -122.8653,
+    "src": "photon",
+    "mi": 0.07
+   }
+  },
+  {
+   "name": "Millerton Point",
+   "area": "Tomales Bay",
+   "lat": 38.108,
+   "lon": -122.843,
+   "kind": "park",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "jetty",
+   "station": "Inverness",
+   "stationMi": 1.4,
+   "mpa": null,
+   "osm": {
+    "name": "Millerton Point",
+    "lat": 38.1092,
+    "lon": -122.8501,
+    "src": "photon",
+    "mi": 0.39
+   }
+  },
+  {
+   "name": "Nick's Cove",
+   "area": "Tomales Bay",
+   "lat": 38.199,
+   "lon": -122.923,
+   "kind": "pier",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "pier",
+   "station": "Blakes Landing",
+   "stationMi": 0.7,
+   "mpa": null,
+   "osm": {
+    "name": "Nick's cove Shalk",
+    "lat": 38.1991,
+    "lon": -122.9219,
+    "src": "photon",
+    "mi": 0.06
+   }
+  },
+  {
+   "name": "Dillon Beach",
+   "area": "Dillon Beach",
+   "lat": 38.25,
+   "lon": -122.966,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Tomales Bay Entrance",
+   "stationMi": 1.6,
+   "mpa": null,
+   "osm": {
+    "name": "Dillon Beach Resort",
+    "lat": 38.25,
+    "lon": -122.9656,
+    "src": "photon",
+    "mi": 0.02
+   }
+  },
+  {
+   "name": "China Camp State Park",
+   "area": "San Rafael",
+   "lat": 38.001,
+   "lon": -122.462,
+   "kind": "park",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "Point San Pedro",
+   "stationMi": 1,
+   "mpa": null,
+   "osm": {
+    "name": "China Camp State Park Museum",
+    "lat": 38.0008,
+    "lon": -122.4612,
+    "src": "photon",
+    "mi": 0.05
+   }
+  },
+  {
+   "name": "McNears Beach",
+   "area": "San Rafael",
+   "lat": 37.995,
+   "lon": -122.452,
+   "kind": "beach",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "Point San Pedro",
+   "stationMi": 0.3,
+   "mpa": null,
+   "osm": {
+    "name": "McNears Beach",
+    "lat": 37.9933,
+    "lon": -122.4533,
+    "src": "photon",
+    "mi": 0.14
+   }
+  },
+  {
+   "name": "Elephant Rock Pier",
+   "area": "Tiburon",
+   "lat": 37.872,
+   "lon": -122.46,
+   "kind": "pier",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "pier",
+   "station": "Angel Island (West Side)",
+   "stationMi": 1.2,
+   "mpa": null,
+   "osm": {
+    "name": "Elephant Rock",
+    "lat": 37.872,
+    "lon": -122.4506,
+    "src": "photon",
+    "mi": 0.51
+   }
+  },
+  {
+   "name": "Ayala Cove",
+   "area": "Angel Island",
+   "lat": 37.868,
+   "lon": -122.435,
+   "kind": "beach",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "Angel Island (West Side)",
+   "stationMi": 0.7,
+   "mpa": null,
+   "osm": {
+    "name": "Ayala Cove",
+    "lat": 37.8681,
+    "lon": -122.4366,
+    "src": "photon",
+    "mi": 0.09
+   }
+  },
+  {
+   "name": "Point Molate Beach",
+   "area": "Richmond",
+   "lat": 37.945,
+   "lon": -122.418,
+   "kind": "beach",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "jetty",
+   "station": "Point Orient",
+   "stationMi": 1,
+   "mpa": null,
+   "osm": {
+    "name": "Point Molate Beach Park",
+    "lat": 37.9418,
+    "lon": -122.4104,
+    "src": "photon",
+    "mi": 0.47
+   }
+  },
+  {
+   "name": "Keller Beach",
+   "area": "Point Richmond",
+   "lat": 37.913,
+   "lon": -122.385,
+   "kind": "beach",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "Chevron Oil Company Pier",
+   "stationMi": 1.3,
+   "mpa": null,
+   "osm": {
+    "name": "Keller Beach Swimming Area",
+    "lat": 37.9206,
+    "lon": -122.3868,
+    "src": "photon",
+    "mi": 0.53
+   }
+  },
+  {
+   "name": "Point Isabel",
+   "area": "Richmond",
+   "lat": 37.899,
+   "lon": -122.322,
+   "kind": "park",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "jetty",
+   "station": "Point Isabel",
+   "stationMi": 0.1,
+   "mpa": null,
+   "osm": {
+    "name": "Point Isabel Dog Park",
+    "lat": 37.899,
+    "lon": -122.3248,
+    "src": "photon",
+    "mi": 0.15
+   }
+  },
+  {
+   "name": "Cesar Chavez Park",
+   "area": "Berkeley",
+   "lat": 37.871,
+   "lon": -122.32,
+   "kind": "park",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "Berkeley",
+   "stationMi": 0.8,
+   "mpa": null,
+   "osm": {
+    "name": "César Chávez Park",
+    "lat": 37.8718,
+    "lon": -122.3189,
+    "src": "photon",
+    "mi": 0.08
+   }
+  },
+  {
+   "name": "Middle Harbor Shoreline Park",
+   "area": "Oakland",
+   "lat": 37.804,
+   "lon": -122.322,
+   "kind": "park",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "harbor",
+   "station": "Oakland",
+   "stationMi": 0.5,
+   "mpa": null,
+   "osm": {
+    "name": "Middle Harbor Shoreline Park",
+    "lat": 37.8032,
+    "lon": -122.3242,
+    "src": "photon",
+    "mi": 0.13
+   }
+  },
+  {
+   "name": "Crown Memorial State Beach",
+   "area": "Alameda",
+   "lat": 37.762,
+   "lon": -122.262,
+   "kind": "beach",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "beach",
+   "station": "Oakland Harbor",
+   "stationMi": 1.6,
+   "mpa": null,
+   "osm": {
+    "name": "Robert W. Crown Memorial State Beach",
+    "lat": 37.7604,
+    "lon": -122.2676,
+    "src": "photon",
+    "mi": 0.33
+   }
+  },
+  {
+   "name": "San Leandro Marina",
+   "area": "San Leandro",
+   "lat": 37.696,
+   "lon": -122.192,
+   "kind": "pier",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "pier",
+   "station": "San Leandro Marina",
+   "stationMi": 0.1,
+   "mpa": null,
+   "osm": {
+    "name": "San Leandro Marina",
+    "lat": 37.6972,
+    "lon": -122.1913,
+    "src": "photon",
+    "mi": 0.09
+   }
+  },
+  {
+   "name": "Dumbarton Pier",
+   "area": "Fremont",
+   "lat": 37.505,
+   "lon": -122.118,
+   "kind": "pier",
+   "region": "SF Bay",
+   "bay": true,
+   "setting": "pier",
+   "station": "Dumbarton Highway Bridge",
+   "stationMi": 0.2,
+   "mpa": null,
+   "osm": {
+    "name": "Dumbarton Pier",
+    "lat": 37.5086,
+    "lon": -122.1141,
+    "src": "photon",
+    "mi": 0.33
+   }
+  },
+  {
+   "name": "Doran Beach",
+   "area": "Bodega Bay",
+   "lat": 38.313,
+   "lon": -123.042,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Bodega Harbor Entrance",
+   "stationMi": 0.8,
+   "mpa": null,
+   "osm": {
+    "name": "Give Back to Doran Park",
+    "lat": 38.3143,
+    "lon": -123.0436,
+    "src": "photon",
+    "mi": 0.13
+   }
+  },
+  {
+   "name": "Campbell Cove",
+   "area": "Bodega Bay",
+   "lat": 38.306,
+   "lon": -123.059,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Bodega Harbor Entrance",
+   "stationMi": 0.3,
+   "mpa": null,
+   "osm": {
+    "name": "Campbell Cove",
+    "lat": 38.3049,
+    "lon": -123.0567,
+    "src": "photon",
+    "mi": 0.15
+   }
+  },
+  {
+   "name": "Spud Point Marina",
+   "area": "Bodega Bay",
+   "lat": 38.327,
+   "lon": -123.058,
+   "kind": "pier",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "pier",
+   "station": "Bodega Harbor Entrance",
+   "stationMi": 1.3,
+   "mpa": null,
+   "osm": {
+    "name": "Spud Point Marina",
+    "lat": 38.3288,
+    "lon": -123.0572,
+    "src": "photon",
+    "mi": 0.13
+   }
+  },
+  {
+   "name": "Salmon Creek Beach",
+   "area": "Bodega Bay",
+   "lat": 38.351,
+   "lon": -123.068,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "beach",
+   "station": "Bodega Harbor Entrance",
+   "stationMi": 3,
+   "mpa": null,
+   "osm": {
+    "name": "South Salmon Creek State Beach",
+    "lat": 38.3505,
+    "lon": -123.0655,
+    "src": "photon",
+    "mi": 0.14
+   }
+  },
+  {
+   "name": "Goat Rock Beach",
+   "area": "Jenner",
+   "lat": 38.443,
+   "lon": -123.127,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "jetty",
+   "station": "Fort Ross",
+   "stationMi": 8,
+   "mpa": null,
+   "osm": {
+    "name": "Goat Rock Beach",
+    "lat": 38.4458,
+    "lon": -123.127,
+    "src": "photon",
+    "mi": 0.2
+   }
+  },
+  {
+   "name": "Gualala Point",
+   "area": "Gualala",
+   "lat": 38.759,
+   "lon": -123.525,
+   "kind": "beach",
+   "region": "Marin & Sonoma",
+   "bay": false,
+   "setting": "jetty",
+   "station": "Green Cove",
+   "stationMi": 5.6,
+   "mpa": null,
+   "osm": {
+    "name": "Gualala Point Regional Park Visitors Center",
+    "lat": 38.7592,
+    "lon": -123.5232,
+    "src": "photon",
+    "mi": 0.1
+   }
+  },
+  {
+   "name": "Van Damme State Park",
+   "area": "Little River",
+   "lat": 39.274,
+   "lon": -123.792,
+   "kind": "beach",
+   "region": "Mendocino",
+   "bay": false,
+   "setting": "beach",
+   "station": "Mendocino",
+   "stationMi": 1.8,
+   "mpa": null,
+   "osm": {
+    "name": "Van Damme State Park Day Use",
+    "lat": 39.2734,
+    "lon": -123.7906,
+    "src": "photon",
+    "mi": 0.09
+   }
+  },
+  {
+   "name": "Albion River",
+   "area": "Albion",
+   "lat": 39.226,
+   "lon": -123.769,
+   "kind": "beach",
+   "region": "Mendocino",
+   "bay": false,
+   "setting": "beach",
+   "station": "Mendocino",
+   "stationMi": 5.4,
+   "mpa": null,
+   "osm": {
+    "name": "Albion River Bridge",
+    "lat": 39.2264,
+    "lon": -123.769,
+    "src": "photon",
+    "mi": 0.03
+   }
+  },
+  {
+   "name": "Glass Beach",
+   "area": "Fort Bragg",
+   "lat": 39.452,
+   "lon": -123.813,
+   "kind": "beach",
+   "region": "Mendocino",
+   "bay": false,
+   "setting": "beach",
+   "station": "Noyo Harbor",
+   "stationMi": 1.9,
+   "mpa": "MacKerricher State Marine Conservation Area (ok)",
+   "osm": {
+    "name": "Glass Beach",
+    "lat": 39.4537,
+    "lon": -123.8129,
+    "src": "photon",
+    "mi": 0.11
+   }
+  },
+  {
+   "name": "Clam Beach",
+   "area": "McKinleyville",
+   "lat": 40.994,
+   "lon": -124.115,
+   "kind": "beach",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "beach",
+   "station": "Trinidad Harbor",
+   "stationMi": 4.6,
+   "mpa": null,
+   "osm": {
+    "name": "Clam Beach",
+    "lat": 40.9946,
+    "lon": -124.112,
+    "src": "photon",
+    "mi": 0.16
+   }
+  },
+  {
+   "name": "Moonstone Beach",
+   "area": "Westhaven",
+   "lat": 41.03,
+   "lon": -124.111,
+   "kind": "beach",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "beach",
+   "station": "Trinidad Harbor",
+   "stationMi": 2.6,
+   "mpa": null,
+   "osm": {
+    "name": "Moonstone Beach Road",
+    "lat": 41.0298,
+    "lon": -124.1101,
+    "src": "photon",
+    "mi": 0.05
+   }
+  },
+  {
+   "name": "Agate Beach",
+   "area": "Sue-meg State Park",
+   "lat": 41.1529,
+   "lon": -124.138,
+   "kind": "beach",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "beach",
+   "station": "Trinidad Harbor",
+   "stationMi": 6.7,
+   "mpa": null,
+   "osm": {
+    "name": "Agate Beach",
+    "lat": 41.1529,
+    "lon": -124.138,
+    "src": "photon",
+    "mi": 0
+   }
+  },
+  {
+   "name": "Samoa Dunes",
+   "area": "Samoa",
+   "lat": 40.7681,
+   "lon": -124.222,
+   "kind": "beach",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "beach",
+   "station": "Humboldt Bay (North Spit)",
+   "stationMi": 0.3,
+   "mpa": null,
+   "osm": {
+    "name": "Samoa Dunes Recreational Area",
+    "lat": 40.7681,
+    "lon": -124.222,
+    "src": "photon",
+    "mi": 0
+   }
+  },
+  {
+   "name": "King Salmon",
+   "area": "Humboldt Bay",
+   "lat": 40.739,
+   "lon": -124.219,
+   "kind": "pier",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "pier",
+   "station": "Fields Landing",
+   "stationMi": 1.1,
+   "mpa": null,
+   "osm": {
+    "name": "King Salmon",
+    "lat": 40.7392,
+    "lon": -124.218,
+    "src": "photon",
+    "mi": 0.05
+   }
+  },
+  {
+   "name": "Klamath River Mouth",
+   "area": "Klamath",
+   "lat": 41.544,
+   "lon": -124.081,
+   "kind": "beach",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "beach",
+   "station": "Crescent City",
+   "stationMi": 14.9,
+   "mpa": null,
+   "osm": {
+    "name": "Mouth of Klamath Road",
+    "lat": 41.5457,
+    "lon": -124.0681,
+    "src": "photon",
+    "mi": 0.68
+   }
+  },
+  {
+   "name": "B Street Pier",
+   "area": "Crescent City",
+   "lat": 41.745,
+   "lon": -124.198,
+   "kind": "pier",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "pier",
+   "station": "Crescent City",
+   "stationMi": 0.7,
+   "mpa": null,
+   "osm": {
+    "name": "B Street Pier",
+    "lat": 41.7435,
+    "lon": -124.1965,
+    "src": "photon",
+    "mi": 0.13
+   }
+  },
+  {
+   "name": "Kellogg Beach",
+   "area": "Crescent City",
+   "lat": 41.8693,
+   "lon": -124.2126,
+   "kind": "beach",
+   "region": "Humboldt & Del Norte",
+   "bay": false,
+   "setting": "beach",
+   "station": "Pyramid Point",
+   "stationMi": 5.3,
+   "mpa": null,
+   "osm": {
+    "name": "Kellogg Road Beach",
+    "lat": 41.8693,
+    "lon": -124.2126,
+    "src": "photon",
+    "mi": 0
+   }
+  }
+ ]
+}

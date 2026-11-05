@@ -1,0 +1,836 @@
+{
+ "checks": [
+  {
+   "label": "Favorites: high/low times vs NOAA (median ≤ 3 min, 95th pct ≤ 10 min, max ≤ 20 min)",
+   "pass": true,
+   "detail": {
+    "n": 4705,
+    "mean": 2.22,
+    "median": 1.75,
+    "p95": 5.925,
+    "max": 18.768,
+    "bias": -0.173
+   }
+  },
+  {
+   "label": "Favorites: high/low heights vs NOAA (median ≤ 0.05 ft, 95th pct ≤ 0.15 ft, max ≤ 0.3 ft)",
+   "pass": false,
+   "detail": {
+    "n": 4705,
+    "mean": 0.054,
+    "median": 0.053,
+    "p95": 0.113,
+    "max": 0.154,
+    "bias": 0.002
+   }
+  },
+  {
+   "label": "Favorites: no missing or extra highs/lows",
+   "pass": true,
+   "detail": {
+    "events": 4705,
+    "missingOrExtra": 0
+   }
+  },
+  {
+   "label": "Search stations: high/low times vs NOAA (95th pct ≤ 15 min)",
+   "pass": true,
+   "detail": {
+    "n": 3186,
+    "mean": 1.809,
+    "median": 1.923,
+    "p95": 3.482,
+    "max": 9.94,
+    "bias": -0.701,
+    "stations": 118,
+    "reference": 33,
+    "subordinate": 85
+   }
+  },
+  {
+   "label": "Search stations: high/low heights vs NOAA (95th pct ≤ 0.25 ft)",
+   "pass": true,
+   "detail": {
+    "n": 3186,
+    "mean": 0.047,
+    "median": 0.043,
+    "p95": 0.1,
+    "max": 0.188,
+    "bias": 0.007
+   }
+  },
+  {
+   "label": "Search stations: missing or extra highs/lows ≤ 1%",
+   "pass": true,
+   "detail": {
+    "events": 3186,
+    "missingOrExtra": 0
+   }
+  },
+  {
+   "label": "Search stations: NOAA has predictions for every station",
+   "pass": true,
+   "detail": {
+    "failed": []
+   }
+  },
+  {
+   "label": "Full tide curve at reference stations (RMSE ≤ 0.1 ft, max ≤ 0.25 ft)",
+   "pass": true,
+   "detail": [
+    {
+     "id": "9419750",
+     "name": "Crescent City Harbor",
+     "points": 128,
+     "rmse": 0.06,
+     "max": 0.107
+    },
+    {
+     "id": "9418767",
+     "name": "North Jetty",
+     "points": 128,
+     "rmse": 0.064,
+     "max": 0.116
+    },
+    {
+     "id": "9418024",
+     "name": "Shelter Cove",
+     "points": 128,
+     "rmse": 0.084,
+     "max": 0.128
+    },
+    {
+     "id": "9417426",
+     "name": "Noyo Harbor",
+     "points": 128,
+     "rmse": 0.083,
+     "max": 0.127
+    },
+    {
+     "id": "9416841",
+     "name": "Point Arena Pier",
+     "points": 128,
+     "rmse": 0.07,
+     "max": 0.122
+    },
+    {
+     "id": "9415020",
+     "name": "Drakes Beach",
+     "points": 128,
+     "rmse": 0.066,
+     "max": 0.114
+    },
+    {
+     "id": "9414290",
+     "name": "Fort Point",
+     "points": 128,
+     "rmse": 0.059,
+     "max": 0.117
+    },
+    {
+     "id": "9414816",
+     "name": "Berkeley Marina",
+     "points": 128,
+     "rmse": 0.079,
+     "max": 0.125
+    },
+    {
+     "id": "9415056",
+     "name": "Point Pinole Shoreline",
+     "points": 128,
+     "rmse": 0.077,
+     "max": 0.123
+    },
+    {
+     "id": "9414750",
+     "name": "Alameda Shoreline",
+     "points": 128,
+     "rmse": 0.062,
+     "max": 0.127
+    },
+    {
+     "id": "9414131",
+     "name": "Pillar Point Harbor",
+     "points": 128,
+     "rmse": 0.078,
+     "max": 0.124
+    }
+   ]
+  }
+ ],
+ "favorites": [
+  {
+   "id": "9419750",
+   "name": "Crescent City Harbor",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 1.576,
+    "median": 1.266,
+    "p95": 3.92,
+    "max": 8.24,
+    "bias": -0.079
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.053,
+    "median": 0.054,
+    "p95": 0.103,
+    "max": 0.116,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9419059",
+   "name": "Trinidad Pier",
+   "subordinate": true,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 1.576,
+    "median": 1.266,
+    "p95": 3.92,
+    "max": 8.24,
+    "bias": -0.079
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.051,
+    "median": 0.053,
+    "p95": 0.1,
+    "max": 0.114,
+    "bias": 0.001
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9418801",
+   "name": "Woodley Island",
+   "subordinate": true,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 1.716,
+    "median": 1.452,
+    "p95": 4.338,
+    "max": 10.706,
+    "bias": -0.054
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.059,
+    "median": 0.063,
+    "p95": 0.111,
+    "max": 0.115,
+    "bias": 0.001
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9418767",
+   "name": "North Jetty",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 1.716,
+    "median": 1.452,
+    "p95": 4.338,
+    "max": 10.706,
+    "bias": -0.054
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.057,
+    "median": 0.059,
+    "p95": 0.107,
+    "max": 0.112,
+    "bias": 0.001
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9418024",
+   "name": "Shelter Cove",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.428,
+    "median": 1.943,
+    "p95": 6.329,
+    "max": 13.845,
+    "bias": -0.164
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.072,
+    "median": 0.07,
+    "p95": 0.144,
+    "max": 0.152,
+    "bias": 0.004
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9417426",
+   "name": "Noyo Harbor",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.529,
+    "median": 1.96,
+    "p95": 6.445,
+    "max": 14.65,
+    "bias": -0.361
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.071,
+    "median": 0.071,
+    "p95": 0.136,
+    "max": 0.154,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9416841",
+   "name": "Point Arena Pier",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.747,
+    "median": 2.264,
+    "p95": 6.243,
+    "max": 11.75,
+    "bias": -0.355
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.056,
+    "median": 0.058,
+    "p95": 0.109,
+    "max": 0.119,
+    "bias": 0.004
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9415625",
+   "name": "Bodega Bay",
+   "subordinate": true,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.245,
+    "median": 1.854,
+    "p95": 5.63,
+    "max": 8.564,
+    "bias": -0.217
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.043,
+    "median": 0.042,
+    "p95": 0.085,
+    "max": 0.098,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9415469",
+   "name": "Lawson's Landing",
+   "subordinate": true,
+   "events": 236,
+   "time": {
+    "n": 236,
+    "mean": 2.245,
+    "median": 1.893,
+    "p95": 5.63,
+    "max": 8.564,
+    "bias": -0.226
+   },
+   "height": {
+    "n": 236,
+    "mean": 0.039,
+    "median": 0.038,
+    "p95": 0.077,
+    "max": 0.089,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9415339",
+   "name": "Marshall",
+   "subordinate": true,
+   "events": 236,
+   "time": {
+    "n": 236,
+    "mean": 2.245,
+    "median": 1.893,
+    "p95": 5.63,
+    "max": 8.564,
+    "bias": -0.226
+   },
+   "height": {
+    "n": 236,
+    "mean": 0.043,
+    "median": 0.042,
+    "p95": 0.084,
+    "max": 0.098,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9415020",
+   "name": "Drakes Beach",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.699,
+    "median": 2.245,
+    "p95": 6.255,
+    "max": 15.347,
+    "bias": -0.174
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.053,
+    "median": 0.058,
+    "p95": 0.097,
+    "max": 0.106,
+    "bias": 0.005
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9414290",
+   "name": "Fort Point",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.245,
+    "median": 1.854,
+    "p95": 5.63,
+    "max": 8.564,
+    "bias": -0.217
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.043,
+    "median": 0.042,
+    "p95": 0.085,
+    "max": 0.098,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9414806",
+   "name": "Fort Baker",
+   "subordinate": true,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.245,
+    "median": 1.854,
+    "p95": 5.63,
+    "max": 8.564,
+    "bias": -0.217
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.042,
+    "median": 0.041,
+    "p95": 0.084,
+    "max": 0.098,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9414837",
+   "name": "Paradise Beach",
+   "subordinate": true,
+   "events": 236,
+   "time": {
+    "n": 236,
+    "mean": 2.245,
+    "median": 1.893,
+    "p95": 5.63,
+    "max": 8.564,
+    "bias": -0.226
+   },
+   "height": {
+    "n": 236,
+    "mean": 0.042,
+    "median": 0.041,
+    "p95": 0.082,
+    "max": 0.094,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9414816",
+   "name": "Berkeley Marina",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.303,
+    "median": 1.81,
+    "p95": 5.85,
+    "max": 9.627,
+    "bias": -0.05
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.067,
+    "median": 0.064,
+    "p95": 0.137,
+    "max": 0.153,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9415056",
+   "name": "Point Pinole Shoreline",
+   "subordinate": false,
+   "events": 236,
+   "time": {
+    "n": 236,
+    "mean": 2.202,
+    "median": 1.734,
+    "p95": 5.899,
+    "max": 11.023,
+    "bias": 0.01
+   },
+   "height": {
+    "n": 236,
+    "mean": 0.068,
+    "median": 0.065,
+    "p95": 0.138,
+    "max": 0.151,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9414750",
+   "name": "Alameda Shoreline",
+   "subordinate": false,
+   "events": 236,
+   "time": {
+    "n": 236,
+    "mean": 1.531,
+    "median": 1.062,
+    "p95": 4.389,
+    "max": 7.733,
+    "bias": -0.091
+   },
+   "height": {
+    "n": 236,
+    "mean": 0.056,
+    "median": 0.061,
+    "p95": 0.1,
+    "max": 0.107,
+    "bias": 0.003
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9414275",
+   "name": "Ocean Beach",
+   "subordinate": true,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.245,
+    "median": 1.854,
+    "p95": 5.63,
+    "max": 8.564,
+    "bias": -0.217
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.043,
+    "median": 0.042,
+    "p95": 0.085,
+    "max": 0.098,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9414131",
+   "name": "Pillar Point Harbor",
+   "subordinate": false,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 2.578,
+    "median": 2.055,
+    "p95": 6.899,
+    "max": 13.118,
+    "bias": -0.262
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.067,
+    "median": 0.066,
+    "p95": 0.13,
+    "max": 0.145,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  },
+  {
+   "id": "9413745",
+   "name": "Santa Cruz Wharf",
+   "subordinate": true,
+   "events": 235,
+   "time": {
+    "n": 235,
+    "mean": 3.077,
+    "median": 2.416,
+    "p95": 7.11,
+    "max": 18.768,
+    "bias": -0.2
+   },
+   "height": {
+    "n": 235,
+    "mean": 0.052,
+    "median": 0.055,
+    "p95": 0.097,
+    "max": 0.108,
+    "bias": 0.002
+   },
+   "missing": [],
+   "extra": [],
+   "errors": []
+  }
+ ],
+ "stations": {
+  "count": 118,
+  "time": {
+   "n": 3186,
+   "mean": 1.809,
+   "median": 1.923,
+   "p95": 3.482,
+   "max": 9.94,
+   "bias": -0.701
+  },
+  "height": {
+   "n": 3186,
+   "mean": 0.047,
+   "median": 0.043,
+   "p95": 0.1,
+   "max": 0.188,
+   "bias": 0.007
+  },
+  "subordinateTime": {
+   "n": 2295,
+   "mean": 1.76,
+   "median": 1.974,
+   "p95": 3.082,
+   "max": 5.706,
+   "bias": -0.816
+  },
+  "referenceTime": {
+   "n": 891,
+   "mean": 1.936,
+   "median": 1.719,
+   "p95": 4.457,
+   "max": 9.94,
+   "bias": -0.405
+  },
+  "worstTiming": [
+   {
+    "id": "9414958",
+    "name": "Bolinas Lagoon",
+    "sub": false,
+    "dt": 9.94,
+    "dh": 0.089
+   },
+   {
+    "id": "9416409",
+    "name": "Green Cove",
+    "sub": false,
+    "dt": 8.276,
+    "dh": 0.105
+   },
+   {
+    "id": "9415338",
+    "name": "Sonoma Creek",
+    "sub": false,
+    "dt": 6.803,
+    "dh": 0.08
+   },
+   {
+    "id": "9414509",
+    "name": "Dumbarton Highway Bridge",
+    "sub": false,
+    "dt": 6.365,
+    "dh": 0.153
+   },
+   {
+    "id": "9414575",
+    "name": "Coyote Creek",
+    "sub": false,
+    "dt": 5.972,
+    "dh": 0.188
+   },
+   {
+    "id": "9417426",
+    "name": "Noyo Harbor",
+    "sub": false,
+    "dt": 5.919,
+    "dh": 0.12
+   },
+   {
+    "id": "9416841",
+    "name": "Arena Cove",
+    "sub": false,
+    "dt": 5.706,
+    "dh": 0.096
+   },
+   {
+    "id": "9417624",
+    "name": "Westport",
+    "sub": true,
+    "dt": 5.706,
+    "dh": 0.092
+   }
+  ],
+  "failed": []
+ },
+ "curve": [
+  {
+   "id": "9419750",
+   "name": "Crescent City Harbor",
+   "points": 128,
+   "rmse": 0.06,
+   "max": 0.107
+  },
+  {
+   "id": "9418767",
+   "name": "North Jetty",
+   "points": 128,
+   "rmse": 0.064,
+   "max": 0.116
+  },
+  {
+   "id": "9418024",
+   "name": "Shelter Cove",
+   "points": 128,
+   "rmse": 0.084,
+   "max": 0.128
+  },
+  {
+   "id": "9417426",
+   "name": "Noyo Harbor",
+   "points": 128,
+   "rmse": 0.083,
+   "max": 0.127
+  },
+  {
+   "id": "9416841",
+   "name": "Point Arena Pier",
+   "points": 128,
+   "rmse": 0.07,
+   "max": 0.122
+  },
+  {
+   "id": "9415020",
+   "name": "Drakes Beach",
+   "points": 128,
+   "rmse": 0.066,
+   "max": 0.114
+  },
+  {
+   "id": "9414290",
+   "name": "Fort Point",
+   "points": 128,
+   "rmse": 0.059,
+   "max": 0.117
+  },
+  {
+   "id": "9414816",
+   "name": "Berkeley Marina",
+   "points": 128,
+   "rmse": 0.079,
+   "max": 0.125
+  },
+  {
+   "id": "9415056",
+   "name": "Point Pinole Shoreline",
+   "points": 128,
+   "rmse": 0.077,
+   "max": 0.123
+  },
+  {
+   "id": "9414750",
+   "name": "Alameda Shoreline",
+   "points": 128,
+   "rmse": 0.062,
+   "max": 0.127
+  },
+  {
+   "id": "9414131",
+   "name": "Pillar Point Harbor",
+   "points": 128,
+   "rmse": 0.078,
+   "max": 0.124
+  }
+ ]
+}

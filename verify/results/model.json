@@ -1,0 +1,274 @@
+{
+ "checks": [
+  {
+   "label": "Every score is a whole number from 0 to 100, over a full year at every favorite",
+   "pass": true,
+   "detail": {
+    "samples": 1111425,
+    "outOfRange": 0,
+    "windowsOutsideLight": 0,
+    "overlapping": 0
+   }
+  },
+  {
+   "label": "Best windows stay between first light and an hour after sunset, and the two never overlap",
+   "pass": true,
+   "detail": {
+    "samples": 1111425,
+    "outOfRange": 0,
+    "windowsOutsideLight": 0,
+    "overlapping": 0
+   }
+  },
+  {
+   "label": "Slack water scores clearly above strong current (daylight, at least 1.4×)",
+   "pass": true,
+   "detail": {
+    "slack": 52,
+    "strong": 37,
+    "nSlack": 197381,
+    "nStrong": 14992
+   }
+  },
+  {
+   "label": "At slack water, dawn scores above midday",
+   "pass": true,
+   "detail": {
+    "dawn": 55,
+    "noon": 50
+   }
+  },
+  {
+   "label": "Factor shapes: current, water level, rising tide, wind, rain, surf, swell period, muddy water and light all push the right way",
+   "pass": true,
+   "detail": {
+    "tideFallsWithCurrent": true,
+    "tideRisesWithWater": true,
+    "shoreCaresMoreAboutWater": true,
+    "risingBeatsFalling": true,
+    "windHurts": true,
+    "rainHurts": true,
+    "surfHurts": true,
+    "jettyStricterThanPier": true,
+    "longPeriodSwellHurts": true,
+    "muddyWaterHurts": true,
+    "lightOrder": true
+   }
+  },
+  {
+   "label": "Closed Dungeness season keeps ocean spots at 15 or below",
+   "pass": true,
+   "detail": {
+    "maxDayScore": 10,
+    "spotDaysChecked": 1991
+   }
+  },
+  {
+   "label": "The domoic acid closure keeps Shelter Cove at 15 or below all season",
+   "pass": true,
+   "detail": {
+    "maxDayScore": 10
+   }
+  },
+  {
+   "label": "Rock crab is open all year, even inside the Dungeness closure",
+   "pass": true,
+   "detail": {
+    "minDayScore": 76
+   }
+  },
+  {
+   "label": "SF Bay spots are always scored for rock crab, whichever crab is selected",
+   "pass": true,
+   "detail": true
+  },
+  {
+   "label": "Rankings are robust: ±20% on any one model number keeps day rankings (median Spearman ≥ 0.85) and best-window times (≥ 80% within an hour)",
+   "pass": true,
+   "detail": [
+    {
+     "change": "wTide ×0.80",
+     "medianRho": 0.996,
+     "minRho": 0.995,
+     "bestWindowSame": 0.889
+    },
+    {
+     "change": "wTide ×1.20",
+     "medianRho": 0.995,
+     "minRho": 0.994,
+     "bestWindowSame": 0.985
+    },
+    {
+     "change": "exp ×0.80",
+     "medianRho": 0.998,
+     "minRho": 0.997,
+     "bestWindowSame": 0.997
+    },
+    {
+     "change": "exp ×1.20",
+     "medianRho": 0.998,
+     "minRho": 0.997,
+     "bestWindowSame": 0.998
+    },
+    {
+     "change": "kMove ×0.80",
+     "medianRho": 0.999,
+     "minRho": 0.998,
+     "bestWindowSame": 0.995
+    },
+    {
+     "change": "kMove ×1.20",
+     "medianRho": 0.999,
+     "minRho": 0.998,
+     "bestWindowSame": 0.995
+    },
+    {
+     "change": "moveExp ×0.80",
+     "medianRho": 0.999,
+     "minRho": 0.998,
+     "bestWindowSame": 0.996
+    },
+    {
+     "change": "moveExp ×1.20",
+     "medianRho": 0.999,
+     "minRho": 0.998,
+     "bestWindowSame": 0.996
+    },
+    {
+     "change": "ebb ×1.03",
+     "medianRho": 0.999,
+     "minRho": 0.998,
+     "bestWindowSame": 0.988
+    },
+    {
+     "change": "dayMin ×0.90",
+     "medianRho": 0.991,
+     "minRho": 0.987,
+     "bestWindowSame": 0.887
+    },
+    {
+     "change": "darkShore ×0.80",
+     "medianRho": 1,
+     "minRho": 1,
+     "bestWindowSame": 1
+    },
+    {
+     "change": "darkShore ×1.20",
+     "medianRho": 1,
+     "minRho": 1,
+     "bestWindowSame": 1
+    }
+   ]
+  }
+ ],
+ "details": {
+  "range": {
+   "samples": 1111425,
+   "outOfRange": 0,
+   "windowsOutsideLight": 0,
+   "overlapping": 0
+  },
+  "slackVsStrong": {
+   "slack": 52,
+   "strong": 37,
+   "nSlack": 197381,
+   "nStrong": 14992
+  },
+  "dawnVsNoon": {
+   "dawn": 55,
+   "noon": 50
+  },
+  "shapes": {
+   "tideFallsWithCurrent": true,
+   "tideRisesWithWater": true,
+   "shoreCaresMoreAboutWater": true,
+   "risingBeatsFalling": true,
+   "windHurts": true,
+   "rainHurts": true,
+   "surfHurts": true,
+   "jettyStricterThanPier": true,
+   "longPeriodSwellHurts": true,
+   "muddyWaterHurts": true,
+   "lightOrder": true
+  },
+  "closedMax": 10,
+  "closedDaysChecked": 1991,
+  "closureMax": 10,
+  "rockOpenAllYear": 76,
+  "bayAlwaysRock": true
+ },
+ "sensitivity": [
+  {
+   "change": "wTide ×0.80",
+   "medianRho": 0.996,
+   "minRho": 0.995,
+   "bestWindowSame": 0.889
+  },
+  {
+   "change": "wTide ×1.20",
+   "medianRho": 0.995,
+   "minRho": 0.994,
+   "bestWindowSame": 0.985
+  },
+  {
+   "change": "exp ×0.80",
+   "medianRho": 0.998,
+   "minRho": 0.997,
+   "bestWindowSame": 0.997
+  },
+  {
+   "change": "exp ×1.20",
+   "medianRho": 0.998,
+   "minRho": 0.997,
+   "bestWindowSame": 0.998
+  },
+  {
+   "change": "kMove ×0.80",
+   "medianRho": 0.999,
+   "minRho": 0.998,
+   "bestWindowSame": 0.995
+  },
+  {
+   "change": "kMove ×1.20",
+   "medianRho": 0.999,
+   "minRho": 0.998,
+   "bestWindowSame": 0.995
+  },
+  {
+   "change": "moveExp ×0.80",
+   "medianRho": 0.999,
+   "minRho": 0.998,
+   "bestWindowSame": 0.996
+  },
+  {
+   "change": "moveExp ×1.20",
+   "medianRho": 0.999,
+   "minRho": 0.998,
+   "bestWindowSame": 0.996
+  },
+  {
+   "change": "ebb ×1.03",
+   "medianRho": 0.999,
+   "minRho": 0.998,
+   "bestWindowSame": 0.988
+  },
+  {
+   "change": "dayMin ×0.90",
+   "medianRho": 0.991,
+   "minRho": 0.987,
+   "bestWindowSame": 0.887
+  },
+  {
+   "change": "darkShore ×0.80",
+   "medianRho": 1,
+   "minRho": 1,
+   "bestWindowSame": 1
+  },
+  {
+   "change": "darkShore ×1.20",
+   "medianRho": 1,
+   "minRho": 1,
+   "bestWindowSame": 1
+  }
+ ]
+}

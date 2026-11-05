@@ -10,29 +10,31 @@ const BOX = { s: 36.9, n: 42.05, e: -121.0 };
 const inBox = s => s.latitude >= BOX.s && s.latitude <= BOX.n && s.longitude <= BOX.e;
 const isNoaa = s => s.kind === "tide" && s.source?.name?.startsWith("US National Oceanic");
 
-// Favorite spots: [NOAA station, spot name, area, region, optional spot lat/lon when the spot isn't at the station]
+// Favorite spots: [NOAA station, name, area, region, spot type, open to ocean swell?, optional spot lat/lon]
+// Spot types: beach, jetty (jetty or rocks), pier, harbor (harbor or bay). Region and swell exposure were
+// checked against 14 CCR §29.85 (no Dungeness in SF/San Pablo Bay) and §632 (marine protected areas).
 const FAV = [
-  ["9419750", "Crescent City Harbor", "Crescent City", "Humboldt & Del Norte"],
-  ["9419059", "Trinidad Pier", "Trinidad", "Humboldt & Del Norte"],
-  ["9418801", "Woodley Island", "Eureka, Humboldt Bay", "Humboldt & Del Norte"],
-  ["9418767", "North Jetty", "Humboldt Bay", "Humboldt & Del Norte"],
-  ["9418024", "Shelter Cove", "Lost Coast", "Humboldt & Del Norte"],
-  ["9417426", "Noyo Harbor", "Fort Bragg", "Mendocino"],
-  ["9416841", "Point Arena Pier", "Arena Cove", "Mendocino"],
-  ["9415625", "Bodega Bay", "Bodega Harbor", "Marin & Sonoma"],
-  ["9415469", "Lawson's Landing", "Dillon Beach, Tomales Bay", "Marin & Sonoma"],
-  ["9415339", "Marshall", "Tomales Bay", "Marin & Sonoma"],
-  ["9415020", "Drakes Bay", "Point Reyes", "Marin & Sonoma"],
-  ["9414290", "Fort Point", "Golden Gate, San Francisco", "SF Bay"],
-  ["9414806", "Fort Baker", "Sausalito", "SF Bay"],
-  ["9414837", "Paradise Beach", "Tiburon", "SF Bay"],
-  ["9414816", "Berkeley Pier", "Berkeley", "SF Bay"],
-  ["9415056", "Point Pinole Pier", "Richmond", "SF Bay"],
-  ["9414750", "Alameda Shoreline", "Alameda", "SF Bay"],
-  ["9414275", "Ocean Beach", "San Francisco", "SF & South Coast"],
-  ["9414275", "Pacifica Pier", "Pacifica", "SF & South Coast", 37.6338, -122.4954],
-  ["9414131", "Pillar Point Harbor", "Half Moon Bay", "SF & South Coast"],
-  ["9413745", "Santa Cruz Wharf", "Santa Cruz", "SF & South Coast"],
+  ["9419750", "Crescent City Harbor", "Crescent City", "Humboldt & Del Norte", "pier", false],
+  ["9419059", "Trinidad Pier", "Trinidad", "Humboldt & Del Norte", "pier", true],
+  ["9418801", "Woodley Island", "Eureka, Humboldt Bay", "Humboldt & Del Norte", "harbor", false],
+  ["9418767", "North Jetty", "Humboldt Bay entrance", "Humboldt & Del Norte", "jetty", true],
+  ["9418024", "Shelter Cove", "Lost Coast", "Humboldt & Del Norte", "jetty", true],
+  ["9417426", "Noyo Harbor", "Fort Bragg", "Mendocino", "harbor", false],
+  ["9416841", "Point Arena Pier", "Arena Cove", "Mendocino", "pier", true],
+  ["9415625", "Bodega Bay", "Bodega Harbor entrance", "Marin & Sonoma", "jetty", false],
+  ["9415469", "Lawson's Landing", "Dillon Beach, Tomales Bay", "Marin & Sonoma", "beach", false],
+  ["9415339", "Marshall", "Tomales Bay", "Marin & Sonoma", "harbor", false],
+  ["9415020", "Drakes Beach", "Point Reyes", "Marin & Sonoma", "beach", true, 38.0287, -122.9628],
+  ["9414290", "Fort Point", "Golden Gate, San Francisco", "SF Bay", "jetty", false],
+  ["9414806", "Fort Baker", "Sausalito", "SF Bay", "pier", false],
+  ["9414837", "Paradise Beach", "Tiburon", "SF Bay", "pier", false],
+  ["9414816", "Berkeley Marina", "Berkeley", "SF Bay", "harbor", false],
+  ["9415056", "Point Pinole Shoreline", "Richmond", "SF Bay", "beach", false],
+  ["9414750", "Alameda Shoreline", "Alameda", "SF Bay", "beach", false],
+  ["9414275", "Ocean Beach", "San Francisco", "SF & South Coast", "beach", true],
+  ["9414275", "Pacifica Pier", "Pacifica", "SF & South Coast", "pier", true, 37.6338, -122.4954],
+  ["9414131", "Pillar Point Harbor", "Half Moon Bay", "SF & South Coast", "harbor", false],
+  ["9413745", "Santa Cruz Wharf", "Santa Cruz", "SF & South Coast", "pier", true],
 ];
 const get = id => stationsById.get("noaa/" + id);
 const refOf = s => s.type === "reference" ? s : stationsById.get(s.offsets.reference);
@@ -40,10 +42,10 @@ const gtOf = s => { const d = s.datums || {}; return d.GT ?? (d.MHHW != null && 
 const offsetsOf = s => s.type === "reference" ? undefined : {
   time: { high: s.offsets.time?.high ?? 0, low: s.offsets.time?.low ?? 0 },
   height: { high: s.offsets.height?.high ?? 1, low: s.offsets.height?.low ?? 1, type: s.offsets.height?.type || "ratio" } };
-const fav = FAV.map(([id, name, area, group, lat, lon]) => {
+const fav = FAV.map(([id, name, area, group, setting, exp, lat, lon]) => {
   const s = get(id); if (!s) throw new Error("missing " + id);
   const ref = refOf(s), d = ref.datums;
-  return { id, name, area, group, sp: "dungeness", lat: lat ?? r4(s.latitude), lon: lon ?? r4(s.longitude), tz: s.timezone,
+  return { id, name, area, group, setting, exp, lat: lat ?? r4(s.latitude), lon: lon ?? r4(s.longitude), tz: s.timezone,
     off: r4(d.MSL - d.MLLW), gt: r4(gtOf(s) ?? gtOf(ref)), offsets: offsetsOf(s), station: s.name,
     hc: ref.harmonic_constituents.filter(c => c.amplitude > 0.002).map(c => [c.name, r4(c.amplitude), Math.round(c.phase * 100) / 100]) };
 });
@@ -60,7 +62,10 @@ const addRef = s => {
     s.harmonic_constituents.filter(c => c.amplitude > 0.004).map(c => [ci(c.name), r4(c.amplitude), Math.round(c.phase * 10) / 10])];
   return id;
 };
-for (const s of stations.filter(s => isNoaa(s) && inBox(s))) {
+// Salt water only: skip the Delta and rivers east of the Carquinez Bridge (no crabs, and harmonic predictions
+// are poor there), and the offshore San Francisco Bar station NOAA doesn't publish predictions for.
+const salt = s => !(s.longitude > -122.23 && s.latitude > 37.95) && s.source.id !== "TWC0509";
+for (const s of stations.filter(s => isNoaa(s) && inBox(s) && salt(s))) {
   if (s.type === "reference") { addRef(s); continue; }
   const o = s.offsets; if (!o?.reference) continue;
   const ref = stationsById.get(o.reference); if (!ref || ref.type !== "reference" || !ref.harmonic_constituents?.length) continue;

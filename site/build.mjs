@@ -10,6 +10,7 @@ let body = fs.readFileSync(path.join(here, "src.html"), "utf8");
 body = body.replace("/*__TP__*/", () => fs.readFileSync(path.join(here, "tide-predictor.min.js"), "utf8").replace(/<\/script/gi, "<\\/script"));
 body = body.replace("/*__STATIONS__*/", () => fs.readFileSync(path.join(here, "stations.json"), "utf8"));
 body = body.replace("/*__ALLSTATIONS__*/", () => fs.readFileSync(path.join(here, "stations-all.json"), "utf8"));
+body = body.replace("/*__MPAS__*/", () => fs.readFileSync(path.join(here, "mpas.json"), "utf8"));
 const head = body.slice(0, body.indexOf("<style>"));
 const rest = body.slice(body.indexOf("<style>"));
 const full = `<!doctype html>
