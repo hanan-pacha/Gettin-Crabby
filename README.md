@@ -1,10 +1,10 @@
 # Gettin’ Crabby!
 
-A crabbing forecast website, hosted by Pinchy the Dungeness crab. Search any beach, pier or creek on the US coast (or pick one of 37 favorites) to see the best hours to crab, a tide chart you can tap, and a 7-day outlook. Blue crab on the Atlantic and Gulf coasts, Dungeness on the Pacific and in Alaska.
+A crabbing forecast website, hosted by Pinchy the Dungeness crab. Dungeness crabbing in Northern California, from Santa Cruz to Crescent City. Search any beach, pier or harbor (or pick one of 21 local favorites) to see the best hours to crab, a tide chart you can tap, and a 7-day outlook. Scores follow the usual California Dungeness season: opens the first Saturday in November, closes June 30 (July 30 north of the Sonoma–Mendocino line).
 
 **Live site: https://hanan-pacha.github.io/Gettin-Crabby/**
 
-The site is static: `docs/index.html` plus `docs/stations-all.json` (about 3,100 NOAA tide stations, downloaded only when someone searches for a place). There is no server and no API key.
+The site is static: `docs/index.html` plus `docs/stations-all.json` (the 155 NOAA tide stations between Santa Cruz and the Oregon border, downloaded when someone searches for a place). There is no server and no API key.
 
 ## What powers it
 
@@ -31,8 +31,7 @@ Each spot has its own link, such as `…/#seattle-wa`, so people can share a spe
 
 - Page source: `site/src.html` (HTML, CSS and JS). Station data and the tide library are placed into it at build time.
 - Build: `node site/build.mjs` writes `docs/index.html`.
-- All stations for place search: `node site/extract-all.mjs docs/stations-all.json` (needs `@neaps/tide-database` installed).
-- Favorite spots: edit the list in `site/extract.mjs`, then in a folder with `@neaps/tide-database` installed run `node extract.mjs` to regenerate `site/stations.json`. Each entry is a NOAA reference station id, a display name, an area, a region and a species.
+- Favorite spots and searchable stations: edit `FAV` (and the NorCal box) in `site/extract.mjs`, then in a folder with `@neaps/tide-database` installed run `node extract.mjs <repo>/site/stations.json <repo>/docs/stations-all.json`, then in a folder with `@neaps/tide-database` installed run `node extract.mjs` to regenerate `site/stations.json`. Each entry is a NOAA reference station id, a display name, an area, a region and a species.
 - Scoring: see `STAGE`, `SEASON`, `lightOf`, `rangeScore` and `wxFactor` in `site/src.html`.
 
-Not for navigation. Crabbing rules differ by state; check your state wildlife agency before you go.
+Not for navigation. Season dates are the usual ones; CDFW can delay the opener or restrict traps, so check CDFW before you go.
