@@ -27,6 +27,17 @@
   --good: #1d5f8a;
   --fair: #a86a0c;
   --slow: #7d8b92;
+  --deep: #0f3d5a;        /* open water, header band */
+  --deep-ink: #f2f7f9;
+  --wave: #7fa0b0;
+  --sun: #f4c55b;
+  --crab: #d4613f;        /* Pinch's shell */
+  --crab-dark: #9c3f2b;
+  --claw: #fff1de;
+  --cheek: #ff9e9e;
+  --pupil: #12202a;
+  --bubble: #fbfcfc;
+  --shadow: 0 1px 2px rgba(18, 32, 42, .05), 0 12px 30px -18px rgba(18, 32, 42, .28);
   --font-display: "Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
   --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
   --font-data: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -34,12 +45,12 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
   --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
-  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; color-scheme: dark;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
   --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
-  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; color-scheme: dark;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15.5px; line-height: 1.45; }
@@ -54,23 +65,50 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .btn:hover { border-color: var(--accent); }
 .btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
-/* header */
-.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px; }
-.brand h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 700; letter-spacing: -.01em; }
-.brand h1 span { color: var(--accent); }
-.brand p { margin: 4px 0 0; color: var(--muted); max-width: 60ch; }
+/* header band */
+.band { background: var(--deep); color: var(--deep-ink); position: relative; overflow: hidden; }
+.band::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 85% 0%, rgba(255,255,255,.10), transparent 60%); pointer-events: none; }
+.bandin { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding-block: 30px 70px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.brand { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.brand h1 { font-size: clamp(36px, 6vw, 58px); font-weight: 700; letter-spacing: -.01em; color: var(--deep-ink); }
+.brand h1 span { color: var(--sun); }
+.brand p { margin: 0; color: color-mix(in oklab, var(--deep-ink) 78%, transparent); max-width: 52ch; }
+.waves { position: absolute; left: 0; bottom: -1px; width: 100%; height: 64px; display: block; }
 .datebar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.datebar input { font-family: var(--font-data); font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; height: 40px; padding: 0 10px; }
-.live { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.band .btn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22); color: var(--deep-ink); }
+.band .btn:hover { border-color: var(--deep-ink); }
+.band .btn.on { background: var(--deep-ink); color: var(--deep); border-color: var(--deep-ink); }
+.datebar input { font-family: var(--font-data); font-size: 14px; color: var(--deep-ink); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); border-radius: 8px; height: 40px; padding: 0 10px; color-scheme: dark; }
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: color-mix(in oklab, var(--deep-ink) 70%, transparent); margin-left: 4px; }
 .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--slow); display: inline-block; }
-.live.on i { background: var(--excellent); }
+.live.on i { background: #5ccb92; box-shadow: 0 0 0 3px rgba(92,203,146,.25); }
+.mascot { display: flex; align-items: flex-end; gap: 4px; margin-bottom: -46px; flex: none; }
+.pinch svg { width: 150px; height: auto; display: block; overflow: visible; }
+.bubble { position: relative; background: var(--bubble); color: var(--ink); border: 0; border-radius: 16px; padding: 11px 15px; max-width: 250px; text-align: left; font-size: 14px; line-height: 1.35; box-shadow: 0 10px 30px -12px rgba(0,0,0,.45); margin-bottom: 92px; }
+.bubble::after { content: ""; position: absolute; right: -7px; bottom: 16px; border: 8px solid transparent; border-left-color: var(--bubble); border-right: 0; }
+.bubble .eyebrow { display: block; margin-bottom: 2px; color: var(--crab-dark); }
+.bubble:empty { visibility: hidden; }
+.bubble:hover { transform: translateY(-1px); }
+@media (max-width: 760px) {
+  .bandin { flex-direction: column; align-items: stretch; padding-block: 22px 56px; gap: 14px; }
+  .mascot { margin: 0 0 -40px; justify-content: flex-end; }
+  .pinch svg { width: 104px; }
+  .bubble { margin-bottom: 58px; max-width: none; flex: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pinch .bob { animation: bob 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .pinch .wave { animation: wave 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .bubble { transition: transform .15s; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @keyframes wave { 0%, 55%, 100% { transform: rotate(0); } 65% { transform: rotate(-16deg); } 75% { transform: rotate(10deg); } 85% { transform: rotate(-10deg); } }
+}
 
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .search { position: relative; flex: 1 1 200px; max-width: 420px; }
 .search input { width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 12px 0 36px; font-size: 15px; }
 .search svg { position: absolute; left: 11px; top: 12px; width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 2; }
 .filters { display: flex; gap: 6px; flex-wrap: wrap; }
-@media (max-width: 640px) { .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px; } .filters::-webkit-scrollbar { display: none; } .chip { flex: none; } .brand p { font-size: 14.5px; } }
+@media (max-width: 640px) { .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px; } .filters::-webkit-scrollbar { display: none; } .chip { flex: none; }  }
 .chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 500; min-height: 36px; }
 .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .chip .sp { color: var(--muted); font-weight: 400; margin-left: 4px; font-size: 12.5px; }
@@ -81,7 +119,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 @media (max-width: 900px) { .main { grid-template-columns: minmax(0, 1fr); } .detail { order: -1; } }
 
 /* list */
-.list { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; scroll-margin-top: 12px; }
+.list { background: var(--surface); border: 1px solid color-mix(in oklab, var(--line) 70%, transparent); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; scroll-margin-top: 12px; }
 .listhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .sort { display: flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 2px; }
 .sort button { border: 0; background: transparent; padding: 5px 10px; border-radius: 6px; font-size: 13px; color: var(--muted); }
@@ -99,7 +137,8 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .strip { grid-column: 2 / 4; display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; height: 8px; border-radius: 2px; overflow: hidden; }
 .strip i { display: block; }
 .rmeta { grid-column: 2 / 4; display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
-.empty { padding: 28px 16px; text-align: center; color: var(--muted); }
+.empty { padding: 24px 16px; text-align: center; color: var(--muted); }
+.empty svg { width: 90px; height: auto; display: block; margin: 0 auto 6px; overflow: visible; }
 .star { border: 0; background: transparent; padding: 0; width: 22px; height: 22px; display: inline-grid; place-items: center; color: var(--muted); }
 .star svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .star[aria-pressed="true"] { color: var(--star); }
@@ -114,7 +153,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 
 /* detail */
 .detail { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid color-mix(in oklab, var(--line) 70%, transparent); border-radius: 16px; padding: 20px; min-width: 0; box-shadow: var(--shadow); }
 .hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; align-items: start; }
 .hero .titlerow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .hero h2 { font-size: clamp(26px, 3.6vw, 36px); font-weight: 600; }
@@ -122,9 +161,15 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .hero .star svg { width: 22px; height: 22px; }
 .hero .where { color: var(--muted); margin-top: 4px; font-size: 14px; }
 .big { text-align: right; }
-.big .score { font-family: var(--font-display); font-weight: 700; font-size: 56px; line-height: .9; }
-.big .lbl { font-weight: 600; font-size: 14px; }
-.verdict { grid-column: 1 / -1; font-size: 18px; line-height: 1.4; max-width: 62ch; margin: 0; }
+.big { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.big .ring { display: block; }
+.big .ring .ringn { font-family: var(--font-display); font-weight: 700; font-size: 30px; fill: var(--ink); }
+.big .lbl { font-weight: 600; font-size: 13.5px; }
+.say { grid-column: 1 / -1; display: flex; gap: 10px; align-items: flex-end; }
+.saycrab { flex: none; width: 88px; margin-bottom: -6px; }
+@media (max-width: 640px) { .saycrab { width: 62px; } .verdict { font-size: 16px; padding: 10px 13px; } .hero { gap: 12px 14px; } }
+.saycrab svg { width: 100%; height: auto; display: block; overflow: visible; }
+.verdict { position: relative; font-size: 17.5px; line-height: 1.42; max-width: 62ch; margin: 0 0 6px; padding: 12px 16px; border-radius: 16px 16px 16px 4px; background: color-mix(in oklab, var(--crab) 9%, var(--surface)); min-width: 0; }
 .verdict b { font-weight: 700; }
 .windows { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; }
 .win { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -160,13 +205,15 @@ svg .ext { fill: var(--ink); font-weight: 500; }
 
 .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 @media (max-width: 640px) { .week { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.day { border: 1px solid var(--line); border-radius: 10px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; text-align: center; min-width: 0; }
+.day { border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; text-align: center; min-width: 0; }
 .day:hover { border-color: var(--accent); }
 .day[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 .day .dow { font-weight: 600; font-size: 13px; }
 .day .dt { font-size: 11.5px; color: var(--muted); }
 .day .ds { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; }
 .day .dq { font-size: 11.5px; font-weight: 600; }
+.dbar { width: 70%; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.dbar i { display: block; height: 100%; background: currentColor; border-radius: 2px; }
 .day .dw { font-family: var(--font-data); font-size: 11px; color: var(--muted); }
 .day .dwind { font-size: 11px; color: var(--muted); }
 
@@ -190,25 +237,32 @@ footer a { color: var(--accent); }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
+<header class="band">
+  <div class="bandin">
     <div class="brand">
       <h1>Pot <span>&amp;</span> Tide</h1>
       <p>When to go crabbing at 37 spots on the Atlantic, Gulf and Pacific coasts. Pick a spot to see the best hours, then tap the chart to check any time of day.</p>
-    </div>
-    <div class="datebar" role="group" aria-label="Choose a date">
+      <div class="datebar" role="group" aria-label="Choose a date">
       <button class="btn" id="prev" aria-label="Previous day">‹</button>
       <input type="date" id="date" aria-label="Date">
       <button class="btn" id="next" aria-label="Next day">›</button>
       <button class="btn" id="today">Today</button>
       <span class="live" id="live" title=""><i></i><span>Tide forecast</span></span>
     </div>
-  </header>
+    </div>
+    <div class="mascot">
+      <button class="bubble" id="bubble" type="button"></button>
+      <div class="pinch" id="pinch" aria-hidden="true"></div>
+    </div>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C180 18 360 78 540 48 S900 16 1080 48 S1350 74 1440 42 V90 H0Z" fill="var(--wave)"/><path d="M0 64 C200 44 420 90 640 64 S1010 42 1210 66 S1390 72 1440 58 V90 H0Z" fill="var(--bg)"/></svg>
+</header>
+<div class="wrap">
 
   <div class="toolbar">
     <label class="search" for="q">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-      <input id="q" type="search" placeholder="Search a town, bay or state" autocomplete="off" aria-label="Search spots">
+      <input id="q" type="search" placeholder="Search spots, towns, bays" autocomplete="off" aria-label="Search spots">
     </label>
     <button class="btn" id="near"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Near me</button>
     <span class="msg" id="msg" role="status"></span>
@@ -275,6 +329,56 @@ const TIPS = {
   ] },
 };
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" stroke-linejoin="round"/></svg>';
+
+/* ---------- Pinch, the Dungeness crab ---------- */
+// Moods: party (excellent), happy (good), ok (fair), sleepy (slow), puzzled (no results).
+function crab(mood = "happy", size = 120) {
+  const top = x => 58 - 20 * Math.sqrt(Math.max(0, 1 - ((x - 60) / 40) ** 2));
+  let bumps = ""; for (let x = 25; x <= 95; x += 7.8) bumps += `<circle cx="${x.toFixed(1)}" cy="${(top(x) + 1.6).toFixed(1)}" r="3.5"/>`;
+  let legs = "";
+  for (const [x, y, dx, dy] of [[30, 66, -15, 4], [33, 70, -14, 10], [38, 73, -11, 15], [45, 75, -6, 18]]) {
+    legs += `<path d="M${x} ${y}q${(dx * .6).toFixed(1)} ${(dy * .1 - 4).toFixed(1)} ${dx} ${dy}"/><path d="M${120 - x} ${y}q${(-dx * .6).toFixed(1)} ${(dy * .1 - 4).toFixed(1)} ${-dx} ${dy}"/>`;
+  }
+  // Dungeness claws have white tips.
+  const claw = (cx, cy, rot, wave) => `<g transform="translate(${cx} ${cy}) rotate(${rot})"><g class="${wave ? "wave" : ""}"><ellipse rx="9.5" ry="7.5" fill="var(--crab)"/><ellipse cx="-4.6" cy="-8" rx="3.7" ry="6.6" transform="rotate(-18 -4.6 -8)" fill="var(--crab)"/><ellipse cx="4.6" cy="-9" rx="3.9" ry="7.2" transform="rotate(16 4.6 -9)" fill="var(--crab)"/><circle cx="-6.2" cy="-13.2" r="2.4" fill="var(--claw)"/><circle cx="6.8" cy="-15.2" r="2.5" fill="var(--claw)"/><ellipse cx="-2.5" cy="-1.5" rx="3" ry="2" fill="#fff" opacity=".22"/></g></g>`;
+  const leftUp = mood !== "sleepy";
+  const rightUp = mood === "party" || mood === "happy" || mood === "puzzled";
+  let arms = "", claws = "";
+  if (leftUp) { arms += `<path d="M24 55Q12 51 13 41"/>`; claws += claw(13, 34, -12, mood !== "puzzled"); }
+  else { arms += `<path d="M24 59Q12 61 10 66"/>`; claws += claw(9, 68, -104); }
+  if (rightUp) { arms += `<path d="M96 55Q108 51 107 41"/>`; claws += claw(107, 34, 12, false); }
+  else { arms += `<path d="M96 59Q108 61 110 66"/>`; claws += claw(111, 68, 104); }
+  const eye = x => mood === "sleepy"
+    ? `<circle cx="${x}" cy="27" r="6.5" fill="var(--crab)"/><path d="M${x - 4.5} 27.5q4.5 3.5 9 0" fill="none" stroke="var(--pupil)" stroke-width="2" stroke-linecap="round"/>`
+    : `<circle cx="${x}" cy="27" r="6.8" fill="#fff" stroke="var(--crab-dark)" stroke-width="1.4"/><circle cx="${x + (mood === "puzzled" ? (x < 60 ? 1.8 : -1.2) : .8)}" cy="${mood === "puzzled" ? 25.5 : 28}" r="${mood === "party" ? 4 : 3.5}" fill="var(--pupil)"/><circle cx="${x + 2}" cy="26" r="1.4" fill="#fff"/>`;
+  const mouth = {
+    party: `<path d="M52.5 59q7.5 10 15 0z" fill="var(--pupil)"/><path d="M56.2 62.4q3.8 2.4 7.6 0" fill="var(--cheek)"/>`,
+    happy: `<path d="M53.5 60q6.5 6.5 13 0" fill="none" stroke="var(--pupil)" stroke-width="2.3" stroke-linecap="round"/>`,
+    ok: `<path d="M55 61.5q5 3 10 0" fill="none" stroke="var(--pupil)" stroke-width="2.2" stroke-linecap="round"/>`,
+    sleepy: `<ellipse cx="60" cy="62" rx="2.4" ry="1.8" fill="var(--pupil)"/>`,
+    puzzled: `<path d="M55 62q2.5-2 5 0t5 0" fill="none" stroke="var(--pupil)" stroke-width="2.1" stroke-linecap="round"/>`,
+  }[mood];
+  const star = (x, y, k) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0-5L1.3-1.3 5 0 1.3 1.3 0 5-1.3 1.3-5 0-1.3-1.3Z" fill="var(--sun)"/>`;
+  const extra = mood === "party" ? star(28, 12, 1) + star(96, 8, .8) + star(104, 24, .55)
+    : mood === "sleepy" ? `<text x="80" y="20" font-family="var(--font-display)" font-weight="700" font-size="11" fill="var(--muted)">z</text><text x="88" y="11" font-family="var(--font-display)" font-weight="700" font-size="8" fill="var(--muted)">z</text>`
+    : mood === "puzzled" ? `<text x="84" y="16" font-family="var(--font-display)" font-weight="700" font-size="15" fill="var(--muted)">?</text>` : "";
+  return `<svg class="crab" width="${size}" height="${Math.round(size * 96 / 136)}" viewBox="-8 0 136 96" role="img" aria-label="Pinch the crab">
+    ${extra}<g class="bob">
+    <g fill="none" stroke="var(--crab-dark)" stroke-width="4.2" stroke-linecap="round">${legs}</g>
+    <g fill="none" stroke="var(--crab)" stroke-width="5.5" stroke-linecap="round">${arms}</g>
+    <g stroke="var(--crab-dark)" stroke-width="3.4" stroke-linecap="round"><path d="M52 45L49.5 31"/><path d="M68 45L70.5 31"/></g>
+    <ellipse cx="60" cy="58" rx="40" ry="20" fill="var(--crab)"/><g fill="var(--crab)">${bumps}</g>
+    <path d="M24 62q36 22 72 0q-4 14-36 16q-32-2-36-16z" fill="var(--crab-dark)" opacity=".28"/>
+    <ellipse cx="45" cy="48" rx="12" ry="4" fill="#fff" opacity=".2"/>
+    ${eye(49.5)}${eye(70.5)}
+    <ellipse cx="41" cy="61" rx="5.2" ry="3.1" fill="var(--cheek)" opacity=".75"/><ellipse cx="79" cy="61" rx="5.2" ry="3.1" fill="var(--cheek)" opacity=".75"/>
+    ${mouth}${claws}</g></svg>`;
+}
+const moodOf = n => n >= 80 ? "party" : n >= 65 ? "happy" : n >= 50 ? "ok" : "sleepy";
+function ring(n) {
+  const C = 2 * Math.PI * 38;
+  return `<svg class="ring" viewBox="0 0 88 88" width="92" height="92" aria-hidden="true"><circle cx="44" cy="44" r="38" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="44" cy="44" r="38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C * n / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 44 44)"/><text x="44" y="54" text-anchor="middle" class="ringn">${n}</text></svg>`;
+}
 
 const slug = s => (s.name + " " + s.area.split(",").pop()).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 STATIONS.forEach(s => { s.slug = slug(s); s.state = s.area.split(",").pop().trim(); s.search = (s.name + " " + s.area + " " + s.group + " " + SPECIES[s.sp]).toLowerCase(); });
@@ -554,7 +658,7 @@ function renderList() {
   const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "short", month: "short", day: "numeric" });
   $("listtitle").textContent = state.sort === "now" && isToday() ? "Best spots right now" : state.sort === "near" ? "Closest to you" : state.sort === "az" ? "All spots A–Z" : "Best spots " + (isToday() ? "today" : "on " + when);
   if (!items.length) {
-    $("rows").innerHTML = `<li class="empty">No spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
+    $("rows").innerHTML = `<li class="empty">${crab("puzzled", 90)}No spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
     return;
   }
   const ranked = state.sort === "day" || state.sort === "now";
@@ -700,8 +804,8 @@ function renderDetail() {
         <div class="titlerow"><h2>${esc(s.name)}</h2><button class="star" data-star="${s.slug}" aria-pressed="${isSaved}" aria-label="${isSaved ? "Remove from" : "Add to"} saved spots" title="${isSaved ? "Saved" : "Save this spot"}">${STAR}</button></div>
         <div class="where">${esc(s.area)} · ${ymdLabel(state.ymd, { weekday: "long", month: "long", day: "numeric" })}</div>
       </div>
-      <div class="big q-${qk}"><div class="score">${dd.dayScore}</div><div class="lbl">${ql} day</div></div>
-      <p class="verdict">${verdict(dd)}</p>
+      <div class="big q-${qk}" aria-label="Score ${dd.dayScore} out of 100, ${ql}">${ring(dd.dayScore)}<div class="lbl">${ql} day</div></div>
+      <div class="say"><div class="saycrab">${crab(moodOf(dd.dayScore), 88)}</div><p class="verdict">${verdict(dd)}</p></div>
       <div class="windows">${winHtml}</div>
       ${nowLine}
       <div class="herofoot">
@@ -719,7 +823,7 @@ function renderDetail() {
     </div>
     <div class="card">
       <div class="sectionhead"><h3>Next 7 days</h3><small>Best day: ${bestDay.ymd === localToday() ? "today" : ymdLabel(bestDay.ymd, { weekday: "long" })}. Tap a day to see it.</small></div>
-      <div class="week">${week.map(w => { const [k, l] = quality(w.dayScore); const bw = w.windows[0]; return `<button class="day" data-ymd="${w.ymd}" aria-pressed="${w.ymd === state.ymd}" aria-label="${ymdLabel(w.ymd, { weekday: "long", month: "long", day: "numeric" })}, score ${w.dayScore}, ${l}"><span class="dow">${w.ymd === localToday() ? "Today" : ymdLabel(w.ymd, { weekday: "short" })}</span><span class="dt">${ymdLabel(w.ymd, { month: "short", day: "numeric" })}</span><span class="ds q-${k}">${w.dayScore}</span><span class="dq q-${k}">${l}</span><span class="dw">${bw ? fmtTime(bw.start, s.tz).replace(" ", "").toLowerCase() : "—"}</span>${bw && bw.wx ? `<span class="dwind">${Math.round(bw.wx.wind)} mph</span>` : ""}${moonSvg(w.moon)}</button>`; }).join("")}</div>
+      <div class="week">${week.map(w => { const [k, l] = quality(w.dayScore); const bw = w.windows[0]; return `<button class="day" data-ymd="${w.ymd}" aria-pressed="${w.ymd === state.ymd}" aria-label="${ymdLabel(w.ymd, { weekday: "long", month: "long", day: "numeric" })}, score ${w.dayScore}, ${l}"><span class="dow">${w.ymd === localToday() ? "Today" : ymdLabel(w.ymd, { weekday: "short" })}</span><span class="dt">${ymdLabel(w.ymd, { month: "short", day: "numeric" })}</span><span class="ds q-${k}">${w.dayScore}</span><span class="dq q-${k}">${l}</span><span class="dbar q-${k}"><i style="width:${w.dayScore}%"></i></span><span class="dw">${bw ? fmtTime(bw.start, s.tz).replace(" ", "").toLowerCase() : "—"}</span>${bw && bw.wx ? `<span class="dwind">${Math.round(bw.wx.wind)} mph</span>` : ""}${moonSvg(w.moon)}</button>`; }).join("")}</div>
     </div>
     <div class="card">
       <div class="sectionhead"><h3>Why ${best ? fmtRange(best.start, best.end, s.tz) : "this day"} scores ${best ? best.score : dd.dayScore}</h3><small style="display:inline-flex;gap:6px;align-items:center">${moonSvg(dd.moon, 14)} ${dd.moon.name}, ${Math.round(dd.moon.k * 100)}% lit</small></div>
@@ -749,12 +853,24 @@ function renderDetail() {
   if (state.glossOpen) $("gloss").open = true;
 }
 
+function renderBubble() {
+  const pool = saved.size ? STATIONS.filter(s => saved.has(s.slug)) : STATIONS;
+  const best = pool.map(s => dayData(s, state.ymd)).reduce((a, b) => b.dayScore > a.dayScore ? b : a);
+  const w = best.windows[0];
+  const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "long" });
+  $("bubble").dataset.slug = best.s.slug;
+  $("bubble").innerHTML = `<span class="eyebrow">${saved.size ? "Your best saved spot" : "Pinch's pick"} ${when}</span><b>${esc(best.s.name)}</b>, ${esc(best.s.state)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
+  $("bubble").setAttribute("aria-label", `Open ${best.s.name}, the best ${saved.size ? "saved " : ""}spot ${when}`);
+  $("pinch").innerHTML = crab(moodOf(best.dayScore) === "sleepy" ? "sleepy" : "party", 150);
+}
+$("bubble").onclick = () => { const sl = $("bubble").dataset.slug; if (sl) { if (state.region !== "All" && state.region !== "Saved") state.region = "All"; renderFilters(); pick(sl, true); } };
+
 function render() {
   $("date").value = state.ymd;
   $("today").classList.toggle("on", isToday());
   if (state.sort === "now" && !isToday()) state.sort = "day";
   ["sortDay", "sortNow", "sortAz"].forEach(id => $(id).setAttribute("aria-pressed", { sortDay: "day", sortNow: "now", sortAz: "az" }[id] === state.sort));
-  renderFilters(); renderList(); renderDetail();
+  renderFilters(); renderList(); renderDetail(); renderBubble();
 }
 
 /* ---------- events ---------- */
@@ -775,7 +891,7 @@ function toggleSave(sl) {
   saved.has(sl) ? saved.delete(sl) : saved.add(sl);
   store.set("pt-saved", [...saved]);
   if (state.region === "Saved" && !saved.size) state.region = "All";
-  renderFilters(); renderList(); renderDetail();
+  renderFilters(); renderList(); renderDetail(); renderBubble();
 }
 function pick(sl, scroll) {
   const s = STATIONS.find(x => x.slug === sl); if (!s) return;
