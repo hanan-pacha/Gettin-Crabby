@@ -2,6 +2,8 @@
 
 A crabbing forecast website, hosted by Pinchy the Dungeness crab. For 37 coastal spots (blue crab on the Atlantic and Gulf coasts, Dungeness on the Pacific), it shows the best hours to crab, a tide chart you can tap, and a 7-day outlook.
 
+**Live site: https://hanan-pacha.github.io/Gettin-Crabby/**
+
 The whole site is one static file, `docs/index.html`. There is no server and no API key.
 
 ## What powers it
@@ -20,7 +22,7 @@ If the live sources can't be reached, the page still works with tides, light, mo
 1. Merge this branch into `main` (or pick this branch in step 3).
 2. In the repository on GitHub, open **Settings → Pages**.
 3. Under **Build and deployment**, set **Source** to *Deploy from a branch*, choose the branch, and choose the **/docs** folder. Save.
-4. After a minute the site is live at `https://<your-username>.github.io/<repo-name>/`.
+4. After a minute the site is live at `https://<your-username>.github.io/<repo-name>/` (for this repo, https://hanan-pacha.github.io/Gettin-Crabby/).
 
 Each spot has its own link, such as `…/#seattle-wa`, so people can share a specific spot.
 
