@@ -1,0 +1,938 @@
+<title>Gettin’ Crabby!</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Crabbing forecast: the best hours to crab at 37 US coastal spots, from tides, light, wind, moon and season.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: tide-table almanac. Toolbar on top; ranked spots on the left, the chosen spot on the right; one column on phones with the answer first. */
+:root {
+  --bg: #eef2f1;          /* sea-glass paper */
+  --surface: #fbfcfc;
+  --ink: #12202a;         /* deep channel navy */
+  --muted: #5a6b74;
+  --line: #d5dedd;
+  --accent: #1d5f8a;      /* blue-crab claw blue */
+  --accent-ink: #ffffff;
+  --water: #2b7aa8;
+  --night: rgba(18, 32, 42, .07);
+  --star: #c7781a;        /* steamed-shell orange, used only for saved spots */
+  --excellent: #1f7a4d;
+  --good: #1d5f8a;
+  --fair: #a86a0c;
+  --slow: #7d8b92;
+  --deep: #0f3d5a;        /* open water, header band */
+  --deep-ink: #f2f7f9;
+  --wave: #7fa0b0;
+  --sun: #f4c55b;
+  --crab: #d4613f;        /* Pinchy's shell */
+  --crab-dark: #9c3f2b;
+  --claw: #fff1de;
+  --cheek: #ff9e9e;
+  --pupil: #12202a;
+  --bubble: #fbfcfc;
+  --shadow: 0 1px 2px rgba(18, 32, 42, .05), 0 12px 30px -18px rgba(18, 32, 42, .28);
+  --font-display: "Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
+  --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
+  --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15.5px; line-height: 1.45; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; line-height: 1.1; }
+.mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: default; opacity: .5; }
+button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 40px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; }
+.btn:hover { border-color: var(--accent); }
+.btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+/* header band */
+.band { background: var(--deep); color: var(--deep-ink); position: relative; overflow: hidden; }
+.band::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 85% 0%, rgba(255,255,255,.10), transparent 60%); pointer-events: none; }
+.bandin { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding-block: 30px 70px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.brand { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.brand h1 { font-size: clamp(36px, 6vw, 58px); font-weight: 700; letter-spacing: -.01em; color: var(--deep-ink); }
+.brand h1 span { color: var(--sun); }
+.brand p { margin: 0; color: color-mix(in oklab, var(--deep-ink) 78%, transparent); max-width: 52ch; }
+.waves { position: absolute; left: 0; bottom: -1px; width: 100%; height: 64px; display: block; }
+.datebar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.band .btn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22); color: var(--deep-ink); }
+.band .btn:hover { border-color: var(--deep-ink); }
+.band .btn.on { background: var(--deep-ink); color: var(--deep); border-color: var(--deep-ink); }
+.datebar input { font-family: var(--font-data); font-size: 14px; color: var(--deep-ink); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); border-radius: 8px; height: 40px; padding: 0 10px; color-scheme: dark; }
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: color-mix(in oklab, var(--deep-ink) 70%, transparent); margin-left: 4px; }
+.live i { width: 8px; height: 8px; border-radius: 50%; background: var(--slow); display: inline-block; }
+.live.on i { background: #5ccb92; box-shadow: 0 0 0 3px rgba(92,203,146,.25); }
+.mascot { display: flex; align-items: flex-end; gap: 4px; margin-bottom: -46px; flex: none; }
+.pinch svg { width: 150px; height: auto; display: block; overflow: visible; }
+.bubble { position: relative; background: var(--bubble); color: var(--ink); border: 0; border-radius: 16px; padding: 11px 15px; max-width: 250px; text-align: left; font-size: 14px; line-height: 1.35; box-shadow: 0 10px 30px -12px rgba(0,0,0,.45); margin-bottom: 92px; }
+.bubble::after { content: ""; position: absolute; right: -7px; bottom: 16px; border: 8px solid transparent; border-left-color: var(--bubble); border-right: 0; }
+.bubble .eyebrow { display: block; margin-bottom: 2px; color: var(--crab-dark); }
+.bubble:empty { visibility: hidden; }
+.bubble:hover { transform: translateY(-1px); }
+@media (max-width: 760px) {
+  .bandin { flex-direction: column; align-items: stretch; padding-block: 22px 56px; gap: 14px; }
+  .mascot { margin: 0 0 -40px; justify-content: flex-end; }
+  .pinch svg { width: 104px; }
+  .bubble { margin-bottom: 58px; max-width: none; flex: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pinch .bob { animation: bob 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .pinch .wave { animation: wave 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .bubble { transition: transform .15s; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @keyframes wave { 0%, 55%, 100% { transform: rotate(0); } 65% { transform: rotate(-16deg); } 75% { transform: rotate(10deg); } 85% { transform: rotate(-10deg); } }
+}
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.search { position: relative; flex: 1 1 200px; max-width: 420px; }
+.search input { width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 12px 0 36px; font-size: 15px; }
+.search svg { position: absolute; left: 11px; top: 12px; width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 2; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+@media (max-width: 640px) { .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px; } .filters::-webkit-scrollbar { display: none; } .chip { flex: none; }  }
+.chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 500; min-height: 36px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip .sp { color: var(--muted); font-weight: 400; margin-left: 4px; font-size: 12.5px; }
+.chip[aria-pressed="true"] .sp { color: inherit; opacity: .7; }
+.msg { font-size: 13.5px; color: var(--muted); }
+
+.main { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: minmax(0, 1fr); } .detail { order: -1; } }
+
+/* list */
+.list { background: var(--surface); border: 1px solid color-mix(in oklab, var(--line) 70%, transparent); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; scroll-margin-top: 12px; }
+.listhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.sort { display: flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 2px; }
+.sort button { border: 0; background: transparent; padding: 5px 10px; border-radius: 6px; font-size: 13px; color: var(--muted); }
+.sort button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.rows { list-style: none; margin: 0; padding: 0; max-height: 1000px; overflow-y: auto; }
+@media (max-width: 900px) { .rows { max-height: none; } }
+.row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.row:last-child { border-bottom: 0; }
+.row:hover { background: color-mix(in oklab, var(--accent) 6%, transparent); }
+.row[aria-selected="true"] { background: color-mix(in oklab, var(--accent) 12%, transparent); }
+.rank { font-family: var(--font-data); font-size: 12px; color: var(--muted); text-align: right; }
+.rname { min-width: 0; }
+.rname b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rname small { color: var(--muted); font-size: 12.5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.strip { grid-column: 2 / 4; display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; height: 8px; border-radius: 2px; overflow: hidden; }
+.strip i { display: block; }
+.rmeta { grid-column: 2 / 4; display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.empty { padding: 24px 16px; text-align: center; color: var(--muted); }
+.empty svg { width: 90px; height: auto; display: block; margin: 0 auto 6px; overflow: visible; }
+.star { border: 0; background: transparent; padding: 0; width: 22px; height: 22px; display: inline-grid; place-items: center; color: var(--muted); }
+.star svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.star[aria-pressed="true"] { color: var(--star); }
+.star[aria-pressed="true"] svg { fill: currentColor; }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 9px 3px 4px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.pill .n { font-family: var(--font-data); border-radius: 999px; min-width: 30px; text-align: center; padding: 1px 6px; color: var(--surface); }
+.q-excellent { color: var(--excellent); } .q-excellent .n { background: var(--excellent); }
+.q-good { color: var(--good); } .q-good .n { background: var(--good); }
+.q-fair { color: var(--fair); } .q-fair .n { background: var(--fair); }
+.q-slow { color: var(--slow); } .q-slow .n { background: var(--slow); }
+
+/* detail */
+.detail { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid color-mix(in oklab, var(--line) 70%, transparent); border-radius: 16px; padding: 20px; min-width: 0; box-shadow: var(--shadow); }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; align-items: start; }
+.hero .titlerow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hero h2 { font-size: clamp(26px, 3.6vw, 36px); font-weight: 600; }
+.hero .star { width: 32px; height: 32px; }
+.hero .star svg { width: 22px; height: 22px; }
+.hero .where { color: var(--muted); margin-top: 4px; font-size: 14px; }
+.big { text-align: right; }
+.big { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.big .ring { display: block; }
+.big .ring .ringn { font-family: var(--font-display); font-weight: 700; font-size: 30px; fill: var(--ink); }
+.big .lbl { font-weight: 600; font-size: 13.5px; }
+.say { grid-column: 1 / -1; display: flex; gap: 10px; align-items: flex-end; }
+.saycrab { flex: none; width: 88px; margin-bottom: -6px; }
+@media (max-width: 640px) { .saycrab { width: 62px; } .verdict { font-size: 16px; padding: 10px 13px; } .hero { gap: 12px 14px; } }
+.saycrab svg { width: 100%; height: auto; display: block; overflow: visible; }
+.verdict { position: relative; font-size: 17.5px; line-height: 1.42; max-width: 62ch; margin: 0 0 6px; padding: 12px 16px; border-radius: 16px 16px 16px 4px; background: color-mix(in oklab, var(--crab) 9%, var(--surface)); min-width: 0; }
+.verdict b { font-weight: 700; }
+.windows { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; }
+.win { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.win.primary { border-color: var(--accent); background: color-mix(in oklab, var(--accent) 8%, transparent); }
+.win .t { font-family: var(--font-data); font-weight: 500; font-size: 16px; }
+.win small { color: var(--muted); font-size: 12.5px; }
+.nowline { grid-column: 1 / -1; font-size: 14.5px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+.nowline b { color: var(--ink); }
+.herofoot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+details.explain { font-size: 14px; color: var(--muted); }
+details.explain summary { cursor: pointer; color: var(--accent); font-weight: 500; }
+details.explain[open] summary { margin-bottom: 6px; }
+.bands { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: center; }
+.change { display: none; }
+@media (max-width: 900px) { .change { display: inline-flex; } }
+
+.readout { font-size: 13.5px; color: var(--muted); min-height: 1.5em; margin-top: 4px; }
+.readout b { color: var(--ink); font-weight: 600; }
+.chartwrap { overflow-x: auto; margin: 4px -6px 0; touch-action: pan-y; }
+svg.chart { display: block; width: 100%; min-width: 560px; height: auto; cursor: crosshair; }
+svg text { font-family: var(--font-data); font-size: 11px; fill: var(--muted); }
+svg .ext { fill: var(--ink); font-weight: 500; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 8px; border-radius: 2px; display: inline-block; }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.fact { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fact .v { font-weight: 600; font-size: 15.5px; }
+.fact .s { font-size: 12.5px; color: var(--muted); }
+.bar { height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 640px) { .week { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.day { border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; text-align: center; min-width: 0; }
+.day:hover { border-color: var(--accent); }
+.day[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.day .dow { font-weight: 600; font-size: 13px; }
+.day .dt { font-size: 11.5px; color: var(--muted); }
+.day .ds { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; }
+.day .dq { font-size: 11.5px; font-weight: 600; }
+.dbar { width: 70%; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.dbar i { display: block; height: 100%; background: currentColor; border-radius: 2px; }
+.day .dw { font-family: var(--font-data); font-size: 11px; color: var(--muted); }
+.day .dwind { font-size: 11px; color: var(--muted); }
+
+.sectionhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.sectionhead h3 { font-size: 19px; font-weight: 600; }
+.sectionhead small { color: var(--muted); font-size: 12.5px; }
+
+.tips { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 640px) { .tips { grid-template-columns: minmax(0, 1fr); } }
+.tips ul { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.note { font-size: 13.5px; color: var(--ink); background: color-mix(in oklab, var(--fair) 10%, transparent); border-left: 3px solid var(--fair); padding: 8px 12px; border-radius: 0 8px 8px 0; }
+.tidetable { display: grid; grid-template-columns: auto auto auto; gap: 4px 14px; justify-content: start; font-size: 14px; }
+dl.gloss { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; font-size: 14px; }
+dl.gloss dt { font-weight: 600; }
+dl.gloss dd { margin: 0; color: var(--muted); }
+@media (min-width: 641px) { dl.gloss { grid-template-columns: 9rem minmax(0, 1fr); } }
+
+footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; max-width: 90ch; }
+footer a { color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .row, .day, .chip, .btn { transition: background-color .15s, border-color .15s; } }
+</style>
+
+<header class="band">
+  <div class="bandin">
+    <div class="brand">
+      <h1>Gettin’ <span>Crabby!</span></h1>
+      <p>When to go crabbing at 37 spots on the Atlantic, Gulf and Pacific coasts. Pick a spot to see the best hours, then tap the chart to check any time of day.</p>
+      <div class="datebar" role="group" aria-label="Choose a date">
+      <button class="btn" id="prev" aria-label="Previous day">‹</button>
+      <input type="date" id="date" aria-label="Date">
+      <button class="btn" id="next" aria-label="Next day">›</button>
+      <button class="btn" id="today">Today</button>
+      <span class="live" id="live" title=""><i></i><span>Tide forecast</span></span>
+    </div>
+    </div>
+    <div class="mascot">
+      <button class="bubble" id="bubble" type="button"></button>
+      <div class="pinch" id="pinch" aria-hidden="true"></div>
+    </div>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C180 18 360 78 540 48 S900 16 1080 48 S1350 74 1440 42 V90 H0Z" fill="var(--wave)"/><path d="M0 64 C200 44 420 90 640 64 S1010 42 1210 66 S1390 72 1440 58 V90 H0Z" fill="var(--bg)"/></svg>
+</header>
+<div class="wrap">
+
+  <div class="toolbar">
+    <label class="search" for="q">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search spots" autocomplete="off" aria-label="Search spots">
+    </label>
+    <button class="btn" id="near"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Near me</button>
+    <span class="msg" id="msg" role="status"></span>
+  </div>
+  <nav class="filters" id="filters" aria-label="Region"></nav>
+
+  <div class="main">
+    <section class="list" id="list" aria-label="Crabbing spots">
+      <div class="listhead">
+        <span class="eyebrow" id="listtitle">Best spots today</span>
+        <div class="sort" role="group" aria-label="Sort spots">
+          <button id="sortDay" aria-pressed="true">Best today</button>
+          <button id="sortNow" aria-pressed="false">Right now</button>
+          <button id="sortAz" aria-pressed="false">A–Z</button>
+        </div>
+      </div>
+      <ul class="rows" id="rows" role="listbox" aria-label="Spots"></ul>
+    </section>
+
+    <section class="detail" id="detail" aria-live="polite"></section>
+  </div>
+
+  <footer>
+    <div><b>How the score works.</b> Every 10 minutes of the day gets a score from 0 to 100. It weighs the tide (which way the water is moving and how fast), the light (crabs feed more at dawn and dusk), how big the day's tides are compared with normal for that spot, how active crabs usually are that month, and wind and rain when a forecast is available. The best window is the strongest two hours between first light and an hour after sunset.</div>
+    <div><b>Tides</b> are computed from NOAA harmonic constants (via the open <a href="https://github.com/openwatersio/tide-database" target="_blank" rel="noopener">Neaps tide database</a>), in feet above MLLW and in each spot's local time. Live wind is from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>; water temperature and observed water level are from <a href="https://tidesandcurrents.noaa.gov" target="_blank" rel="noopener">NOAA Tides &amp; Currents</a>. Predictions can't see storms or river flow. Not for navigation.</div>
+    <div><b>Rules change by state and year.</b> Check seasons, size limits, catch limits and licence requirements with your state wildlife agency before you go.</div>
+  </footer>
+</div>
+
+<script>/*__TP__*/</script>
+<script>
+const STATIONS = /*__STATIONS__*/;
+
+/* ---------- regions, species and seasons ---------- */
+const REGIONS = ["Chesapeake", "Mid-Atlantic", "Southeast", "Gulf Coast", "Pacific"];
+const SPECIES = { blue: "Blue crab", dungeness: "Dungeness" };
+// Typical monthly activity, Jan..Dec (0–1). Blue crabs follow water temperature; Dungeness are fullest in late summer and fall.
+const SEASON = {
+  "Chesapeake":   [.10,.10,.20,.40,.62,.82,.95,1,1,.80,.45,.15],
+  "Mid-Atlantic": [.10,.10,.20,.38,.58,.80,.95,1,1,.78,.42,.15],
+  "Southeast":    [.35,.40,.55,.72,.85,.90,.95,1,1,.92,.72,.48],
+  "Gulf Coast":   [.40,.45,.62,.80,.90,.95,.95,.95,1,1,.80,.55],
+  "Pacific":      [.70,.65,.60,.60,.65,.75,.85,.90,1,1,.90,.80],
+};
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const TIPS = {
+  blue: { title: "Blue crab tips", items: [
+    "The incoming tide is prime. Crabs ride rising water into shallows and creek mouths to feed.",
+    "Work the last couple of hours of the incoming tide through the high-tide turn, then follow them out early on the outgoing tide.",
+    "Chicken necks or bunker on a hand line or collapsible trap. Check traps every 15–30 minutes.",
+    "Blue crabs slow down below about 60°F water and mostly stop feeding below 50°F.",
+  ] },
+  dungeness: { title: "Dungeness tips", items: [
+    "Fish around the tide turn, especially at high tide. Strong current drags rings and buries pots.",
+    "Small tides (around the quarter moons) give longer calm windows than big tides.",
+    "Fish carcasses, turkey legs or clam bait in a bait box. Soak rings 15–20 minutes and pots an hour or more.",
+    "Late summer and fall crabs are fullest. Soft-shell crabs right after a molt have little meat.",
+  ] },
+};
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" stroke-linejoin="round"/></svg>';
+
+/* ---------- Pinchy, the Dungeness crab ---------- */
+// Moods: party (excellent), happy (good), ok (fair), sleepy (slow), puzzled (no results).
+function crab(mood = "happy", size = 120) {
+  const top = x => 58 - 20 * Math.sqrt(Math.max(0, 1 - ((x - 60) / 40) ** 2));
+  let bumps = ""; for (let x = 25; x <= 95; x += 7.8) bumps += `<circle cx="${x.toFixed(1)}" cy="${(top(x) + 1.6).toFixed(1)}" r="3.5"/>`;
+  let legs = "";
+  for (const [x, y, dx, dy] of [[30, 66, -15, 4], [33, 70, -14, 10], [38, 73, -11, 15], [45, 75, -6, 18]]) {
+    legs += `<path d="M${x} ${y}q${(dx * .6).toFixed(1)} ${(dy * .1 - 4).toFixed(1)} ${dx} ${dy}"/><path d="M${120 - x} ${y}q${(-dx * .6).toFixed(1)} ${(dy * .1 - 4).toFixed(1)} ${-dx} ${dy}"/>`;
+  }
+  // Dungeness claws have white tips.
+  const claw = (cx, cy, rot, wave) => `<g transform="translate(${cx} ${cy}) rotate(${rot})"><g class="${wave ? "wave" : ""}"><ellipse rx="9.5" ry="7.5" fill="var(--crab)"/><ellipse cx="-4.6" cy="-8" rx="3.7" ry="6.6" transform="rotate(-18 -4.6 -8)" fill="var(--crab)"/><ellipse cx="4.6" cy="-9" rx="3.9" ry="7.2" transform="rotate(16 4.6 -9)" fill="var(--crab)"/><circle cx="-6.2" cy="-13.2" r="2.4" fill="var(--claw)"/><circle cx="6.8" cy="-15.2" r="2.5" fill="var(--claw)"/><ellipse cx="-2.5" cy="-1.5" rx="3" ry="2" fill="#fff" opacity=".22"/></g></g>`;
+  const leftUp = mood !== "sleepy";
+  const rightUp = mood === "party" || mood === "happy" || mood === "puzzled";
+  let arms = "", claws = "";
+  if (leftUp) { arms += `<path d="M24 55Q12 51 13 41"/>`; claws += claw(13, 34, -12, mood !== "puzzled"); }
+  else { arms += `<path d="M24 59Q12 61 10 66"/>`; claws += claw(9, 68, -104); }
+  if (rightUp) { arms += `<path d="M96 55Q108 51 107 41"/>`; claws += claw(107, 34, 12, false); }
+  else { arms += `<path d="M96 59Q108 61 110 66"/>`; claws += claw(111, 68, 104); }
+  const eye = x => mood === "sleepy"
+    ? `<circle cx="${x}" cy="27" r="6.5" fill="var(--crab)"/><path d="M${x - 4.5} 27.5q4.5 3.5 9 0" fill="none" stroke="var(--pupil)" stroke-width="2" stroke-linecap="round"/>`
+    : `<circle cx="${x}" cy="27" r="6.8" fill="#fff" stroke="var(--crab-dark)" stroke-width="1.4"/><circle cx="${x + (mood === "puzzled" ? (x < 60 ? 1.8 : -1.2) : .8)}" cy="${mood === "puzzled" ? 25.5 : 28}" r="${mood === "party" ? 4 : 3.5}" fill="var(--pupil)"/><circle cx="${x + 2}" cy="26" r="1.4" fill="#fff"/>`;
+  const mouth = {
+    party: `<path d="M52.5 59q7.5 10 15 0z" fill="var(--pupil)"/><path d="M56.2 62.4q3.8 2.4 7.6 0" fill="var(--cheek)"/>`,
+    happy: `<path d="M53.5 60q6.5 6.5 13 0" fill="none" stroke="var(--pupil)" stroke-width="2.3" stroke-linecap="round"/>`,
+    ok: `<path d="M55 61.5q5 3 10 0" fill="none" stroke="var(--pupil)" stroke-width="2.2" stroke-linecap="round"/>`,
+    sleepy: `<ellipse cx="60" cy="62" rx="2.4" ry="1.8" fill="var(--pupil)"/>`,
+    puzzled: `<path d="M55 62q2.5-2 5 0t5 0" fill="none" stroke="var(--pupil)" stroke-width="2.1" stroke-linecap="round"/>`,
+  }[mood];
+  const star = (x, y, k) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0-5L1.3-1.3 5 0 1.3 1.3 0 5-1.3 1.3-5 0-1.3-1.3Z" fill="var(--sun)"/>`;
+  const extra = mood === "party" ? star(28, 12, 1) + star(96, 8, .8) + star(104, 24, .55)
+    : mood === "sleepy" ? `<text x="80" y="20" font-family="var(--font-display)" font-weight="700" font-size="11" fill="var(--muted)">z</text><text x="88" y="11" font-family="var(--font-display)" font-weight="700" font-size="8" fill="var(--muted)">z</text>`
+    : mood === "puzzled" ? `<text x="84" y="16" font-family="var(--font-display)" font-weight="700" font-size="15" fill="var(--muted)">?</text>` : "";
+  return `<svg class="crab" width="${size}" height="${Math.round(size * 96 / 136)}" viewBox="-8 0 136 96" role="img" aria-label="Pinchy the crab">
+    ${extra}<g class="bob">
+    <g fill="none" stroke="var(--crab-dark)" stroke-width="4.2" stroke-linecap="round">${legs}</g>
+    <g fill="none" stroke="var(--crab)" stroke-width="5.5" stroke-linecap="round">${arms}</g>
+    <g stroke="var(--crab-dark)" stroke-width="3.4" stroke-linecap="round"><path d="M52 45L49.5 31"/><path d="M68 45L70.5 31"/></g>
+    <ellipse cx="60" cy="58" rx="40" ry="20" fill="var(--crab)"/><g fill="var(--crab)">${bumps}</g>
+    <path d="M24 62q36 22 72 0q-4 14-36 16q-32-2-36-16z" fill="var(--crab-dark)" opacity=".28"/>
+    <ellipse cx="45" cy="48" rx="12" ry="4" fill="#fff" opacity=".2"/>
+    ${eye(49.5)}${eye(70.5)}
+    <ellipse cx="41" cy="61" rx="5.2" ry="3.1" fill="var(--cheek)" opacity=".75"/><ellipse cx="79" cy="61" rx="5.2" ry="3.1" fill="var(--cheek)" opacity=".75"/>
+    ${mouth}${claws}</g></svg>`;
+}
+const moodOf = n => n >= 80 ? "party" : n >= 65 ? "happy" : n >= 50 ? "ok" : "sleepy";
+function ring(n) {
+  const C = 2 * Math.PI * 38;
+  return `<svg class="ring" viewBox="0 0 88 88" width="92" height="92" aria-hidden="true"><circle cx="44" cy="44" r="38" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="44" cy="44" r="38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C * n / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 44 44)"/><text x="44" y="54" text-anchor="middle" class="ringn">${n}</text></svg>`;
+}
+
+const slug = s => (s.name + " " + s.area.split(",").pop()).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+STATIONS.forEach(s => { s.slug = slug(s); s.state = s.area.split(",").pop().trim(); s.search = (s.name + " " + s.area + " " + s.group + " " + SPECIES[s.sp]).toLowerCase(); });
+
+/* ---------- small storage helpers (per viewer, optional) ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+
+/* ---------- time zone helpers ---------- */
+const fmtCache = {};
+function partsFmt(tz) {
+  return fmtCache["p" + tz] ||= new Intl.DateTimeFormat("en-US", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+function tzOffsetMin(ms, tz) {
+  const p = partsFmt(tz).formatToParts(new Date(ms)); const g = k => +p.find(x => x.type === k).value;
+  return (Date.UTC(g("year"), g("month") - 1, g("day"), g("hour") % 24, g("minute"), g("second")) - Math.floor(ms / 1000) * 1000) / 60000;
+}
+function zoned(y, m, d, h, tz) {
+  const guess = Date.UTC(y, m - 1, d, h);
+  const t = guess - tzOffsetMin(guess, tz) * 60000;
+  return guess - tzOffsetMin(t, tz) * 60000;
+}
+function fmtTime(ms, tz) {
+  const f = fmtCache["t" + tz] ||= new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" });
+  return f.format(new Date(ms));
+}
+// "4:20–6:20 PM" or "11:40 AM–1:40 PM"
+function fmtRange(a, b, tz) {
+  const A = fmtTime(a, tz), B = fmtTime(b, tz);
+  const [at, ap] = A.split(" "), [, bp] = B.split(" ");
+  return ap === bp ? `${at}–${B}` : `${A}–${B}`;
+}
+function fmtHour(ms, tz) {
+  const f = fmtCache["h" + tz] ||= new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric" });
+  return f.format(new Date(ms)).replace(" AM", "a").replace(" PM", "p");
+}
+const tzAbbr = (ms, tz) => new Intl.DateTimeFormat("en-US", { timeZone: tz, timeZoneName: "short" }).formatToParts(new Date(ms)).find(p => p.type === "timeZoneName").value;
+const ymdParse = s => s.split("-").map(Number);
+function ymdAdd(s, n) { const [y, m, d] = ymdParse(s); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10); }
+function localToday() { const n = new Date(); return new Date(n.getTime() - n.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
+function ymdLabel(s, opts) { const [y, m, d] = ymdParse(s); return new Date(Date.UTC(y, m - 1, d, 12)).toLocaleDateString("en-US", { timeZone: "UTC", ...opts }); }
+function daysBetween(a, b) { const [y1, m1, d1] = ymdParse(a), [y2, m2, d2] = ymdParse(b); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000); }
+const dur = ms => { const m = Math.max(0, Math.round(ms / 60000)); const h = Math.floor(m / 60); return h ? `${h} hr ${m % 60} min` : `${m} min`; };
+
+/* ---------- sun and moon ---------- */
+function sunTimes(y, m, d, lat, lon) {
+  const rad = Math.PI / 180;
+  const jd = Date.UTC(y, m - 1, d, 12) / 86400000 + 2440587.5;
+  const n = Math.round(jd - 2451545.0 + 0.0008);
+  const js = n - lon / 360;
+  const M = (357.5291 + 0.98560028 * js) % 360;
+  const C = 1.9148 * Math.sin(M * rad) + 0.02 * Math.sin(2 * M * rad) + 0.0003 * Math.sin(3 * M * rad);
+  const lam = (M + C + 180 + 102.9372) % 360;
+  const jt = 2451545.0 + js + 0.0053 * Math.sin(M * rad) - 0.0069 * Math.sin(2 * lam * rad);
+  const dec = Math.asin(Math.sin(lam * rad) * Math.sin(23.4397 * rad));
+  const cw = (Math.sin(-0.833 * rad) - Math.sin(lat * rad) * Math.sin(dec)) / (Math.cos(lat * rad) * Math.cos(dec));
+  const w = Math.acos(Math.max(-1, Math.min(1, cw))) / rad;
+  const toMs = j => (j - 2440587.5) * 86400000;
+  return { rise: toMs(jt - w / 360), set: toMs(jt + w / 360) };
+}
+const SYNODIC = 29.530588853, NEW_MOON = Date.UTC(2000, 0, 6, 18, 14);
+function moon(ms) {
+  const age = (((ms - NEW_MOON) / 86400000) % SYNODIC + SYNODIC) % SYNODIC;
+  const p = age / SYNODIC, k = (1 - Math.cos(2 * Math.PI * p)) / 2;
+  const names = ["New moon","Waxing crescent","First quarter","Waxing gibbous","Full moon","Waning gibbous","Last quarter","Waning crescent"];
+  return { p, k, name: names[Math.round(p * 8) % 8] };
+}
+function moonSvg(mo, size = 18) {
+  const r = size / 2 - 1, c = size / 2, waxing = mo.p < .5, cres = mo.k < .5;
+  const rx = Math.abs(1 - 2 * mo.k) * r;
+  const outer = waxing ? 1 : 0, inner = waxing ? (cres ? 0 : 1) : (cres ? 1 : 0);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="vertical-align:-3px;flex:none" aria-label="${mo.name}" role="img"><circle cx="${c}" cy="${c}" r="${r}" fill="var(--line)" stroke="var(--muted)" stroke-width=".6"/>` +
+    (mo.k > .01 ? `<path d="M${c} ${c - r}A${r} ${r} 0 0 ${outer} ${c} ${c + r}A${rx} ${r} 0 0 ${inner} ${c} ${c - r}Z" fill="var(--ink)"/>` : "") + `</svg>`;
+}
+
+/* ---------- live data (only where the page may reach the internet) ---------- */
+const LIVE = { wx: null, wxAt: 0, water: {} };
+const COMPASS = ["N","NE","E","SE","S","SW","W","NW"];
+const compass = deg => COMPASS[Math.round(((deg % 360) + 360) % 360 / 45) % 8];
+async function getJSON(url, ms = 9000) {
+  const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), ms);
+  try { const r = await fetch(url, { signal: ctl.signal }); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  finally { clearTimeout(tm); }
+}
+async function loadWeather() {
+  const lat = STATIONS.map(s => s.lat).join(","), lon = STATIONS.map(s => s.lon).join(",");
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&timeformat=unixtime&timezone=GMT&past_days=1&forecast_days=8`;
+  try {
+    const data = await getJSON(url, 12000);
+    const arr = Array.isArray(data) ? data : [data];
+    const wx = {};
+    arr.forEach((d, i) => { const h = d.hourly; if (!h) return; wx[STATIONS[i].id] = { t0: h.time[0] * 1000, n: h.time.length, temp: h.temperature_2m, rain: h.precipitation_probability, wind: h.wind_speed_10m, gust: h.wind_gusts_10m, dir: h.wind_direction_10m }; });
+    if (!Object.keys(wx).length) throw new Error("empty");
+    LIVE.wx = wx; LIVE.wxAt = Date.now(); dayCache.clear(); setLive(); render();
+  } catch (e) { setLive(); }
+}
+function wxAt(s, t) {
+  const w = LIVE.wx && LIVE.wx[s.id]; if (!w) return null;
+  const i = Math.floor((t - w.t0) / 3600000); if (i < 0 || i >= w.n || w.wind[i] == null) return null;
+  return { wind: w.wind[i], gust: w.gust[i], dir: w.dir[i], temp: w.temp[i], rain: w.rain[i] };
+}
+function wxFactor(x) {
+  if (!x) return 1;
+  const eff = Math.max(x.wind, (x.gust || 0) * .7);
+  const wf = eff < 8 ? 1 : eff < 12 ? .93 : eff < 16 ? .82 : eff < 20 ? .68 : eff < 25 ? .52 : .4;
+  const rf = x.rain > 70 ? .88 : x.rain > 40 ? .95 : 1;
+  return wf * rf;
+}
+const windWord = x => { const e = Math.max(x.wind, (x.gust || 0) * .7); return e < 8 ? "Light wind" : e < 12 ? "Breezy" : e < 16 ? "Windy" : e < 20 ? "Very windy" : "Too windy"; };
+const wxText = x => `${Math.round(x.wind)} mph ${compass(x.dir)}${x.gust > x.wind + 5 ? `, gusts ${Math.round(x.gust)}` : ""}`;
+const NOAA = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?application=gettn_crabby&format=json&time_zone=gmt&units=english&date=latest&station=";
+async function loadWater(s) {
+  const rec = LIVE.water[s.id];
+  if (rec && Date.now() - rec.at < 10 * 60000) return;
+  LIVE.water[s.id] = { at: Date.now(), pending: true };
+  const pick = d => d && d.data && d.data[0] && d.data[0].v !== "" ? { v: +d.data[0].v, t: Date.parse(d.data[0].t.replace(" ", "T") + "Z") } : null;
+  const [temp, level] = await Promise.all([
+    getJSON(NOAA + s.id + "&product=water_temperature").then(pick).catch(() => null),
+    getJSON(NOAA + s.id + "&product=water_level&datum=MLLW").then(pick).catch(() => null),
+  ]);
+  LIVE.water[s.id] = { at: Date.now(), temp, level };
+  if (temp || level) { setLive(); if (state.sel === s) renderDetail(); }
+}
+function setLive() {
+  const el = $("live"), on = !!LIVE.wx || Object.values(LIVE.water).some(w => w.temp || w.level);
+  el.classList.toggle("on", on);
+  el.querySelector("span").textContent = on ? "Live wind and water data" : "Tide forecast";
+  el.title = on ? "Scores include the wind and rain forecast" : "Live wind and water data aren't available here, so scores use tides, light, moon and season.";
+}
+
+/* ---------- tides and scoring ---------- */
+const FT = 3.28084;
+const predictors = {};
+function predictor(s) {
+  return predictors[s.id] ||= TidePredictor.createTidePredictor(s.hc.map(([name, amplitude, phase]) => ({ name, amplitude, phase })), { offset: s.off });
+}
+// Tide stage curves over one cycle: 0 = low-tide turn, .5 = high-tide turn, back to 1.
+const STAGE = {
+  blue:      [[0,.30],[.12,.50],[.30,.82],[.42,.95],[.50,.95],[.58,.82],[.72,.55],[.88,.32],[1,.30]],
+  dungeness: [[0,.80],[.10,.62],[.25,.28],[.40,.72],[.50,1],[.60,.72],[.75,.28],[.90,.62],[1,.80]],
+};
+const interp = (pts, x) => { for (let i = 1; i < pts.length; i++) if (x <= pts[i][0]) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; return y0 + (y1 - y0) * (x - x0) / (x1 - x0); } return pts[pts.length - 1][1]; };
+function stageName(c) {
+  if (c < .08 || c >= .92) return "Low-tide turn";
+  if (c < .2) return "Early incoming"; if (c < .38) return "Incoming"; if (c < .46) return "Late incoming";
+  if (c < .54) return "High-tide turn"; if (c < .62) return "Early outgoing"; if (c < .8) return "Outgoing"; return "Late outgoing";
+}
+function lightOf(t, sun, sp) {
+  const D = 75 * 60000;
+  if (Math.abs(t - sun.rise) <= D) return { name: "Dawn", v: 1 };
+  if (Math.abs(t - sun.set) <= D) return { name: "Dusk", v: 1 };
+  if (t > sun.rise && t < sun.set) {
+    const x = Math.abs(t - (sun.rise + sun.set) / 2) / ((sun.set - sun.rise) / 2);
+    return { name: "Daylight", v: sp === "blue" ? .62 + .3 * x : .78 + .15 * x };
+  }
+  return { name: "Dark", v: sp === "blue" ? .8 : .85 };
+}
+const rangeScore = (r, sp) => sp === "dungeness" ? Math.max(.35, Math.min(1, 1.3 - .55 * r)) : Math.max(.4, 1 - .55 * Math.abs(r - 1));
+const rangeName = r => r > 1.15 ? "Big tides" : r < .85 ? "Small tides" : "Normal tides";
+const quality = n => n >= 80 ? ["excellent", "Excellent"] : n >= 65 ? ["good", "Good"] : n >= 50 ? ["fair", "Fair"] : ["slow", "Slow"];
+
+const dayCache = new Map();
+function dayData(s, ymd) {
+  const key = s.id + ymd; if (dayCache.has(key)) return dayCache.get(key);
+  const [y, m, d] = ymdParse(ymd), [y2, m2, d2] = ymdParse(ymdAdd(ymd, 1));
+  const start = zoned(y, m, d, 0, s.tz), end = zoned(y2, m2, d2, 0, s.tz);
+  const p = predictor(s);
+  const ext = p.getExtremesPrediction({ start: new Date(start - 16 * 3600e3), end: new Date(end + 16 * 3600e3) }).map(e => ({ t: e.time.getTime(), ft: e.level * FT, high: e.high }));
+  const tl = p.getTimelinePrediction({ start: new Date(start), end: new Date(end), timeFidelity: 600 });
+  const inDay = ext.filter(e => e.t >= start && e.t < end);
+  const lv = tl.map(x => x.level * FT);
+  const rangeFt = inDay.length >= 2 ? Math.max(...inDay.map(e => e.ft)) - Math.min(...inDay.map(e => e.ft)) : Math.max(...lv) - Math.min(...lv);
+  const ratio = rangeFt / (s.gt * FT);
+  const R = rangeScore(ratio, s.sp);
+  const S = SEASON[s.group][m - 1];
+  const sun = sunTimes(y, m, d, s.lat, s.lon);
+  let hasWx = false;
+  const samples = tl.map((x, i) => {
+    const t = x.time.getTime();
+    let j = ext.findIndex(e => e.t > t); if (j < 1) j = 1;
+    const e0 = ext[j - 1], e1 = ext[j] || e0;
+    const f = e1.t > e0.t ? Math.min(1, Math.max(0, (t - e0.t) / (e1.t - e0.t))) : 0;
+    const c = e0.high ? .5 + .5 * f : .5 * f;
+    const T = interp(STAGE[s.sp], c);
+    const L = lightOf(t, sun, s.sp);
+    const wx = wxAt(s, t); if (wx) hasWx = true;
+    const base = .55 * T + .25 * L.v + .20 * R;
+    const score = Math.round(100 * Math.pow(base, 1.6) * (.15 + .85 * S) * wxFactor(wx));
+    return { t, ft: lv[i], c, T, L, wx, score, next: e1 };
+  });
+  // Best two-hour windows (12 samples) between first light and an hour after sunset.
+  const W = 12, lo = sun.rise - 90 * 60000, hi = sun.set + 60 * 60000;
+  const cands = [];
+  for (let i = 0; i + W <= samples.length; i++) {
+    if (samples[i].t < lo || samples[i + W - 1].t > hi) continue;
+    let sum = 0; for (let k = i; k < i + W; k++) sum += samples[k].score;
+    cands.push({ i, avg: sum / W });
+  }
+  cands.sort((a, b) => b.avg - a.avg);
+  const wins = [];
+  for (const cnd of cands) { if (wins.every(w => Math.abs(w.i - cnd.i) >= W + 6)) wins.push(cnd); if (wins.length === 2) break; }
+  const windows = wins.map(w => {
+    const mid = samples[w.i + W / 2];
+    return { start: samples[w.i].t, end: samples[w.i + W - 1].t + 600000, score: Math.round(w.avg), stage: stageName(mid.c), c: mid.c, light: mid.L.name, T: mid.T, L: mid.L.v, wx: mid.wx };
+  }).sort((a, b) => b.score - a.score);
+  const out = { s, ymd, start, end, ext, inDay, samples, sun, rangeFt, ratio, R, S, month: m - 1, windows, hasWx,
+    dayScore: windows[0] ? windows[0].score : Math.max(...samples.map(x => x.score)), moon: moon((start + end) / 2) };
+  dayCache.set(key, out);
+  if (dayCache.size > 400) dayCache.delete(dayCache.keys().next().value);
+  return out;
+}
+const sampleAt = (dd, t) => dd.samples[Math.max(0, Math.min(dd.samples.length - 1, Math.round((t - dd.start) / 600000)))];
+const heat = n => `color-mix(in oklab, var(--accent) ${Math.max(6, Math.min(100, (n - 25) * 1.6))}%, var(--line))`;
+const pill = n => { const [k, l] = quality(n); return `<span class="pill q-${k}"><span class="n">${n}</span>${l}</span>`; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// One plain-English sentence for the day.
+function verdict(dd) {
+  const s = dd.s, w = dd.windows[0]; if (!w) return "";
+  const tz = s.tz, [, ql] = quality(dd.dayScore);
+  const turn = dd.inDay.find(e => e.t >= w.start - 45 * 60000 && e.t <= w.end + 45 * 60000);
+  let tide;
+  if (turn) tide = `${turn.high ? "High" : "Low"} tide is at ${fmtTime(turn.t, tz)}`;
+  else tide = w.c < .5 ? "The tide is coming in" : "The tide is going out";
+  if (!turn && w.c < .5) { const nx = dd.ext.find(e => e.t > w.start); if (nx) tide += `, high at ${fmtTime(nx.t, tz)}`; }
+  const light = { Dawn: ", right around sunrise", Dusk: ", as the sun goes down", Dark: ", after dark", Daylight: "" }[w.light];
+  let lead = `<b>Go ${fmtRange(w.start, w.end, tz)}.</b> ${tide}${light}.`;
+  if (w.wx) lead += ` ${windWord(w.wx)} (${wxText(w.wx)}).`;
+  let tail = "";
+  if (dd.S < .35) tail = ` ${MONTHS[dd.month]} is off-season here, so expect few crabs.`;
+  else if (ql === "Slow") tail = " A slow day overall. Another day this week may be better.";
+  else if (ql === "Excellent") tail = " One of the better days to go.";
+  return lead + tail;
+}
+
+/* ---------- state ---------- */
+const state = { ymd: localToday(), region: store.get("pt-region", "All"), sort: "day", sel: null, q: "", weekAnchor: null, here: null, hover: null };
+if (state.region !== "All" && state.region !== "Saved" && !REGIONS.includes(state.region)) state.region = "All";
+let saved = new Set(store.get("pt-saved", []));
+const fromHash = () => STATIONS.find(s => s.slug === location.hash.slice(1));
+state.sel = fromHash() || STATIONS.find(s => s.slug === store.get("pt-last", "")) || null;
+if (state.sel && state.region !== "All" && (state.region === "Saved" ? !saved.has(state.sel.slug) : state.sel.group !== state.region)) state.region = "All";
+if (state.region === "Saved" && !saved.size) state.region = "All";
+const isToday = () => state.ymd === localToday();
+const $ = id => document.getElementById(id);
+
+function distMi(a, b) {
+  const R = 3958.8, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/* ---------- render: filters + list ---------- */
+function renderFilters() {
+  const opts = ["All", ...(saved.size ? ["Saved"] : []), ...REGIONS];
+  $("filters").innerHTML = opts.map(r => {
+    const sp = r === "All" ? STATIONS.length + " spots" : r === "Saved" ? saved.size : r === "Pacific" ? "Dungeness" : "Blue crab";
+    return `<button class="chip" data-region="${r}" aria-pressed="${state.region === r}">${r === "Saved" ? "★ Saved" : r}<span class="sp">${sp}</span></button>`;
+  }).join("");
+}
+function visible() {
+  const q = state.q.trim().toLowerCase();
+  return STATIONS.filter(s => (state.region === "All" || (state.region === "Saved" ? saved.has(s.slug) : s.group === state.region)) && (!q || q.split(/\s+/).every(w => s.search.includes(w))));
+}
+function renderList() {
+  const now = Date.now();
+  const items = visible().map(s => { const dd = dayData(s, state.ymd); return { s, dd, nowScore: isToday() ? sampleAt(dd, now).score : null, mi: state.here ? distMi(state.here, s) : null }; });
+  if (state.sort === "now" && isToday()) items.sort((a, b) => b.nowScore - a.nowScore);
+  else if (state.sort === "near" && state.here) items.sort((a, b) => a.mi - b.mi);
+  else if (state.sort === "az") items.sort((a, b) => a.s.name.localeCompare(b.s.name));
+  else items.sort((a, b) => b.dd.dayScore - a.dd.dayScore);
+  if (!state.sel && items.length) state.sel = items[0].s;
+  $("sortNow").disabled = !isToday();
+  $("sortNow").title = isToday() ? "" : "Switch to today to rank by right now";
+  const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "short", month: "short", day: "numeric" });
+  $("listtitle").textContent = state.sort === "now" && isToday() ? "Best spots right now" : state.sort === "near" ? "Closest to you" : state.sort === "az" ? "All spots A–Z" : "Best spots " + (isToday() ? "today" : "on " + when);
+  if (!items.length) {
+    $("rows").innerHTML = `<li class="empty">${crab("puzzled", 90)}No spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
+    return;
+  }
+  const ranked = state.sort === "day" || state.sort === "now";
+  $("rows").innerHTML = items.map(({ s, dd, nowScore, mi }, i) => {
+    const hours = []; for (let h = 0; h < 24; h++) { const sl = dd.samples.slice(h * 6, h * 6 + 6); hours.push(Math.round(sl.reduce((a, x) => a + x.score, 0) / (sl.length || 1))); }
+    const w = dd.windows[0];
+    const shown = state.sort === "now" && nowScore != null ? nowScore : dd.dayScore;
+    const right = mi != null ? `${mi < 10 ? mi.toFixed(1) : Math.round(mi)} mi away` : nowScore != null && state.sort !== "now" ? `Now ${nowScore}` : "";
+    return `<li class="row" role="option" tabindex="0" data-slug="${s.slug}" aria-selected="${s === state.sel}">
+      <span class="rank">${ranked ? i + 1 : ""}</span>
+      <span class="rname"><b>${esc(s.name)}</b><small>${esc(s.area)} · ${SPECIES[s.sp]}</small></span>
+      <span style="display:inline-flex;align-items:center;gap:6px">${pill(shown)}<button class="star" data-star="${s.slug}" aria-pressed="${saved.has(s.slug)}" aria-label="${saved.has(s.slug) ? "Remove from" : "Add to"} saved spots">${STAR}</button></span>
+      <span class="strip" aria-hidden="true">${hours.map(n => `<i style="background:${heat(n)}"></i>`).join("")}</span>
+      <span class="rmeta"><span>Best <span class="mono">${w ? fmtRange(w.start, w.end, s.tz) : "—"}</span></span><span>${right}</span></span>
+    </li>`;
+  }).join("");
+}
+
+/* ---------- render: detail ---------- */
+const CH = { W: 720, H: 270, L: 38, R: 12, T: 34, B: 40 };
+function chartSvg(dd) {
+  const s = dd.s, { W, H, L, R, T, B } = CH, ph = H - T - B;
+  const span = dd.end - dd.start;
+  const x = t => L + (t - dd.start) / span * (W - L - R);
+  const lv = dd.samples.map(p => p.ft);
+  let mn = Math.min(...lv), mx = Math.max(...lv);
+  const rg = Math.max(.6, mx - mn); mx += rg * .26; mn -= rg * .24;
+  const y = v => T + (mx - v) / (mx - mn) * ph;
+  dd.chart = { x, y };
+  const stepFt = (mx - mn) > 8 ? 2 : (mx - mn) > 3 ? 1 : .5;
+  let g = "";
+  g += `<rect x="${L}" y="${T}" width="${Math.max(0, x(dd.sun.rise) - L)}" height="${ph}" fill="var(--night)"/>`;
+  g += `<rect x="${x(dd.sun.set)}" y="${T}" width="${Math.max(0, W - R - x(dd.sun.set))}" height="${ph}" fill="var(--night)"/>`;
+  for (let v = Math.ceil(mn / stepFt) * stepFt; v <= mx; v += stepFt) {
+    g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${+v.toFixed(1)}</text>`;
+  }
+  const lx = dd.windows.map(w => (x(w.start) + x(w.end)) / 2);
+  dd.windows.forEach((w, i) => {
+    g += `<rect x="${x(w.start)}" y="${T}" width="${x(w.end) - x(w.start)}" height="${ph}" fill="var(--accent)" opacity="${i ? .08 : .16}"/>`;
+    if (i && Math.abs(lx[1] - lx[0]) < 130) return;
+    g += `<text x="${(x(w.start) + x(w.end)) / 2}" y="${T - 12}" text-anchor="middle" style="fill:var(--accent);font-weight:500">${i ? "Also good" : "Best"} · ${w.score}</text>`;
+  });
+  const pts = dd.samples.map(p => `${x(p.t).toFixed(1)},${y(p.ft).toFixed(1)}`);
+  g += `<path d="M${pts[0]}L${pts.join("L")}L${x(dd.samples.at(-1).t)},${T + ph}L${L},${T + ph}Z" fill="var(--water)" opacity=".14"/>`;
+  g += `<path d="M${pts.join("L")}" fill="none" stroke="var(--water)" stroke-width="2.2" stroke-linejoin="round"/>`;
+  dd.inDay.forEach(e => {
+    const ex = x(e.t), ey = y(e.ft), up = e.high;
+    const anchor = ex < L + 40 ? "start" : ex > W - R - 40 ? "end" : "middle";
+    g += `<circle cx="${ex}" cy="${ey}" r="3.5" fill="var(--surface)" stroke="var(--water)" stroke-width="2"/>`;
+    g += `<text class="ext" x="${ex}" y="${up ? ey - 18 : ey + 16}" text-anchor="${anchor}">${up ? "High" : "Low"} ${fmtTime(e.t, s.tz)}</text>`;
+    g += `<text x="${ex}" y="${up ? ey - 7 : ey + 27}" text-anchor="${anchor}">${e.ft.toFixed(1)} ft</text>`;
+  });
+  const by = T + ph + 6, bw = (W - L - R) / dd.samples.length;
+  dd.samples.forEach((p, i) => { g += `<rect x="${(L + i * bw).toFixed(2)}" y="${by}" width="${(bw + .4).toFixed(2)}" height="9" fill="${heat(p.score)}"/>`; });
+  for (let h = 0; h <= 24; h += 3) {
+    const t = dd.start + h * 3600e3; if (t > dd.end) break;
+    g += `<line x1="${x(t)}" x2="${x(t)}" y1="${by + 9}" y2="${by + 14}" stroke="var(--muted)"/><text x="${x(t)}" y="${by + 27}" text-anchor="${h === 0 ? "start" : h === 24 ? "end" : "middle"}">${fmtHour(t, s.tz)}</text>`;
+  }
+  const now = Date.now();
+  if (now >= dd.start && now < dd.end) {
+    const p = sampleAt(dd, now);
+    g += `<line x1="${x(now)}" x2="${x(now)}" y1="${T}" y2="${by + 9}" stroke="var(--ink)" stroke-dasharray="3 3"/><circle cx="${x(now)}" cy="${y(p.ft)}" r="4.5" fill="var(--ink)"/><text x="${x(now) + 6}" y="${T + 12}" class="ext">Now</text>`;
+  }
+  g += `<g id="guide" visibility="hidden"><line id="gl" y1="${T}" y2="${by + 9}" stroke="var(--accent)" stroke-width="1.5"/><circle id="gc" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/></g>`;
+  g += `<rect id="hit" x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent"/>`;
+  return `<svg class="chart" id="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Tide height and crabbing score through the day. Tap or hover for details.">${g}</svg>`;
+}
+function readoutText(dd, p) {
+  const tz = dd.s.tz, [, ql] = quality(p.score);
+  let t = `<b>${fmtTime(p.t, tz)}</b> · ${p.ft.toFixed(1)} ft, ${stageName(p.c).toLowerCase()} · ${p.L.name.toLowerCase()} · <b>score ${p.score}</b> (${ql.toLowerCase()})`;
+  if (p.wx) t += ` · ${wxText(p.wx)}, ${Math.round(p.temp ?? p.wx.temp)}°F`;
+  return t;
+}
+function defaultReadout(dd) {
+  const now = Date.now();
+  if (now >= dd.start && now < dd.end) return readoutText(dd, sampleAt(dd, now));
+  return "Tap or hover on the chart to see the tide and score at any time.";
+}
+function moveGuide(ev) {
+  const svg = $("chart"); if (!svg) return;
+  const dd = dayData(state.sel, state.ymd); if (!dd.chart) return;
+  const r = svg.getBoundingClientRect();
+  const vx = (ev.clientX - r.left) / r.width * CH.W;
+  const t = dd.start + (vx - CH.L) / (CH.W - CH.L - CH.R) * (dd.end - dd.start);
+  if (t < dd.start || t > dd.end) return;
+  const p = sampleAt(dd, t);
+  const gx = dd.chart.x(p.t);
+  $("guide").setAttribute("visibility", "visible");
+  $("gl").setAttribute("x1", gx); $("gl").setAttribute("x2", gx);
+  $("gc").setAttribute("cx", gx); $("gc").setAttribute("cy", dd.chart.y(p.ft));
+  $("readout").innerHTML = readoutText(dd, p);
+}
+function hideGuide() {
+  const g = $("guide"); if (g) g.setAttribute("visibility", "hidden");
+  if ($("readout") && state.sel) $("readout").innerHTML = defaultReadout(dayData(state.sel, state.ymd));
+}
+
+function renderDetail() {
+  const s = state.sel;
+  if (!s) { $("detail").innerHTML = `<div class="card">Pick a spot from the list to see its best crabbing times.</div>`; return; }
+  const dd = dayData(s, state.ymd);
+  const [qk, ql] = quality(dd.dayScore);
+  const now = Date.now();
+  const water = LIVE.water[s.id] || {};
+  let nowLine = "";
+  if (now >= dd.start && now < dd.end) {
+    const p = sampleAt(dd, now), [, nl] = quality(p.score);
+    let line = `<span>Right now: <b>${p.score}, ${nl.toLowerCase()}</b>. ${stageName(p.c)} tide at <span class="mono">${p.ft.toFixed(1)} ft</span>. ${p.next.high ? "High" : "Low"} tide in ${dur(p.next.t - now)} (${fmtTime(p.next.t, s.tz)}).</span>`;
+    const extra = [];
+    if (water.level && now - water.level.t < 3 * 3600e3) {
+      const pred = predictor(s).getTimelinePrediction({ start: new Date(water.level.t), end: new Date(water.level.t + 60000), timeFidelity: 60 })[0].level * FT;
+      const diff = water.level.v - pred;
+      extra.push(Math.abs(diff) < .3 ? "Water is running close to the prediction" : `Water is running <b>${Math.abs(diff).toFixed(1)} ft ${diff > 0 ? "above" : "below"}</b> the prediction${diff > 0 ? " (often onshore wind or rain runoff)" : " (often offshore wind)"}`);
+    }
+    if (water.temp && now - water.temp.t < 6 * 3600e3) {
+      const wt = water.temp.v;
+      const comment = s.sp === "blue" ? (wt < 50 ? ", too cold for most blue crabs" : wt < 60 ? ", cool, so crabs will be sluggish" : wt > 85 ? ", very warm" : ", good for blue crabs") : (wt > 62 ? ", warm for Dungeness" : "");
+      extra.push(`Water temperature <b>${wt.toFixed(0)}°F</b>${comment}`);
+    }
+    if (extra.length) line += `<span>${extra.join(". ")}. <span style="font-size:12px">NOAA, ${Math.round((now - Math.max(water.level?.t || 0, water.temp?.t || 0)) / 60000)} min ago</span></span>`;
+    nowLine = `<div class="nowline">${line}</div>`;
+  }
+  const winHtml = dd.windows.map((w, i) => `<div class="win${i ? "" : " primary"}"><span class="eyebrow">${i ? "Also good" : "Best time"}</span><span class="t">${fmtRange(w.start, w.end, s.tz)}</span><small>${w.stage} · ${w.light}${w.wx ? " · " + Math.round(w.wx.wind) + " mph" : ""} · score ${w.score}</small></div>`).join("");
+  const best = dd.windows[0];
+  const seasonPeak = SEASON[s.group].indexOf(Math.max(...SEASON[s.group]));
+  const facts = [
+    ["Tide", best ? best.stage : "—", s.sp === "blue" ? "Blue crabs move in on rising water" : "Pots hold best when the current is slack", best ? best.T : 0],
+    ["Light", best ? best.light : "—", `Sunrise ${fmtTime(dd.sun.rise, s.tz)} · Sunset ${fmtTime(dd.sun.set, s.tz)}`, best ? best.L : 0],
+    ["Tide size", rangeName(dd.ratio), `${dd.rangeFt.toFixed(1)} ft today, ${(s.gt * FT).toFixed(1)} ft usual`, dd.R],
+    ["Season", `${MONTHS[dd.month]}: ${dd.S >= .9 ? "peak" : dd.S >= .6 ? "active" : dd.S >= .35 ? "slowing" : "off-season"}`, `Usually best ${MONTHS[seasonPeak]}–${MONTHS[(seasonPeak + 1) % 12]}`, dd.S],
+  ];
+  if (best && best.wx) facts.push(["Weather", windWord(best.wx), `${wxText(best.wx)} · ${Math.round(best.wx.temp)}°F · ${best.wx.rain ?? 0}% rain`, wxFactor(best.wx)]);
+  const ws = state.weekAnchor && daysBetween(state.weekAnchor, state.ymd) >= 0 && daysBetween(state.weekAnchor, state.ymd) < 7 ? state.weekAnchor : state.ymd;
+  const week = []; for (let i = 0; i < 7; i++) week.push(dayData(s, ymdAdd(ws, i)));
+  const bestDay = week.reduce((a, b) => b.dayScore > a.dayScore ? b : a);
+  const tip = TIPS[s.sp];
+  const shallow = s.gt * FT < 2;
+  const isSaved = saved.has(s.slug);
+  $("detail").innerHTML = `
+    <div class="card hero">
+      <div>
+        <span class="eyebrow">${esc(s.group)} · ${SPECIES[s.sp]}</span>
+        <div class="titlerow"><h2>${esc(s.name)}</h2><button class="star" data-star="${s.slug}" aria-pressed="${isSaved}" aria-label="${isSaved ? "Remove from" : "Add to"} saved spots" title="${isSaved ? "Saved" : "Save this spot"}">${STAR}</button></div>
+        <div class="where">${esc(s.area)} · ${ymdLabel(state.ymd, { weekday: "long", month: "long", day: "numeric" })}</div>
+      </div>
+      <div class="big q-${qk}" aria-label="Score ${dd.dayScore} out of 100, ${ql}">${ring(dd.dayScore)}<div class="lbl">${ql} day</div></div>
+      <div class="say"><div class="saycrab">${crab(moodOf(dd.dayScore), 88)}</div><p class="verdict">${verdict(dd)}</p></div>
+      <div class="windows">${winHtml}</div>
+      ${nowLine}
+      <div class="herofoot">
+        <details class="explain"><summary>What the score means</summary>
+          <div class="bands">${pill(85)}<span>Go if you can. Tide, light and season all line up.</span>${pill(70)}<span>A solid time to crab.</span>${pill(55)}<span>Worth it if you're close by.</span>${pill(40)}<span>Expect slow crabbing.</span></div>
+        </details>
+        <button class="btn change" id="change">Change spot</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sectionhead"><h3>Tide and score through the day</h3><small>Feet above low water · ${tzAbbr(dd.start + 43200e3, s.tz)}</small></div>
+      <div class="readout" id="readout" aria-live="off">${defaultReadout(dd)}</div>
+      <div class="chartwrap">${chartSvg(dd)}</div>
+      <div class="legend"><span><i style="background:var(--water);opacity:.5"></i>Tide height</span><span><i style="background:var(--accent);opacity:.35"></i>Best times</span><span><i style="background:var(--night)"></i>Dark</span><span><i style="background:linear-gradient(90deg, ${heat(30)}, ${heat(85)})"></i>Score, low to high</span></div>
+    </div>
+    <div class="card">
+      <div class="sectionhead"><h3>Next 7 days</h3><small>Best day: ${bestDay.ymd === localToday() ? "today" : ymdLabel(bestDay.ymd, { weekday: "long" })}. Tap a day to see it.</small></div>
+      <div class="week">${week.map(w => { const [k, l] = quality(w.dayScore); const bw = w.windows[0]; return `<button class="day" data-ymd="${w.ymd}" aria-pressed="${w.ymd === state.ymd}" aria-label="${ymdLabel(w.ymd, { weekday: "long", month: "long", day: "numeric" })}, score ${w.dayScore}, ${l}"><span class="dow">${w.ymd === localToday() ? "Today" : ymdLabel(w.ymd, { weekday: "short" })}</span><span class="dt">${ymdLabel(w.ymd, { month: "short", day: "numeric" })}</span><span class="ds q-${k}">${w.dayScore}</span><span class="dq q-${k}">${l}</span><span class="dbar q-${k}"><i style="width:${w.dayScore}%"></i></span><span class="dw">${bw ? fmtTime(bw.start, s.tz).replace(" ", "").toLowerCase() : "—"}</span>${bw && bw.wx ? `<span class="dwind">${Math.round(bw.wx.wind)} mph</span>` : ""}${moonSvg(w.moon)}</button>`; }).join("")}</div>
+    </div>
+    <div class="card">
+      <div class="sectionhead"><h3>Why ${best ? fmtRange(best.start, best.end, s.tz) : "this day"} scores ${best ? best.score : dd.dayScore}</h3><small style="display:inline-flex;gap:6px;align-items:center">${moonSvg(dd.moon, 14)} ${dd.moon.name}, ${Math.round(dd.moon.k * 100)}% lit</small></div>
+      <div class="facts">${facts.map(([k, v, sub, f]) => `<div class="fact"><span class="eyebrow">${k}</span><span class="v">${v}</span><div class="bar"><i style="width:${Math.round(f * 100)}%"></i></div><span class="s">${sub}</span></div>`).join("")}</div>
+    </div>
+    <div class="card tips">
+      <div><h3>${tip.title}</h3><ul>${tip.items.map(t => `<li>${t}</li>`).join("")}</ul></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${shallow ? `<div class="note">Tides here only rise and fall about ${(s.gt * FT).toFixed(1)} ft, so wind often moves more water than the tide does. Treat the times as a guide.</div>` : ""}
+        ${dd.S < .35 ? `<div class="note">${MONTHS[dd.month]} is usually slow here. Crabs go deep or bury in mud when the water is cold.</div>` : ""}
+        <div class="eyebrow">Tides for ${isToday() ? "today" : ymdLabel(state.ymd, { month: "short", day: "numeric" })}</div>
+        <div class="mono tidetable">${dd.inDay.map(e => `<span>${e.high ? "High" : "Low"}</span><span>${fmtTime(e.t, s.tz)}</span><span>${e.ft.toFixed(1)} ft</span>`).join("")}</div>
+        <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=${s.id}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13.5px">NOAA station ${s.id} →</a>
+      </div>
+    </div>
+    <details class="card explain" id="gloss">
+      <summary>Tide words explained</summary>
+      <dl class="gloss">
+        <dt>Incoming tide</dt><dd>Water is rising toward high tide. Also called the flood.</dd>
+        <dt>Outgoing tide</dt><dd>Water is falling toward low tide. Also called the ebb.</dd>
+        <dt>Tide turn</dt><dd>The quiet half hour or so around high or low tide when the current stops before changing direction. Also called slack water.</dd>
+        <dt>Big tides</dt><dd>Larger than usual rises and falls, with stronger currents. They happen near the new and full moon (spring tides).</dd>
+        <dt>Small tides</dt><dd>Gentler tides with weaker currents, near the half moons (neap tides).</dd>
+        <dt>Feet above low water</dt><dd>Heights are measured from the average of the lowest daily tide (MLLW), the zero on nautical charts. A negative number means an extra-low tide.</dd>
+      </dl>
+    </details>`;
+  if (state.glossOpen) $("gloss").open = true;
+}
+
+function renderBubble() {
+  const pool = saved.size ? STATIONS.filter(s => saved.has(s.slug)) : STATIONS;
+  const best = pool.map(s => dayData(s, state.ymd)).reduce((a, b) => b.dayScore > a.dayScore ? b : a);
+  const w = best.windows[0];
+  const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "long" });
+  $("bubble").dataset.slug = best.s.slug;
+  $("bubble").innerHTML = `<span class="eyebrow">${saved.size ? "Your best saved spot" : "Pinchy's pick"} ${when}</span><b>${esc(best.s.name)}</b>, ${esc(best.s.state)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
+  $("bubble").setAttribute("aria-label", `Open ${best.s.name}, the best ${saved.size ? "saved " : ""}spot ${when}`);
+  $("pinch").innerHTML = crab(moodOf(best.dayScore) === "sleepy" ? "sleepy" : "party", 150);
+}
+$("bubble").onclick = () => { const sl = $("bubble").dataset.slug; if (sl) { if (state.region !== "All" && state.region !== "Saved") state.region = "All"; renderFilters(); pick(sl, true); } };
+
+function render() {
+  $("date").value = state.ymd;
+  $("today").classList.toggle("on", isToday());
+  if (state.sort === "now" && !isToday()) state.sort = "day";
+  ["sortDay", "sortNow", "sortAz"].forEach(id => $(id).setAttribute("aria-pressed", { sortDay: "day", sortNow: "now", sortAz: "az" }[id] === state.sort));
+  renderFilters(); renderList(); renderDetail(); renderBubble();
+}
+
+/* ---------- events ---------- */
+const smooth = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+const narrow = () => matchMedia("(max-width: 900px)").matches;
+function setDate(ymd, keepWeek) { if (!keepWeek) state.weekAnchor = null; state.ymd = ymd; render(); }
+$("prev").onclick = () => setDate(ymdAdd(state.ymd, -1));
+$("next").onclick = () => setDate(ymdAdd(state.ymd, 1));
+$("today").onclick = () => setDate(localToday());
+$("date").onchange = e => { if (e.target.value) setDate(e.target.value); };
+$("sortDay").onclick = () => { state.sort = "day"; render(); };
+$("sortNow").onclick = () => { if (isToday()) { state.sort = "now"; render(); } };
+$("sortAz").onclick = () => { state.sort = "az"; render(); };
+$("q").oninput = e => { state.q = e.target.value; renderList(); };
+$("q").onkeydown = e => { if (e.key === "Enter") { const first = $("rows").querySelector("[data-slug]"); if (first) pick(first.dataset.slug, true); } };
+$("filters").onclick = e => { const b = e.target.closest("[data-region]"); if (!b) return; state.region = b.dataset.region; store.set("pt-region", state.region); render(); };
+function toggleSave(sl) {
+  saved.has(sl) ? saved.delete(sl) : saved.add(sl);
+  store.set("pt-saved", [...saved]);
+  if (state.region === "Saved" && !saved.size) state.region = "All";
+  renderFilters(); renderList(); renderDetail(); renderBubble();
+}
+function pick(sl, scroll) {
+  const s = STATIONS.find(x => x.slug === sl); if (!s) return;
+  state.sel = s; store.set("pt-last", s.slug);
+  if (location.hash.slice(1) !== s.slug) { try { history.replaceState(null, "", "#" + s.slug); } catch (e) { location.hash = s.slug; } }
+  renderList(); renderDetail(); loadWater(s);
+  if (scroll !== false && narrow()) $("detail").scrollIntoView({ behavior: smooth(), block: "start" });
+}
+$("rows").onclick = e => {
+  const st = e.target.closest("[data-star]"); if (st) { e.stopPropagation(); toggleSave(st.dataset.star); return; }
+  if (e.target.closest("#clearq")) { state.q = ""; $("q").value = ""; state.region = "All"; render(); return; }
+  const r = e.target.closest("[data-slug]"); if (r) pick(r.dataset.slug);
+};
+$("rows").onkeydown = e => {
+  const r = e.target.closest("[data-slug]"); if (!r || e.target.closest("button")) return;
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(r.dataset.slug); }
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); const n = e.key === "ArrowDown" ? r.nextElementSibling : r.previousElementSibling; if (n) n.focus(); }
+};
+$("detail").onclick = e => {
+  const st = e.target.closest("[data-star]"); if (st) { toggleSave(st.dataset.star); return; }
+  if (e.target.closest("#change")) { $("list").scrollIntoView({ behavior: smooth(), block: "start" }); setTimeout(() => $("q").focus({ preventScroll: true }), 350); return; }
+  const d = e.target.closest("[data-ymd]"); if (d) { if (!state.weekAnchor) { const a = state.ymd; state.weekAnchor = a; } setDate(d.dataset.ymd, true); }
+};
+$("detail").addEventListener("toggle", e => { if (e.target.id === "gloss") state.glossOpen = e.target.open; }, true);
+$("detail").addEventListener("pointermove", e => { if (e.target.closest("#chart")) moveGuide(e); });
+$("detail").addEventListener("pointerdown", e => { if (e.target.closest("#chart")) moveGuide(e); });
+$("detail").addEventListener("pointerleave", e => { if (e.target.id === "chart" && e.pointerType === "mouse") hideGuide(); }, true);
+addEventListener("hashchange", () => { const s = fromHash(); if (s && s !== state.sel) { if (state.region !== "All") state.region = "All"; state.sel = s; render(); loadWater(s); } });
+
+$("near").onclick = () => {
+  const msg = $("msg");
+  if (!navigator.geolocation) { msg.textContent = "Your browser can't share location. Try searching instead."; return; }
+  msg.textContent = "Finding you…";
+  navigator.geolocation.getCurrentPosition(pos => {
+    state.here = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+    state.sort = "near"; state.region = "All"; state.q = ""; $("q").value = "";
+    const nearest = STATIONS.reduce((a, b) => distMi(state.here, b) < distMi(state.here, a) ? b : a);
+    msg.textContent = `Closest spot: ${nearest.name}, ${Math.round(distMi(state.here, nearest))} mi away.`;
+    ["sortDay", "sortNow", "sortAz"].forEach(id => $(id).setAttribute("aria-pressed", "false"));
+    state.sel = nearest; renderFilters(); renderList(); renderDetail(); loadWater(nearest);
+  }, () => { msg.textContent = "Location isn't available here. Search for a town or bay instead."; }, { timeout: 10000, maximumAge: 600000 });
+};
+
+render();
+setLive();
+if (state.sel) loadWater(state.sel);
+loadWeather();
+// Keep "now" current: refresh every minute, roll over at midnight, refresh live data every 30 minutes.
+let lastToday = localToday();
+setInterval(() => {
+  const t = localToday();
+  if (t !== lastToday) { if (state.ymd === lastToday) state.ymd = t; lastToday = t; dayCache.clear(); render(); return; }
+  if (isToday()) { renderList(); renderDetail(); }
+  if (LIVE.wx && Date.now() - LIVE.wxAt > 30 * 60000) loadWeather();
+  if (state.sel && isToday()) loadWater(state.sel);
+}, 60000);
+</script>

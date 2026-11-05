@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gettin’ Crabby!</title>
+<meta name="description" content="Crabbing forecast: the best hours to crab at 37 US coastal spots, from tides, light, wind, moon and season.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231d5f8a'/%3E%3Cpath d='M4 19c4-5 8-5 12 0s8 5 12 0' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* Layout: tide-table almanac. Toolbar on top; ranked spots on the left, the chosen spot on the right; one column on phones with the answer first. */
+:root {
+  --bg: #eef2f1;          /* sea-glass paper */
+  --surface: #fbfcfc;
+  --ink: #12202a;         /* deep channel navy */
+  --muted: #5a6b74;
+  --line: #d5dedd;
+  --accent: #1d5f8a;      /* blue-crab claw blue */
+  --accent-ink: #ffffff;
+  --water: #2b7aa8;
+  --night: rgba(18, 32, 42, .07);
+  --star: #c7781a;        /* steamed-shell orange, used only for saved spots */
+  --excellent: #1f7a4d;
+  --good: #1d5f8a;
+  --fair: #a86a0c;
+  --slow: #7d8b92;
+  --deep: #0f3d5a;        /* open water, header band */
+  --deep-ink: #f2f7f9;
+  --wave: #7fa0b0;
+  --sun: #f4c55b;
+  --crab: #d4613f;        /* Pinchy's shell */
+  --crab-dark: #9c3f2b;
+  --claw: #fff1de;
+  --cheek: #ff9e9e;
+  --pupil: #12202a;
+  --bubble: #fbfcfc;
+  --shadow: 0 1px 2px rgba(18, 32, 42, .05), 0 12px 30px -18px rgba(18, 32, 42, .28);
+  --font-display: "Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
+  --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
+  --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15.5px; line-height: 1.45; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; line-height: 1.1; }
+.mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: default; opacity: .5; }
+button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 40px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; }
+.btn:hover { border-color: var(--accent); }
+.btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+/* header band */
+.band { background: var(--deep); color: var(--deep-ink); position: relative; overflow: hidden; }
+.band::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 85% 0%, rgba(255,255,255,.10), transparent 60%); pointer-events: none; }
+.bandin { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding-block: 30px 70px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.brand { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.brand h1 { font-size: clamp(36px, 6vw, 58px); font-weight: 700; letter-spacing: -.01em; color: var(--deep-ink); }
+.brand h1 span { color: var(--sun); }
+.brand p { margin: 0; color: color-mix(in oklab, var(--deep-ink) 78%, transparent); max-width: 52ch; }
+.waves { position: absolute; left: 0; bottom: -1px; width: 100%; height: 64px; display: block; }
+.datebar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.band .btn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22); color: var(--deep-ink); }
+.band .btn:hover { border-color: var(--deep-ink); }
+.band .btn.on { background: var(--deep-ink); color: var(--deep); border-color: var(--deep-ink); }
+.datebar input { font-family: var(--font-data); font-size: 14px; color: var(--deep-ink); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); border-radius: 8px; height: 40px; padding: 0 10px; color-scheme: dark; }
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: color-mix(in oklab, var(--deep-ink) 70%, transparent); margin-left: 4px; }
+.live i { width: 8px; height: 8px; border-radius: 50%; background: var(--slow); display: inline-block; }
+.live.on i { background: #5ccb92; box-shadow: 0 0 0 3px rgba(92,203,146,.25); }
+.mascot { display: flex; align-items: flex-end; gap: 4px; margin-bottom: -46px; flex: none; }
+.pinch svg { width: 150px; height: auto; display: block; overflow: visible; }
+.bubble { position: relative; background: var(--bubble); color: var(--ink); border: 0; border-radius: 16px; padding: 11px 15px; max-width: 250px; text-align: left; font-size: 14px; line-height: 1.35; box-shadow: 0 10px 30px -12px rgba(0,0,0,.45); margin-bottom: 92px; }
+.bubble::after { content: ""; position: absolute; right: -7px; bottom: 16px; border: 8px solid transparent; border-left-color: var(--bubble); border-right: 0; }
+.bubble .eyebrow { display: block; margin-bottom: 2px; color: var(--crab-dark); }
+.bubble:empty { visibility: hidden; }
+.bubble:hover { transform: translateY(-1px); }
+@media (max-width: 760px) {
+  .bandin { flex-direction: column; align-items: stretch; padding-block: 22px 56px; gap: 14px; }
+  .mascot { margin: 0 0 -40px; justify-content: flex-end; }
+  .pinch svg { width: 104px; }
+  .bubble { margin-bottom: 58px; max-width: none; flex: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pinch .bob { animation: bob 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .pinch .wave { animation: wave 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .bubble { transition: transform .15s; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @keyframes wave { 0%, 55%, 100% { transform: rotate(0); } 65% { transform: rotate(-16deg); } 75% { transform: rotate(10deg); } 85% { transform: rotate(-10deg); } }
+}
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.search { position: relative; flex: 1 1 200px; max-width: 420px; }
+.search input { width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 12px 0 36px; font-size: 15px; }
+.search svg { position: absolute; left: 11px; top: 12px; width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 2; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+@media (max-width: 640px) { .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px; } .filters::-webkit-scrollbar { display: none; } .chip { flex: none; }  }
+.chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 500; min-height: 36px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip .sp { color: var(--muted); font-weight: 400; margin-left: 4px; font-size: 12.5px; }
+.chip[aria-pressed="true"] .sp { color: inherit; opacity: .7; }
+.msg { font-size: 13.5px; color: var(--muted); }
+
+.main { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: minmax(0, 1fr); } .detail { order: -1; } }
+
+/* list */
+.list { background: var(--surface); border: 1px solid color-mix(in oklab, var(--line) 70%, transparent); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; scroll-margin-top: 12px; }
+.listhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.sort { display: flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 2px; }
+.sort button { border: 0; background: transparent; padding: 5px 10px; border-radius: 6px; font-size: 13px; color: var(--muted); }
+.sort button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.rows { list-style: none; margin: 0; padding: 0; max-height: 1000px; overflow-y: auto; }
+@media (max-width: 900px) { .rows { max-height: none; } }
+.row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.row:last-child { border-bottom: 0; }
+.row:hover { background: color-mix(in oklab, var(--accent) 6%, transparent); }
+.row[aria-selected="true"] { background: color-mix(in oklab, var(--accent) 12%, transparent); }
+.rank { font-family: var(--font-data); font-size: 12px; color: var(--muted); text-align: right; }
+.rname { min-width: 0; }
+.rname b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rname small { color: var(--muted); font-size: 12.5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.strip { grid-column: 2 / 4; display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; height: 8px; border-radius: 2px; overflow: hidden; }
+.strip i { display: block; }
+.rmeta { grid-column: 2 / 4; display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.empty { padding: 24px 16px; text-align: center; color: var(--muted); }
+.empty svg { width: 90px; height: auto; display: block; margin: 0 auto 6px; overflow: visible; }
+.star { border: 0; background: transparent; padding: 0; width: 22px; height: 22px; display: inline-grid; place-items: center; color: var(--muted); }
+.star svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.star[aria-pressed="true"] { color: var(--star); }
+.star[aria-pressed="true"] svg { fill: currentColor; }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 9px 3px 4px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.pill .n { font-family: var(--font-data); border-radius: 999px; min-width: 30px; text-align: center; padding: 1px 6px; color: var(--surface); }
+.q-excellent { color: var(--excellent); } .q-excellent .n { background: var(--excellent); }
+.q-good { color: var(--good); } .q-good .n { background: var(--good); }
+.q-fair { color: var(--fair); } .q-fair .n { background: var(--fair); }
+.q-slow { color: var(--slow); } .q-slow .n { background: var(--slow); }
+
+/* detail */
+.detail { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid color-mix(in oklab, var(--line) 70%, transparent); border-radius: 16px; padding: 20px; min-width: 0; box-shadow: var(--shadow); }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; align-items: start; }
+.hero .titlerow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hero h2 { font-size: clamp(26px, 3.6vw, 36px); font-weight: 600; }
+.hero .star { width: 32px; height: 32px; }
+.hero .star svg { width: 22px; height: 22px; }
+.hero .where { color: var(--muted); margin-top: 4px; font-size: 14px; }
+.big { text-align: right; }
+.big { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.big .ring { display: block; }
+.big .ring .ringn { font-family: var(--font-display); font-weight: 700; font-size: 30px; fill: var(--ink); }
+.big .lbl { font-weight: 600; font-size: 13.5px; }
+.say { grid-column: 1 / -1; display: flex; gap: 10px; align-items: flex-end; }
+.saycrab { flex: none; width: 88px; margin-bottom: -6px; }
+@media (max-width: 640px) { .saycrab { width: 62px; } .verdict { font-size: 16px; padding: 10px 13px; } .hero { gap: 12px 14px; } }
+.saycrab svg { width: 100%; height: auto; display: block; overflow: visible; }
+.verdict { position: relative; font-size: 17.5px; line-height: 1.42; max-width: 62ch; margin: 0 0 6px; padding: 12px 16px; border-radius: 16px 16px 16px 4px; background: color-mix(in oklab, var(--crab) 9%, var(--surface)); min-width: 0; }
+.verdict b { font-weight: 700; }
+.windows { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; }
+.win { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.win.primary { border-color: var(--accent); background: color-mix(in oklab, var(--accent) 8%, transparent); }
+.win .t { font-family: var(--font-data); font-weight: 500; font-size: 16px; }
+.win small { color: var(--muted); font-size: 12.5px; }
+.nowline { grid-column: 1 / -1; font-size: 14.5px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+.nowline b { color: var(--ink); }
+.herofoot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+details.explain { font-size: 14px; color: var(--muted); }
+details.explain summary { cursor: pointer; color: var(--accent); font-weight: 500; }
+details.explain[open] summary { margin-bottom: 6px; }
+.bands { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: center; }
+.change { display: none; }
+@media (max-width: 900px) { .change { display: inline-flex; } }
+
+.readout { font-size: 13.5px; color: var(--muted); min-height: 1.5em; margin-top: 4px; }
+.readout b { color: var(--ink); font-weight: 600; }
+.chartwrap { overflow-x: auto; margin: 4px -6px 0; touch-action: pan-y; }
+svg.chart { display: block; width: 100%; min-width: 560px; height: auto; cursor: crosshair; }
+svg text { font-family: var(--font-data); font-size: 11px; fill: var(--muted); }
+svg .ext { fill: var(--ink); font-weight: 500; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 8px; border-radius: 2px; display: inline-block; }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.fact { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fact .v { font-weight: 600; font-size: 15.5px; }
+.fact .s { font-size: 12.5px; color: var(--muted); }
+.bar { height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 640px) { .week { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.day { border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; text-align: center; min-width: 0; }
+.day:hover { border-color: var(--accent); }
+.day[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.day .dow { font-weight: 600; font-size: 13px; }
+.day .dt { font-size: 11.5px; color: var(--muted); }
+.day .ds { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; }
+.day .dq { font-size: 11.5px; font-weight: 600; }
+.dbar { width: 70%; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.dbar i { display: block; height: 100%; background: currentColor; border-radius: 2px; }
+.day .dw { font-family: var(--font-data); font-size: 11px; color: var(--muted); }
+.day .dwind { font-size: 11px; color: var(--muted); }
+
+.sectionhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.sectionhead h3 { font-size: 19px; font-weight: 600; }
+.sectionhead small { color: var(--muted); font-size: 12.5px; }
+
+.tips { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 640px) { .tips { grid-template-columns: minmax(0, 1fr); } }
+.tips ul { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.note { font-size: 13.5px; color: var(--ink); background: color-mix(in oklab, var(--fair) 10%, transparent); border-left: 3px solid var(--fair); padding: 8px 12px; border-radius: 0 8px 8px 0; }
+.tidetable { display: grid; grid-template-columns: auto auto auto; gap: 4px 14px; justify-content: start; font-size: 14px; }
+dl.gloss { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; font-size: 14px; }
+dl.gloss dt { font-weight: 600; }
+dl.gloss dd { margin: 0; color: var(--muted); }
+@media (min-width: 641px) { dl.gloss { grid-template-columns: 9rem minmax(0, 1fr); } }
+
+footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; max-width: 90ch; }
+footer a { color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .row, .day, .chip, .btn { transition: background-color .15s, border-color .15s; } }
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="bandin">
+    <div class="brand">
+      <h1>Gettin’ <span>Crabby!</span></h1>
+      <p>When to go crabbing at 37 spots on the Atlantic, Gulf and Pacific coasts. Pick a spot to see the best hours, then tap the chart to check any time of day.</p>
+      <div class="datebar" role="group" aria-label="Choose a date">
+      <button class="btn" id="prev" aria-label="Previous day">‹</button>
+      <input type="date" id="date" aria-label="Date">
+      <button class="btn" id="next" aria-label="Next day">›</button>
+      <button class="btn" id="today">Today</button>
+      <span class="live" id="live" title=""><i></i><span>Tide forecast</span></span>
+    </div>
+    </div>
+    <div class="mascot">
+      <button class="bubble" id="bubble" type="button"></button>
+      <div class="pinch" id="pinch" aria-hidden="true"></div>
+    </div>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C180 18 360 78 540 48 S900 16 1080 48 S1350 74 1440 42 V90 H0Z" fill="var(--wave)"/><path d="M0 64 C200 44 420 90 640 64 S1010 42 1210 66 S1390 72 1440 58 V90 H0Z" fill="var(--bg)"/></svg>
+</header>
+<div class="wrap">
+
+  <div class="toolbar">
+    <label class="search" for="q">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search spots" autocomplete="off" aria-label="Search spots">
+    </label>
+    <button class="btn" id="near"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Near me</button>
+    <span class="msg" id="msg" role="status"></span>
+  </div>
+  <nav class="filters" id="filters" aria-label="Region"></nav>
+
+  <div class="main">
+    <section class="list" id="list" aria-label="Crabbing spots">
+      <div class="listhead">
+        <span class="eyebrow" id="listtitle">Best spots today</span>
+        <div class="sort" role="group" aria-label="Sort spots">
+          <button id="sortDay" aria-pressed="true">Best today</button>
+          <button id="sortNow" aria-pressed="false">Right now</button>
+          <button id="sortAz" aria-pressed="false">A–Z</button>
+        </div>
+      </div>
+      <ul class="rows" id="rows" role="listbox" aria-label="Spots"></ul>
+    </section>
+
+    <section class="detail" id="detail" aria-live="polite"></section>
+  </div>
+
+  <footer>
+    <div><b>How the score works.</b> Every 10 minutes of the day gets a score from 0 to 100. It weighs the tide (which way the water is moving and how fast), the light (crabs feed more at dawn and dusk), how big the day's tides are compared with normal for that spot, how active crabs usually are that month, and wind and rain when a forecast is available. The best window is the strongest two hours between first light and an hour after sunset.</div>
+    <div><b>Tides</b> are computed from NOAA harmonic constants (via the open <a href="https://github.com/openwatersio/tide-database" target="_blank" rel="noopener">Neaps tide database</a>), in feet above MLLW and in each spot's local time. Live wind is from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>; water temperature and observed water level are from <a href="https://tidesandcurrents.noaa.gov" target="_blank" rel="noopener">NOAA Tides &amp; Currents</a>. Predictions can't see storms or river flow. Not for navigation.</div>
+    <div><b>Rules change by state and year.</b> Check seasons, size limits, catch limits and licence requirements with your state wildlife agency before you go.</div>
+  </footer>
+</div>
+
+<script>var TidePredictor=(()=>{var B=Object.defineProperty;var fe=Object.getOwnPropertyDescriptor;var Se=Object.getOwnPropertyNames;var Ke=Object.prototype.hasOwnProperty;var ve=(e,o)=>{for(var n in o)B(e,n,{get:o[n],enumerable:!0})},ge=(e,o,n,a)=>{if(o&&typeof o=="object"||typeof o=="function")for(let s of Se(o))!Ke.call(e,s)&&s!==n&&B(e,s,{get:()=>o[s],enumerable:!(a=fe(o,s))||a.enumerable});return e};var Ne=e=>ge(B({},"__esModule",{value:!0}),e);var To={};ve(To,{createTidePredictor:()=>V});var r=Math.PI/180,E=180/Math.PI,A=(e,o=0,n=0,a=0,s=0)=>e+o/60+n/3600+a/(3600*1e3)+s/(3600*1e6),_={terrestrialObliquity:[A(23,26,21.448),-A(0,0,4680.93),-A(0,0,1.55),A(0,0,1999.25),-A(0,0,51.38),-A(0,0,249.67),-A(0,0,39.05),A(0,0,7.12),A(0,0,27.87),A(0,0,5.79),A(0,0,2.45)].map((e,o)=>e*Math.pow(.01,o)),solarPerigee:[-77.06265000000002,1.7190199999968172,4591e-7,48e-8],solarLongitude:[280.46645,36000.76983,3032e-7],lunarInclination:[5.145],lunarLongitude:[218.3164591,481267.88134236,-.0013268,1/538841-1/65194e3],lunarNode:[125.044555,-1934.1361849,.0020762,1/467410,-1/60616e3],lunarPerigee:[83.353243,4069.0137111,-.0103238,-1/80053,1/18999e3]},we=(e,o)=>{let n=[];return e.forEach((a,s)=>{n.push(a*Math.pow(o,s))}),n.reduce((a,s)=>a+s)},Te=(e,o)=>{let n=[];return e.forEach((a,s)=>{n.push(a*s*Math.pow(o,s-1))}),n.reduce((a,s)=>a+s)},Y=e=>(W(e)-2451545)/36525,W=e=>{let o=e.getUTCFullYear(),n=e.getUTCMonth()+1,a=e.getUTCDate()+e.getUTCHours()/24+e.getUTCMinutes()/1440+e.getUTCSeconds()/(1440*60)+e.getUTCMilliseconds()/(1440*60*1e3);n<=2&&(o=o-1,n=n+12);let s=Math.floor(o/100),l=2-s+Math.floor(s/4);return Math.floor(365.25*(o+4716))+Math.floor(30.6001*(n+1))+a+l-1524.5},k=(e,o,n)=>{e=r*e,o=r*o,n=r*n;let a=Math.cos(o)*Math.cos(n)-Math.sin(o)*Math.sin(n)*Math.cos(e);return E*Math.acos(a)},Pe=(e,o,n)=>{e=r*e,o=r*o,n=r*n;let a=Math.cos(.5*(n-o))/Math.cos(.5*(n+o))*Math.tan(.5*e),s=Math.sin(.5*(n-o))/Math.sin(.5*(n+o))*Math.tan(.5*e);return a=Math.atan(a),s=Math.atan(s),a=a-.5*e,s=s-.5*e,-(a+s)*E},G=(e,o,n)=>{e=r*e,o=r*o,n=r*n;let a=Math.cos(.5*(n-o))/Math.cos(.5*(n+o))*Math.tan(.5*e),s=Math.sin(.5*(n-o))/Math.sin(.5*(n+o))*Math.tan(.5*e);return a=Math.atan(a),s=Math.atan(s),a=a-.5*e,s=s-.5*e,(a-s)*E},Oe=(e,o,n)=>{let a=r*k(e,o,n),s=r*G(e,o,n);return E*Math.atan(Math.sin(2*a)*Math.sin(s)/(Math.sin(2*a)*Math.cos(s)+.3347))},Ae=(e,o,n)=>{let a=r*k(e,o,n),s=r*G(e,o,n),l=Math.sin(a)**2*Math.sin(2*s)/(Math.sin(a)**2*Math.cos(2*s)+.0727);return E*.5*Math.atan(l)},ee=(e,o)=>(e%o+o)%o,oe=e=>{let o={},n={s:_.lunarLongitude,h:_.solarLongitude,p:_.lunarPerigee,N:_.lunarNode,pp:_.solarPerigee,90:[90],omega:_.terrestrialObliquity,i:_.lunarInclination},a=1/(24*365.25*100);for(let i in n)o[i]={value:ee(we(n[i],Y(e)),360),speed:Te(n[i],Y(e))*a};let s={I:k,xi:Pe,nu:G,nup:Oe,nupp:Ae};Object.keys(s).forEach(i=>{let t=s[i];o[i]={value:ee(t(o.N.value,o.i.value,o.omega.value),360),speed:null}});let l={value:(W(e)-Math.floor(W(e)))*360,speed:15};return o["T+h-s"]={value:l.value+o.h.value-o.s.value,speed:l.speed+o.h.speed-o.s.speed},o.P={value:o.p.value-o.xi.value%360,speed:null},o},H={Mm:e=>Le(r*e.N.value,r*e.p.value),Mf:e=>Ie(r*e.N.value),O1:e=>ye(r*e.N.value),K1:e=>be(r*e.N.value),J1:e=>Ee(r*e.N.value),M1B:e=>He(r*e.N.value,r*e.p.value),M1C:e=>ne(r*e.N.value,r*e.p.value),M1:e=>ne(r*e.N.value,r*e.p.value),M1A:e=>Re(r*e.N.value,r*e.p.value),M2:e=>ce(r*e.N.value),K2:e=>De(r*e.N.value),M3:e=>_e(r*e.N.value),L2:e=>Qe(r*e.N.value,r*e.p.value),gamma2:e=>ze(r*e.N.value,r*e.p.value),alpha2:e=>Ue(r*e.p.value,r*e.pp.value),delta2:e=>$e(r*e.N.value),xi2:e=>ae(r*e.N.value),eta2:e=>ae(r*e.N.value)};function Le(e,o){return{f:1-.1311*Math.cos(e)+.0538*Math.cos(2*o)+.0205*Math.cos(2*o-e),u:0}}function Ie(e){return{f:1.084+.415*Math.cos(e)+.039*Math.cos(2*e),u:-23.7*Math.sin(e)+2.7*Math.sin(2*e)-.4*Math.sin(3*e)}}function ye(e){return{f:1.0176+.1871*Math.cos(e)-.0147*Math.cos(2*e),u:10.8*Math.sin(e)-1.34*Math.sin(2*e)+.19*Math.sin(3*e)}}function be(e){return{f:1.006+.115*Math.cos(e)-.0088*Math.cos(2*e)+6e-4*Math.cos(3*e),u:-8.86*Math.sin(e)+.68*Math.sin(2*e)-.07*Math.sin(3*e)}}function Ee(e){return{f:1.1029+.1676*Math.cos(e)-.017*Math.cos(2*e)+.0016*Math.cos(3*e),u:-12.94*Math.sin(e)+1.34*Math.sin(2*e)-.19*Math.sin(3*e)}}function ce(e){return{f:1.0007-.0373*Math.cos(e)+2e-4*Math.cos(2*e),u:-2.14*Math.sin(e)}}function De(e){return{f:1.0246+.2863*Math.cos(e)+.0083*Math.cos(2*e)-.0015*Math.cos(3*e),u:-17.74*Math.sin(e)+.68*Math.sin(2*e)-.04*Math.sin(3*e)}}function _e(e){let o=ce(e);return{f:Math.pow(Math.sqrt(o.f),3),u:-3.21*Math.sin(e)}}function He(e,o){return D(2.783*Math.sin(2*o)+.558*Math.sin(2*o-e)+.184*Math.sin(e),1+2.783*Math.cos(2*o)+.558*Math.cos(2*o-e)+.184*Math.cos(e))}function ne(e,o){return D(Math.sin(o)+.2*Math.sin(o-e),2*(Math.cos(o)+.2*Math.cos(o-e)))}function Re(e,o){return D(-.3593*Math.sin(2*o)-.2*Math.sin(e)-.066*Math.sin(2*o-e),1+.3593*Math.cos(2*o)+.2*Math.cos(e)+.066*Math.cos(2*o-e))}function ze(e,o){return D(.147*Math.sin(2*(e-o)),1+.147*Math.cos(2*(e-o)))}function Ue(e,o){return D(-.0446*Math.sin(e-o),1-.0446*Math.cos(e-o))}function $e(e){return D(.477*Math.sin(e),1-.477*Math.cos(e))}function ae(e){return D(-.439*Math.sin(e),1+.439*Math.cos(e))}function Qe(e,o){return D(-.2505*Math.sin(2*o)-.1102*Math.sin(2*o-e)-.0156*Math.sin(2*o-2*e)-.037*Math.sin(e),1-.2505*Math.cos(2*o)-.1102*Math.cos(2*o-e)-.0156*Math.cos(2*o-2*e)-.037*Math.cos(e))}function D(e,o){return{f:Math.sqrt(e*e+o*o),u:E*Math.atan2(e,o)}}var Fe={Mm:e=>({f:Be(e),u:0}),Mf:e=>({f:Je(e),u:Xe(e)}),O1:e=>({f:xe(e),u:Ye(e)}),K1:e=>({f:qe(e),u:no(e)}),J1:e=>({f:je(e),u:eo(e)}),OO1:e=>({f:We(e),u:oo(e)}),M2:e=>({f:Z(e),u:me(e)}),K2:e=>({f:Ge(e),u:so(e)}),L2:e=>({f:ke(e),u:ao(e)}),M1:e=>({f:Ze(e),u:to(e)}),M3:e=>({f:Ve(e,3),u:ro(e,3)})};function Be(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=(2/3-Math.pow(Math.sin(o),2))*(1-3/2*Math.pow(Math.sin(n),2));return(2/3-Math.pow(Math.sin(a),2))/s}function Je(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=Math.pow(Math.sin(o),2)*Math.pow(Math.cos(.5*n),4);return Math.pow(Math.sin(a),2)/s}function xe(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=Math.sin(o)*Math.pow(Math.cos(.5*o),2)*Math.pow(Math.cos(.5*n),4);return Math.sin(a)*Math.pow(Math.cos(.5*a),2)/s}function je(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=Math.sin(2*o)*(1-3/2*Math.pow(Math.sin(n),2));return Math.sin(2*a)/s}function We(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=Math.sin(o)*Math.pow(Math.sin(.5*o),2)*Math.pow(Math.cos(.5*n),4);return Math.sin(a)*Math.pow(Math.sin(.5*a),2)/s}function Z(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=Math.pow(Math.cos(.5*o),4)*Math.pow(Math.cos(.5*n),4);return Math.pow(Math.cos(.5*a),4)/s}function qe(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=r*e.nu.value,l=.5023*(Math.sin(2*o)*(1-3/2*Math.pow(Math.sin(n),2)))+.1681;return Math.pow(.2523*Math.pow(Math.sin(2*a),2)+.1689*Math.sin(2*a)*Math.cos(s)+.0283,.5)/l}function ke(e){let o=r*e.P.value,n=r*e.I.value,a=Math.pow(1-12*Math.pow(Math.tan(.5*n),2)*Math.cos(2*o)+36*Math.pow(Math.tan(.5*n),4),.5);return Z(e)*a}function Ge(e){let o=r*e.omega.value,n=r*e.i.value,a=r*e.I.value,s=r*e.nu.value,l=.5023*(Math.sin(o)**2*(1-3/2*Math.sin(n)**2))+.0365;return Math.pow(.2523*Math.pow(Math.sin(a),4)+.0367*Math.pow(Math.sin(a),2)*Math.cos(2*s)+.0013,.5)/l}function Ze(e){let o=r*e.P.value,n=r*e.I.value,a=Math.pow(.25+1.5*Math.cos(n)*Math.cos(2*o)*Math.pow(Math.cos(.5*n),-.5)+2.25*Math.pow(Math.cos(n),2)*Math.pow(Math.cos(.5*n),-4),.5);return xe(e)*a}function Ve(e,o){return Math.pow(Z(e),o/2)}function Xe(e){return-2*e.xi.value}function Ye(e){return 2*e.xi.value-e.nu.value}function eo(e){return-e.nu.value}function oo(e){return-2*e.xi.value-e.nu.value}function me(e){return 2*e.xi.value-2*e.nu.value}function no(e){return-e.nup.value}function ao(e){let o=r*e.I.value,n=r*e.P.value,a=E*Math.atan(Math.sin(2*n)/(1/6*Math.pow(Math.tan(.5*o),-2)-Math.cos(2*n)));return 2*e.xi.value-2*e.nu.value-a}function so(e){return-2*e.nupp.value}function to(e){let o=r*e.I.value,n=r*e.P.value,a=E*Math.atan((5*Math.cos(o)-1)/(7*Math.cos(o)+1)*Math.tan(n));return e.xi.value-e.nu.value+a}function ro(e,o){return o/2*me(e)}var io={iho:H,schureman:Fe};function lo(e){if(!e)return H;let o=io[e];if(!o)throw new Error(`Unknown fundamentals: ${e}`);return o}var co=1/3600;function q(e,o){let n=0;for(let a=0;a<o.length;a++){let{A:s,w:l,phi:i}=o[a];n+=s*Math.cos(l*e+i)}return n}function F(e,o){let n=0;for(let a=0;a<o.length;a++){let{A:s,w:l,phi:i}=o[a];n-=s*l*Math.sin(l*e+i)}return n}function xo(e,o){let n=0;for(let a=0;a<o.length;a++){let{A:s,w:l,phi:i}=o[a];n-=s*l*l*Math.cos(l*e+i)}return n}function mo(e,o,n,a){for(;;){let s=(e+o)/2;if(o-e<co)return s;let l=F(s,a);if(l===0)return s;(n>0?l>0:l<0)?(e=s,n=l):o=s}}function se(e,o,{startMs:n,isDoubleTide:a,prominenceThreshold:s,getParams:l}){let i=[],t=l(Math.max(0,e));if(t.length===0)return i;let d=0;for(let{w:v}of t)v>d&&(d=v);if(d===0)return i;let x=Math.PI/15,p=2*Math.PI,C=0,P=0;for(let{A:v,w:c}of t)c>=x&&c<=p&&v>C&&(C=v,P=c);P===0&&(P=d);let y=a?0:Math.PI/(1.85*P),L=Math.PI/(2*d),w=e,I=F(w,t);for(let v=w+L;v<=o+L;v+=L){let c=l(w);c!==t&&(t=c,I=F(w,t));let f=Math.min(v,o),S=F(f,t);if(I!==0&&S!==0&&(I>0?S<0:S>0)){let M=mo(w,f,I,t);if(M>=e&&M<=o){let N=xo(M,t)<0;i.push({time:new Date(n+M*60*60*1e3),level:q(M,t),high:N,low:!N,label:N?"High":"Low"})}}if(f>=o)break;w=f,I=S}let b=i.length;if(b>2){let f=function(m){let h=v[m],u=c[m];if(h<0||u>=b)return{prom:1/0,offending:!1};let T=Math.abs(i[m].level-i[h].level),K=Math.abs(i[u].level-i[m].level),O=Math.min(T,K),R=(i[m].time.getTime()-i[h].time.getTime())/36e5,z=(i[u].time.getTime()-i[m].time.getTime())/36e5,U=y>0&&(R<y&&i[m].high===i[h].high||z<y&&i[m].high===i[u].high);return{prom:O,offending:O<s||U}},S=function(){let m=-1,h=1/0;for(let u=c[0];c[u]<b;u=c[u]){let{prom:T,offending:K}=f(u);K&&T<h&&(h=T,m=u)}return{idx:m,prom:h}},v=new Int32Array(b),c=new Int32Array(b);for(let m=0;m<b;m++)v[m]=m-1,c[m]=m+1;let M=S();for(;M.idx!==-1;){let m=v[M.idx],h=c[M.idx];c[m]=h,v[h]=m,M=S()}let N=[];for(let m=0;m<b;m=c[m])N.push(i[m]);return N}return i}function ue(e,o){return(e?o?.height?.high:o?.height?.low)??(o?.height?.type==="fixed"?0:1)}function uo(e,o){if(typeof o>"u"||!o)return e;let n=ue(e.high,o);return o.height?.type==="fixed"?e.level+=n:e.level*=n,e.high&&o.time?.high&&(e.time=new Date(e.time.getTime()+o.time.high*60*1e3)),e.low&&o.time?.low&&(e.time=new Date(e.time.getTime()+o.time.low*60*1e3)),e}function Mo(e,o){return typeof o<"u"&&typeof o[e]<"u"?o[e]:{high:"High",low:"Low"}[e]}var $=24;function te(e,o,n){return o+e*(n-o)}function po({timeline:e,constituents:o,constituentModels:n,start:a,fundamentals:s=H,prominenceThreshold:l=.01}){let i=oe(a),t=a.getTime(),d=(e.items[e.items.length-1].getTime()-t)/36e5,x=o.find(c=>c.name==="M2")?.amplitude??0,p=o.find(c=>c.name==="M4")?.amplitude??0,C=o.find(c=>c.name==="MS4")?.amplitude??0,P=x>0&&(p+C)/x>.25;function y(c){let f=oe(c),S=[];for(let M of o){if(M.amplitude===0)continue;let N=n[M.name];if(!N)continue;let m=r*N.value(i),h=r*N.speed,u=N.correction(f,s);S.push({A:M.amplitude*u.f,w:h,phi:m+r*u.u-M.phase})}return S}function L(){let c=y(new Date(t+Math.min($,d)/2*36e5)),f=$;return S=>{if(S>=f){let M=Math.min(f+$,d);c=y(new Date(t+(f+M)/2*36e5)),f+=$}return c}}let w={startMs:t,isDoubleTide:P,prominenceThreshold:l};function I({labels:c,offsets:f}={}){return se(0,d,{...w,getParams:L()}).map(S=>(c&&(S.label=Mo(S.high?"high":"low",c)),uo(S,f)))}let b=36;function v({offsets:c}={}){if(!c){let u=L(),T=[];for(let K=0;K<e.items.length;K++){let O=e.hours[K];T.push({time:e.items[K],hour:O,level:q(O,u(O))})}return T}let f=se(-36,d+b,{...w,getParams:L()});if(f.length<2)throw new Error("At least two extremes are required for interpolation with offsets");let S=c.height?.type==="fixed",M=f.map(u=>{let T=(u.high?c.time?.high:c.time?.low)??0,K=ue(u.high,c);return{subTime:u.time.getTime()+T*60*1e3,refTime:u.time.getTime(),refLevel:u.level,subLevel:S?u.level+K:u.level*K}}),N=L(),m=[],h=0;for(let u=0;u<e.items.length;u++){let T=e.items[u].getTime();for(;h<M.length-2&&M[h+1].subTime<T;)h++;let K=M[h],O=M[h+1],R=O.subTime-K.subTime,z=R>0?Math.max(0,Math.min(1,(T-K.subTime)/R)):0,U=(te(z,K.refTime,O.refTime)-t)/36e5,Ce=q(U,N(U)),X=O.refLevel-K.refLevel,he=te(X!==0?(Ce-K.refLevel)/X:z,K.subLevel,O.subLevel);m.push({time:e.items[u],hour:e.hours[u],level:he})}return m}return Object.freeze({getExtremesPrediction:I,getTimelinePrediction:v})}var Me={M:{species:2},S:{species:2},N:{species:2},O:{species:1},P:{species:1},Q:{species:1},J:{species:1},T:{species:2},R:{species:2},L:{species:2},nu:{species:2},lambda:{species:2}},Co={species:1},re={species:2};function ho(e){let o=d=>new Error(`Unable to parse compound constituent "${e}": ${d}`),n=e;(e.startsWith("MA")||e.startsWith("MB"))&&e.length>2&&(n="M"+e.substring(2));let a=n.match(/^(.+?)(\d+)$/);if(!a)throw o("no trailing species digits");let s=a[1],l=parseInt(a[2],10);if(l===0)throw o("species is 0");let i=[],t=0;for(;t<s.length;){let d=0;for(;t<s.length&&s[t]>="0"&&s[t]<="9";)d=d*10+(s.charCodeAt(t)-48),t++;if(d===0&&(d=1),t>=s.length)throw o("trailing digits with no letter");if(s[t]==="("){t++;let p=[];for(;t<s.length&&s[t]!==")";){let C=ie(s,t);if(!C)throw o(`unrecognized character at position ${t}`);p.push(C),t+=C.length}if(t>=s.length||s[t]!==")")throw o("unclosed parenthesized group");if(t++,p.length===0)throw o("empty parenthesized group");for(let C of p){if(!le(C))throw o(`unknown letter "${C}"`);i.push({letter:C,multiplier:d})}continue}let x=ie(s,t);if(!x)throw o(`unrecognized character at position ${t}`);if(!le(x))throw o(`unknown letter "${x}"`);t+=x.length,i.push({letter:x,multiplier:d})}return{tokens:i,targetSpecies:l}}function ie(e,o){if(e.startsWith("nu",o)&&(o+2>=e.length||!fo(e[o+2])))return"nu";if(e.startsWith("lambda",o))return"lambda";let n=e[o];return n>="A"&&n<="Z"?n:null}function fo(e){return e>="a"&&e<="z"}function le(e){return e==="A"||e==="B"?!1:e==="K"||e in Me}function So(e,o){if(e.some(n=>n.letter==="K")){let n=J(e,o,re);return n||J(e,o,Co)}return J(e,o,re)}function J(e,o,n){let a=e.map(t=>t.letter==="K"?n:Me[t.letter]),s=t=>e[t].letter+a[t].species;if(e.length===1){let t=a[0].species;if(t>0&&o>t)return[{constituentKey:s(0),factor:o/t}];if(t===o)return[{constituentKey:s(0),factor:1}]}let l=new Array(e.length).fill(1),i=0;for(let t=0;t<e.length;t++)i+=e[t].multiplier*a[t].species;for(let t=e.length-1;t>=0&&i!==o;t--)l[t]=-1,i-=2*e[t].multiplier*a[t].species;return i!==o?null:e.map((t,d)=>({constituentKey:s(d),factor:l[d]*t.multiplier}))}function Q(e,o,n){let a;try{a=ho(e)}catch{return null}let s=o>0?o:a.targetSpecies,l=So(a.tokens,s);if(!l)return null;let i=[];for(let{constituentKey:t,factor:d}of l){let x=n[t];if(!x)return null;i.push({constituent:x,factor:d})}return i.length>0?i:null}var g={};function Ko({name:e,speed:o,xdo:n,aliases:a=[],members:s,nodalCorrection:l}){let i=n?vo(n):null,t=null,d={name:e,speed:o,aliases:a,coefficients:i,get members(){return t||(s?t=s.map(([x,p])=>({constituent:g[x],factor:p})):t=No(l,e,n?.[0]??0)??[]),t},value(x){if(i)return go(i,x);let p=0;for(let{constituent:C,factor:P}of d.members)p+=C.value(x)*P;return p},correction(x,p=H){let C=p[e];if(C)return C(x);let P=1,y=0;for(let{constituent:L,factor:w}of d.members){let I=L.correction(x,p);y+=w*I.u,P*=Math.pow(I.f,Math.abs(w))}return{u:y,f:P}}};return[d.name,...a].forEach(x=>{g[x]=d}),d}function vo(e){return[e[0],e[1]-5,e[2]-5,e[3]-5,e[4]-5,e[5]-5,5-e[6]]}function go(e,o){let n=[o["T+h-s"].value,o.s.value,o.h.value,o.p.value,-o.N.value,o.pp.value,90],a=0;for(let s=0;s<7;s++)a+=e[s]*n[s];return a}function No(e,o,n){switch(e){case"z":case"f":return null;case"y":return null;case"a":return[{constituent:g.Mm,factor:1}];case"m":return[{constituent:g.M2,factor:1}];case"o":return[{constituent:g.O1,factor:1}];case"k":return[{constituent:g.K1,factor:1}];case"j":return[{constituent:g.J1,factor:1}];case"b":return[{constituent:g.M2,factor:-1}];case"c":return[{constituent:g.M2,factor:-2}];case"g":return[{constituent:g.M2,factor:n/2}];case"p":return Q("2MN2",n,g);case"d":return Q("KQ1",n,g);case"q":return Q("NKM2",n,g);case"x":return Q(o,n,g)}}for(let e of[{name:"Zo",speed:0,xdo:[0,5,5,5,5,5,5],nodalCorrection:"z",aliases:["Z0"]},{name:"Sa",speed:.0410686,xdo:[0,5,6,5,5,5,5],nodalCorrection:"z",aliases:["SA"]},{name:"Ssa",speed:.0821373,xdo:[0,5,7,5,5,5,5],nodalCorrection:"z",aliases:["SSA"]},{name:"Sta",speed:.1232039,xdo:[0,5,8,5,5,4,4],nodalCorrection:"x",aliases:[],members:[["K2",1],["T2",-1]]},{name:"MSm",speed:.4715211,xdo:[0,6,3,6,5,5,5],nodalCorrection:"x",aliases:[],members:[["M2",1],["nu2",-1]]},{name:"Mnum",speed:.4715211,xdo:[0,6,3,6,5,5,5],nodalCorrection:"x",aliases:["M\u03BDm"],members:[["M2",1],["nu2",-1]]},{name:"Mm",speed:.5443747,xdo:[0,6,5,4,5,5,5],nodalCorrection:"y",aliases:["MM"]},{name:"MSf",speed:1.0158958,xdo:[0,7,3,5,5,5,5],nodalCorrection:"b",aliases:["MSF"]},{name:"MSo",speed:1.0158958,xdo:[0,7,3,5,5,5,5],nodalCorrection:"b",aliases:["MSO"]},{name:"SM",speed:1.0158958,xdo:[0,7,3,5,5,5,5],nodalCorrection:"x",aliases:[],members:[["S2",1],["M2",-1]]},{name:"Mf",speed:1.098033,xdo:[0,7,5,5,5,5,5],nodalCorrection:"y",aliases:["MF"]},{name:"KOo",speed:1.098033,xdo:[0,7,5,5,5,5,5],nodalCorrection:"x",aliases:[],members:[["K1",1],["O1",-1]]},{name:"MKo",speed:1.098033,xdo:[0,7,5,5,5,5,5],nodalCorrection:"x",aliases:[],members:[["K2",1],["M2",-1]]},{name:"Snu2",speed:1.4874168,xdo:[0,8,1,6,5,5,5],nodalCorrection:"x",aliases:["S\u03BD2"]},{name:"SN",speed:1.5602705,xdo:[0,8,3,4,5,5,5],nodalCorrection:"x",aliases:[],members:[["S2",1],["N2",-1]]},{name:"MStm",speed:1.5695541,xdo:[0,8,3,6,5,5,5],nodalCorrection:"x",aliases:["MSTM"],members:[["Mf",1],["M2",1],["nu2",-1]]},{name:"Mfm",speed:1.6424078,xdo:[0,8,5,4,5,5,5],nodalCorrection:"a",aliases:["MFM","MTM"]},{name:"2SM",speed:2.0317915,xdo:[0,9,1,5,5,5,5],nodalCorrection:"c",aliases:[]},{name:"MSqm",speed:2.1139287,xdo:[0,9,3,5,5,5,5],nodalCorrection:"b",aliases:["MSQM"]},{name:"Mqm",speed:2.1867829,xdo:[0,9,5,3,5,5,5],nodalCorrection:"m",aliases:["MQM"]},{name:"2SMN",speed:2.5761662,xdo:null,nodalCorrection:"x",aliases:[],members:[["S2",2],["M2",-1],["N2",-1]]},{name:"NJ1",speed:12.854286,xdo:[1,2,5,7,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2Q1",speed:12.8542862,xdo:[1,2,5,7,5,5,4],nodalCorrection:"o",aliases:[]},{name:"nuJ1",speed:12.9271398,xdo:[1,2,7,5,5,5,4],nodalCorrection:"o",aliases:["\u03BDJ1"]},{name:"sigma1",speed:12.9271398,xdo:[1,2,7,5,5,5,4],nodalCorrection:"o",aliases:["\u03C31","SGM","SIGMA1"]},{name:"NK1",speed:13.39866,xdo:[1,3,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"Q1",speed:13.3986609,xdo:[1,3,5,6,5,5,4],nodalCorrection:"o",aliases:[]},{name:"rho1",speed:13.4715145,xdo:[1,3,7,4,5,5,4],nodalCorrection:"o",aliases:["\u03C11","RHO","RHO1"]},{name:"nuK1",speed:13.4715146,xdo:[1,3,7,4,5,5,4],nodalCorrection:"x",aliases:["\u03BDK1"]},{name:"O1",speed:13.9430356,xdo:[1,4,5,5,5,5,4],nodalCorrection:"y",aliases:[]},{name:"MK1",speed:13.9430356,xdo:[1,4,5,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"MS1",speed:13.9841042,xdo:[1,4,6,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"MP1",speed:14.0251729,xdo:[1,4,7,5,5,5,5],nodalCorrection:"m",aliases:[]},{name:"tau1",speed:14.0251729,xdo:[1,4,7,5,5,5,6],nodalCorrection:"k",aliases:["\u03C41","TAU1"]},{name:"M1B",speed:14.4874103,xdo:[1,5,5,4,5,5,6],nodalCorrection:"y",aliases:[]},{name:"M1C",speed:14.492052,xdo:[1,5,5,5,5,5,5],nodalCorrection:"y",aliases:[]},{name:"M1",speed:14.4966939,xdo:[1,5,5,6,5,5,6],nodalCorrection:"y",aliases:[]},{name:"NO1",speed:14.4966939,xdo:[1,5,5,6,5,5,6],nodalCorrection:"x",aliases:[]},{name:"M1A",speed:14.496694,xdo:[1,5,5,6,5,5,6],nodalCorrection:"y",aliases:[]},{name:"LP1",speed:14.5695476,xdo:[1,5,7,4,5,5,4],nodalCorrection:"x",aliases:[]},{name:"chi1",speed:14.5695476,xdo:[1,5,7,4,5,5,6],nodalCorrection:"j",aliases:["\u03C71","CHI1"]},{name:"pi1",speed:14.9178647,xdo:[1,6,2,5,5,6,4],nodalCorrection:"z",aliases:["\u03C01","PI1"]},{name:"TK1",speed:14.9178647,xdo:[1,6,2,5,5,6,4],nodalCorrection:"x",aliases:[]},{name:"SK1",speed:14.958931,xdo:[1,6,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"P1",speed:14.9589314,xdo:[1,6,3,5,5,5,4],nodalCorrection:"z",aliases:[]},{name:"S1",speed:15,xdo:[1,6,4,5,5,5,5],nodalCorrection:"z",aliases:[]},{name:"SP1",speed:15.0410686,xdo:[1,6,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"K1",speed:15.0410686,xdo:[1,6,5,5,5,5,6],nodalCorrection:"y",aliases:[]},{name:"MO1",speed:15.0410686,xdo:[1,6,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"RP1",speed:15.0821353,xdo:[1,6,6,5,5,4,4],nodalCorrection:"x",aliases:[]},{name:"psi1",speed:15.0821353,xdo:[1,6,6,5,5,4,6],nodalCorrection:"z",aliases:["\u03C81","PSI1"]},{name:"KP1",speed:15.1232059,xdo:[1,6,7,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"phi1",speed:15.123206,xdo:[1,6,7,5,5,5,6],nodalCorrection:"j",aliases:["\u03C61","PHI1"]},{name:"lambdaO1",speed:15.5125897,xdo:[1,7,3,6,5,5,4],nodalCorrection:"x",aliases:["\u03BBO1"]},{name:"theta1",speed:15.5125897,xdo:[1,7,3,6,5,5,6],nodalCorrection:"j",aliases:["\u03B81","THETA1"]},{name:"J1",speed:15.5854433,xdo:[1,7,5,4,5,5,6],nodalCorrection:"y",aliases:[]},{name:"MQ1",speed:15.5854434,xdo:[1,7,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2PO1",speed:15.9748271,xdo:[1,8,1,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"SO1",speed:16.0569644,xdo:[1,8,3,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"OO1",speed:16.1391017,xdo:[1,8,5,5,5,5,6],nodalCorrection:"d",aliases:[]},{name:"ups1",speed:16.6834764,xdo:[1,9,5,4,5,5,6],nodalCorrection:"d",aliases:["\u03C51","UPS1"]},{name:"KQ1",speed:16.6834764,xdo:[1,9,5,4,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2MN2S2",speed:26.407938,xdo:[2,0,9,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3M(SK)2",speed:26.8701754,xdo:[2,1,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MKS2",speed:26.8701754,xdo:[2,1,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2NS2",speed:26.8794591,xdo:[2,1,7,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MS2",speed:26.9523127,xdo:[2,1,9,5,5,5,5],nodalCorrection:"x",aliases:["MLN2S2"]},{name:"3M2S2",speed:26.952313,xdo:[2,1,9,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2NK2S2",speed:26.9615964,xdo:[2,1,9,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"OQ2",speed:27.3416965,xdo:[2,2,5,6,5,5,7],nodalCorrection:"x",aliases:["OO2"]},{name:"MNK2",speed:27.3416965,xdo:[2,2,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MNS2",speed:27.4238338,xdo:[2,2,7,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"eps2",speed:27.4238338,xdo:[2,2,7,6,5,5,5],nodalCorrection:"m",aliases:["\u03B52","EP2"]},{name:"MnuS2",speed:27.4966874,xdo:[2,2,9,4,5,5,5],nodalCorrection:"x",aliases:["M\u03BDS2"]},{name:"2ML2S2",speed:27.4966874,xdo:[2,2,9,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"MNK2S2",speed:27.505971,xdo:[2,2,9,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MS2K2",speed:27.8039339,xdo:[2,3,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MK2",speed:27.8860712,xdo:[2,3,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"O2",speed:27.8860712,xdo:[2,3,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"NLK2",speed:27.8860712,xdo:[2,3,5,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"2N2",speed:27.8953548,xdo:[2,3,5,7,5,5,5],nodalCorrection:"m",aliases:[]},{name:"mu2",speed:27.9682085,xdo:[2,3,7,5,5,5,5],nodalCorrection:"m",aliases:["\u03BC2","MU2"]},{name:"2MS2",speed:27.9682085,xdo:[2,3,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SNK2",speed:28.3575923,xdo:[2,4,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"NA2",speed:28.3986629,xdo:[2,4,4,6,5,5,5],nodalCorrection:"f",aliases:[]},{name:"N2",speed:28.4397295,xdo:[2,4,5,6,5,5,5],nodalCorrection:"m",aliases:[]},{name:"KQ2",speed:28.4397295,xdo:[2,4,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"NB2",speed:28.4807962,xdo:[2,4,6,6,5,4,5],nodalCorrection:"f",aliases:[]},{name:"NA2*",speed:28.480798,xdo:[2,4,6,6,5,5,5],nodalCorrection:"f",aliases:[]},{name:"nu2",speed:28.5125832,xdo:[2,4,7,4,5,5,5],nodalCorrection:"m",aliases:["\u03BD2","NU2"]},{name:"MKL2S2",speed:28.5947204,xdo:[2,4,9,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2KN2S2",speed:28.6040041,xdo:[2,4,9,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MSK2",speed:28.901967,xdo:[2,5,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"OP2",speed:28.901967,xdo:[2,5,3,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"gamma2",speed:28.9112506,xdo:[2,5,3,7,5,5,7],nodalCorrection:"y",aliases:["\u03B32","GAMMA2"]},{name:"MPS2",speed:28.9430356,xdo:[2,5,4,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"M(SK)2",speed:28.9430356,xdo:[2,5,4,5,5,6,7],nodalCorrection:"x",aliases:[]},{name:"MA2",speed:28.943036,xdo:[2,5,4,5,5,5,5],nodalCorrection:"f",aliases:[]},{name:"alpha2",speed:28.9430376,xdo:[2,5,4,5,5,6,7],nodalCorrection:"y",aliases:["\u03B12","ALPHA2"]},{name:"M2",speed:28.9841042,xdo:[2,5,5,5,5,5,5],nodalCorrection:"y",aliases:[]},{name:"KO2",speed:28.9841042,xdo:[2,5,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MSP2",speed:29.0251729,xdo:[2,5,6,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"MB2",speed:29.025173,xdo:[2,5,6,5,5,5,5],nodalCorrection:"f",aliases:[]},{name:"MA2*",speed:29.025173,xdo:[2,5,6,5,5,5,5],nodalCorrection:"f",aliases:[]},{name:"M(KS)2",speed:29.0251788,xdo:[2,5,6,5,5,4,5],nodalCorrection:"x",aliases:[]},{name:"MKS2",speed:29.0662415,xdo:[2,5,7,5,5,5,5],nodalCorrection:"x",aliases:["3N2"]},{name:"delta2",speed:29.066242,xdo:[2,5,7,5,5,5,5],nodalCorrection:"y",aliases:["\u03B42","DELTA2"]},{name:"M2(KS)2",speed:29.148378,xdo:[2,5,9,5,5,5,5],nodalCorrection:"x",aliases:["M2KS2"]},{name:"2KM2S2",speed:29.1483788,xdo:[2,5,9,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2SN(MK)2",speed:29.373488,xdo:[2,6,1,6,5,5,5],nodalCorrection:"x",aliases:["2SNMK2"]},{name:"lambda2",speed:29.4556253,xdo:[2,6,3,6,5,5,7],nodalCorrection:"m",aliases:["\u03BB2","LAM2","LAMBDA2"]},{name:"L2",speed:29.5284789,xdo:[2,6,5,4,5,5,7],nodalCorrection:"y",aliases:[]},{name:"2MN2",speed:29.528479,xdo:[2,6,5,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"L2A",speed:29.528479,xdo:[2,6,5,4,5,5,7],nodalCorrection:"p",aliases:[]},{name:"3L2",speed:29.5331208,xdo:[2,6,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"NKM2",speed:29.5377626,xdo:[2,6,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"L2B",speed:29.537763,xdo:[2,6,5,6,5,5,5],nodalCorrection:"q",aliases:[]},{name:"2SK2",speed:29.9178627,xdo:[2,7,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"T2",speed:29.9589333,xdo:[2,7,2,5,5,6,5],nodalCorrection:"z",aliases:[]},{name:"S2",speed:30,xdo:[2,7,3,5,5,5,5],nodalCorrection:"z",aliases:[]},{name:"KP2",speed:30,xdo:[2,7,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"R2",speed:30.0410667,xdo:[2,7,4,5,5,4,7],nodalCorrection:"z",aliases:[]},{name:"K2",speed:30.0821373,xdo:[2,7,5,5,5,5,5],nodalCorrection:"y",aliases:[]},{name:"MSnu2",speed:30.4715211,xdo:[2,8,1,6,5,5,5],nodalCorrection:"x",aliases:["MS\u03BD2"]},{name:"MSN2",speed:30.5443747,xdo:[2,8,3,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"xi2",speed:30.5536583,xdo:[2,8,3,6,5,5,5],nodalCorrection:"y",aliases:["\u03BE2","XI2"]},{name:"eta2",speed:30.626512,xdo:[2,8,5,4,5,5,5],nodalCorrection:"y",aliases:["\u03B72","ETA2"]},{name:"KJ2",speed:30.626512,xdo:[2,8,5,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"2KM(SN)2",speed:30.7086493,xdo:[2,8,7,4,5,5,5],nodalCorrection:"x",aliases:["2KMSN2"]},{name:"2SM2",speed:31.0158958,xdo:[2,9,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MS2N2",speed:31.0887494,xdo:[2,9,3,3,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SKM2",speed:31.098033,xdo:[2,9,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2Snu2",speed:31.4874168,xdo:null,nodalCorrection:"x",aliases:["2S\u03BD2"]},{name:"3(SM)N2",speed:31.4874168,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SN2",speed:31.5602705,xdo:null,nodalCorrection:"x",aliases:[]},{name:"SKN2",speed:31.6424078,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3S2M2",speed:32.0317915,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SK2M2",speed:32.1139288,xdo:null,nodalCorrection:"x",aliases:[]},{name:"MQ3",speed:42.3827651,xdo:[3,3,5,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"NO3",speed:42.3827651,xdo:[3,3,5,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"MO3",speed:42.9271398,xdo:[3,4,5,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2MK3",speed:42.9271398,xdo:[3,4,5,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2NKM3",speed:42.9364235,xdo:[3,4,5,7,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2MS3",speed:42.9682085,xdo:[3,4,6,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"2MP3",speed:43.0092771,xdo:[3,4,7,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"M3",speed:43.4761564,xdo:[3,5,5,5,5,5,7],nodalCorrection:"g",aliases:[]},{name:"NK3",speed:43.4807982,xdo:[3,5,5,6,5,5,6],nodalCorrection:"x",aliases:[]},{name:"SO3",speed:43.9430356,xdo:[3,6,3,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"MP3",speed:43.9430356,xdo:[3,6,3,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"MS3",speed:43.9841042,xdo:[3,6,4,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"MK3",speed:44.0251729,xdo:[3,6,5,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"NSO3",speed:44.4966939,xdo:[3,7,3,6,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2MQ3",speed:44.5695476,xdo:[3,7,5,4,5,5,6],nodalCorrection:"x",aliases:[]},{name:"T3",speed:44.9589333,xdo:[3,8,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SP3",speed:44.9589314,xdo:[3,8,1,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"S3",speed:45,xdo:[3,8,2,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"SK3",speed:45.0410686,xdo:[3,8,3,5,5,5,6],nodalCorrection:"x",aliases:["R3"]},{name:"K3",speed:45.1232059,xdo:[3,8,5,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2SO3",speed:46.0569644,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MS4",speed:55.936417,xdo:[4,1,9,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"4M2S4",speed:55.936417,xdo:[4,1,9,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MNK4",speed:56.3258007,xdo:[4,2,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3NM4",speed:56.3350844,xdo:[4,2,5,8,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MNS4",speed:56.407938,xdo:[4,2,7,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MnuS4",speed:56.4807917,xdo:[4,2,9,4,5,5,5],nodalCorrection:"x",aliases:["2M\u03BDS4"]},{name:"3MK4",speed:56.8701754,xdo:[4,3,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MNLK4",speed:56.8701754,xdo:[4,3,5,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"2N4",speed:56.879459,xdo:[4,3,5,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"N4",speed:56.8794591,xdo:[4,3,5,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MS4",speed:56.9523127,xdo:[4,3,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2NKS4",speed:56.9615964,xdo:[4,3,7,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MSNK4",speed:57.3416965,xdo:[4,4,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MN4",speed:57.4238338,xdo:[4,4,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"Mnu4",speed:57.4966874,xdo:[4,4,7,4,5,5,5],nodalCorrection:"x",aliases:["M\u03BD4"]},{name:"2MLS4",speed:57.4966874,xdo:[4,4,7,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"MNKS4",speed:57.5059711,xdo:[4,4,7,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MSK4",speed:57.8860712,xdo:[4,5,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MA4",speed:57.92714,xdo:[4,5,4,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"M4",speed:57.9682085,xdo:[4,5,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MRS4",speed:58.0092752,xdo:[4,5,6,5,5,4,7],nodalCorrection:"x",aliases:[]},{name:"2MKS4",speed:58.0503458,xdo:[4,5,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SN4",speed:58.4397295,xdo:[4,6,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MN4",speed:58.5125832,xdo:[4,6,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"ML4",speed:58.5125832,xdo:[4,6,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"KN4",speed:58.5218668,xdo:[4,6,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"NK4",speed:58.521867,xdo:[4,6,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2SMK4",speed:58.901967,xdo:[4,7,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"M2SK4",speed:58.901967,xdo:[4,7,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MT4",speed:58.9430376,xdo:[4,7,2,5,5,6,5],nodalCorrection:"x",aliases:[]},{name:"MS4",speed:58.9841042,xdo:[4,7,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MR4",speed:59.0251709,xdo:[4,7,4,5,5,4,7],nodalCorrection:"x",aliases:[]},{name:"MK4",speed:59.0662415,xdo:[4,7,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2SNM4",speed:59.4556253,xdo:[4,8,1,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SL4",speed:59.528479,xdo:[4,8,3,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"2MSN4",speed:59.5284794,xdo:[4,8,3,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MKN4",speed:59.6106162,xdo:[4,8,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"ST4",speed:59.9589333,xdo:[4,9,0,5,5,6,5],nodalCorrection:"x",aliases:[]},{name:"S4",speed:60,xdo:[4,9,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SK4",speed:60.0821373,xdo:[4,9,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"K4",speed:60.1642746,xdo:[4,9,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3SM4",speed:61.0158958,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SKM4",speed:61.098033,xdo:null,nodalCorrection:"x",aliases:[]},{name:"MNO5",speed:71.3668694,xdo:[5,3,5,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2NKMS5",speed:71.453648,xdo:[5,3,7,7,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2MO5",speed:71.911244,xdo:[5,4,5,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"3MK5",speed:71.9112441,xdo:[5,4,5,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2NK5",speed:71.9205277,xdo:[5,4,5,7,5,5,6],nodalCorrection:"x",aliases:[]},{name:"3MS5",speed:71.9523127,xdo:[5,4,6,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"3MP5",speed:71.9933814,xdo:[5,4,7,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"NSO5",speed:72.3827651,xdo:[5,5,3,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"M5",speed:72.460261,xdo:[5,5,5,5,5,5,6],nodalCorrection:"g",aliases:[]},{name:"MNK5",speed:72.4649024,xdo:[5,5,5,6,5,5,6],nodalCorrection:"x",aliases:[]},{name:"MB5",speed:72.501329,xdo:[5,5,6,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"MSO5",speed:72.9271398,xdo:[5,6,3,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2MP5",speed:72.92714,xdo:[5,6,3,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2MS5",speed:72.9682085,xdo:[5,6,4,5,5,5,7],nodalCorrection:"x",aliases:[]},{name:"3MO5",speed:73.009277,xdo:[5,6,5,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2MK5",speed:73.009277,xdo:[5,6,5,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"NSK5",speed:73.471515,xdo:[5,7,3,4,5,5,6],nodalCorrection:"x",aliases:[]},{name:"3MQ5",speed:73.5536518,xdo:[5,7,5,4,5,5,6],nodalCorrection:"x",aliases:[]},{name:"MSP5",speed:73.9430356,xdo:[5,8,1,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"MSK5",speed:74.0251729,xdo:[5,8,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3KM5",speed:74.1073102,xdo:[5,8,5,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2SP5",speed:74.9589314,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SK5",speed:75.0410686,xdo:null,nodalCorrection:"x",aliases:[]},{name:"(SK)K5",speed:75.1232059,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2(MN)K6",speed:84.7655303,xdo:[6,1,5,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"5MKS6",speed:84.8383839,xdo:[6,1,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2(MN)S6",speed:84.8476676,xdo:[6,1,7,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"5M2S6",speed:84.9205212,xdo:[6,1,9,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MNK6",speed:85.309905,xdo:[6,2,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"N6",speed:85.3191886,xdo:[6,2,5,8,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MNS6",speed:85.3920423,xdo:[6,2,7,6,5,5,5],nodalCorrection:"x",aliases:["2NMLS6"]},{name:"3NKS6",speed:85.4013259,xdo:[6,2,7,8,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MnuS6",speed:85.4648959,xdo:[6,2,9,4,5,5,5],nodalCorrection:"x",aliases:["3M\u03BDS6"]},{name:"4MK6",speed:85.8542797,xdo:[6,3,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"M2N6",speed:85.863563,xdo:[6,3,5,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2NM6",speed:85.8635633,xdo:[6,3,5,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"4MS6",speed:85.936417,xdo:[6,3,7,5,5,5,5],nodalCorrection:"x",aliases:["2MLNS6"]},{name:"2NMKS6",speed:85.9457006,xdo:[6,3,7,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MSNK6",speed:86.3258007,xdo:[6,4,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MN6",speed:86.407938,xdo:[6,4,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2Mnu6",speed:86.4807917,xdo:[6,4,7,4,5,5,5],nodalCorrection:"x",aliases:["2M\u03BD6","3MLS6"]},{name:"2MNO6",speed:86.480792,xdo:[6,4,7,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MNKS6",speed:86.4900753,xdo:[6,4,7,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MSK6",speed:86.8701754,xdo:[6,5,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MA6",speed:86.911244,xdo:[6,5,4,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"M6",speed:86.9523127,xdo:[6,5,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MKS6",speed:87.03445,xdo:[6,5,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MTN6",speed:87.3827671,xdo:[6,6,2,6,5,6,5],nodalCorrection:"x",aliases:[]},{name:"MSN6",speed:87.4238338,xdo:[6,6,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2ML6",speed:87.496687,xdo:[6,6,5,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"4MN6",speed:87.4966874,xdo:[6,6,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MKN6",speed:87.505971,xdo:[6,6,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MNK6",speed:87.5059711,xdo:[6,6,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MKnu6",speed:87.5788247,xdo:[6,6,7,4,5,5,5],nodalCorrection:"x",aliases:["MK\u03BD6"]},{name:"2(MS)K6",speed:87.8860712,xdo:[6,7,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MT6",speed:87.9271418,xdo:[6,7,2,5,5,6,5],nodalCorrection:"x",aliases:[]},{name:"2MS6",speed:87.9682085,xdo:[6,7,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MK6",speed:88.0503458,xdo:[6,7,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2SN6",speed:88.4397295,xdo:[6,8,1,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MTN6",speed:88.4715165,xdo:[6,8,2,4,5,6,5],nodalCorrection:"x",aliases:[]},{name:"MSL6",speed:88.512583,xdo:[6,8,3,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"3MSN6",speed:88.5125832,xdo:[6,8,3,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"NSK6",speed:88.5218668,xdo:[6,8,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SNK6",speed:88.521867,xdo:[6,8,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MKN6",speed:88.59472,xdo:[6,8,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MKL6",speed:88.5947205,xdo:[6,8,5,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"MST6",speed:88.9430376,xdo:[6,9,0,5,5,6,5],nodalCorrection:"x",aliases:[]},{name:"2SM6",speed:88.9841042,xdo:[6,9,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MSK6",speed:89.0662415,xdo:[6,9,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"SKM6",speed:89.066242,xdo:[6,9,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2KM6",speed:89.1483788,xdo:[6,9,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MSTN6",speed:89.4874123,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2(MS)N6",speed:89.528479,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2MSKN6",speed:89.6106162,xdo:null,nodalCorrection:"x",aliases:[]},{name:"S6",speed:90,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2MNO7",speed:100.3509736,xdo:[7,3,5,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"3MQ7",speed:100.3509736,xdo:[7,3,5,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"4MK7",speed:100.8953483,xdo:[7,4,5,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2NMK7",speed:100.904632,xdo:[7,4,5,7,5,5,6],nodalCorrection:"x",aliases:[]},{name:"MNSO7",speed:101.3668694,xdo:[7,5,3,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"M7",speed:101.4443667,xdo:[7,5,5,5,5,5,7],nodalCorrection:"g",aliases:[]},{name:"2MNK7",speed:101.4490067,xdo:[7,5,5,6,5,5,6],nodalCorrection:"x",aliases:[]},{name:"MNKO7",speed:101.4490067,xdo:[7,5,5,6,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2MSO7",speed:101.9112441,xdo:[7,6,3,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"3MK7",speed:101.9933814,xdo:[7,6,5,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"MSKO7",speed:103.0092771,xdo:[7,8,3,5,5,5,4],nodalCorrection:"x",aliases:[]},{name:"3M2NS8",speed:113.8317718,xdo:[8,1,7,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"4MNS8",speed:114.3761465,xdo:[8,2,7,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"5MK8",speed:114.8383839,xdo:[8,3,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2(MN)8",speed:114.8476676,xdo:[8,3,5,7,5,5,5],nodalCorrection:"x",aliases:["2MN8"]},{name:"5MS8",speed:114.9205212,xdo:[8,3,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2(MN)KS8",speed:114.9298048,xdo:[8,3,7,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MSNK8",speed:115.309905,xdo:[8,4,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MN8",speed:115.3920423,xdo:[8,4,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3Mnu8",speed:115.4648959,xdo:[8,4,7,4,5,5,5],nodalCorrection:"x",aliases:["3M\u03BD8","4MLS8"]},{name:"3MNKS8",speed:115.4741795,xdo:[8,4,7,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"4MSK8",speed:115.8542797,xdo:[8,5,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"MA8",speed:115.895348,xdo:[8,5,4,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"M8",speed:115.936417,xdo:[8,5,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"4MKS8",speed:116.0185542,xdo:[8,5,7,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MSN8",speed:116.407938,xdo:[8,6,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3ML8",speed:116.4807917,xdo:[8,6,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MNK8",speed:116.4900753,xdo:[8,6,5,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3M2SK8",speed:116.8701754,xdo:[8,7,1,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2(NS)8",speed:116.8794591,xdo:[8,7,1,7,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MT8",speed:116.911246,xdo:[8,7,2,5,5,6,5],nodalCorrection:"x",aliases:[]},{name:"3MS8",speed:116.9523127,xdo:[8,7,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MK8",speed:117.03445,xdo:[8,7,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2SNM8",speed:117.4238338,xdo:[8,8,1,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2SMN8",speed:117.423834,xdo:[8,8,1,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MSL8",speed:117.4966874,xdo:[8,8,3,4,5,5,7],nodalCorrection:"x",aliases:[]},{name:"MSNK8",speed:117.5059711,xdo:[8,8,3,6,5,5,5],nodalCorrection:"x",aliases:[]},{name:"4MSN8",speed:117.578825,xdo:[8,8,5,4,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2MST8",speed:117.9271418,xdo:[8,9,0,5,5,6,5],nodalCorrection:"x",aliases:[]},{name:"2(MS)8",speed:117.9682085,xdo:[8,9,1,5,5,5,5],nodalCorrection:"x",aliases:["2MS8"]},{name:"2MSK8",speed:118.0503458,xdo:[8,9,3,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"2(MK)8",speed:118.132483,xdo:[8,9,5,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3SN8",speed:118.4397295,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SML8",speed:118.5125832,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SKN8",speed:118.5218668,xdo:null,nodalCorrection:"x",aliases:[]},{name:"MSKL8",speed:118.5947205,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3SM8",speed:118.9841042,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SMK8",speed:119.0662415,xdo:null,nodalCorrection:"x",aliases:[]},{name:"S8",speed:120,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3MNO9",speed:129.3350779,xdo:[9,3,5,6,5,5,4],nodalCorrection:"x",aliases:[]},{name:"2M2NK9",speed:129.8887362,xdo:[9,4,5,7,5,5,6],nodalCorrection:"x",aliases:[]},{name:"2(MN)K9",speed:129.888738,xdo:[9,4,5,7,5,5,6],nodalCorrection:"x",aliases:[]},{name:"MA9",speed:130.3874,xdo:[9,5,4,5,5,5,5],nodalCorrection:"x",aliases:[]},{name:"3MNK9",speed:130.4331109,xdo:[9,5,5,6,5,5,6],nodalCorrection:"x",aliases:[]},{name:"4MK9",speed:130.9774856,xdo:[9,6,5,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"3MSK9",speed:131.9933814,xdo:[9,8,3,5,5,5,6],nodalCorrection:"x",aliases:[]},{name:"5MNS10",speed:143.3602507,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3M2N10",speed:143.8317718,xdo:null,nodalCorrection:"x",aliases:[]},{name:"6MS10",speed:143.9046254,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3M2NKS10",speed:143.9139091,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MSNK10",speed:144.2940092,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MN10",speed:144.3761465,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4Mnu10",speed:144.4490002,xdo:null,nodalCorrection:"x",aliases:["4M\u03BD10"]},{name:"5MSK10",speed:144.8383839,xdo:null,nodalCorrection:"x",aliases:[]},{name:"M10",speed:144.9205212,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MKS10",speed:145.0026585,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3MSN10",speed:145.3920423,xdo:null,nodalCorrection:"x",aliases:["3MNS10"]},{name:"6MN10",speed:145.4648959,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4ML10",speed:145.4648959,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3MNK10",speed:145.4741795,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2(SN)M10",speed:145.8635633,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MS10",speed:145.936417,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MK10",speed:146.0185542,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2(MS)N10",speed:146.407938,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3MSL10",speed:146.4807915,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2MNSK10",speed:146.4900753,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MSN10",speed:146.5629217,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3M2S10",speed:146.9523127,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3MSK10",speed:147.03445,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3SMN10",speed:147.4238338,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2SMKN10",speed:147.5059711,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4M2SN10",speed:147.578825,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3S2M10",speed:147.9682085,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2(MS)K10",speed:148.0503458,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MSK11",speed:160.9774856,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5M2NS12",speed:171.7999803,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3(MN)12",speed:172.2715013,xdo:null,nodalCorrection:"x",aliases:[]},{name:"6MNS12",speed:172.344355,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4M2N12",speed:172.815876,xdo:null,nodalCorrection:"x",aliases:[]},{name:"7MS12",speed:172.8887297,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4M2NKS12",speed:172.8980133,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MSNK12",speed:173.2781135,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MN12",speed:173.3602507,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3N2MS12",speed:173.362457,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5Mnu12",speed:173.4331044,xdo:null,nodalCorrection:"x",aliases:["5M\u03BD12"]},{name:"6MSK12",speed:173.8224882,xdo:null,nodalCorrection:"x",aliases:[]},{name:"MA12",speed:173.863557,xdo:null,nodalCorrection:"x",aliases:[]},{name:"M12",speed:173.9046254,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MSN12",speed:174.3761465,xdo:null,nodalCorrection:"x",aliases:["4MNS12"]},{name:"4ML12",speed:174.449,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MNK12",speed:174.4582839,xdo:null,nodalCorrection:"x",aliases:[]},{name:"2(MSN)12",speed:174.8476676,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MT12",speed:174.8794545,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MS12",speed:174.9205212,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MK12",speed:175.0026585,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3M2SN12",speed:175.3920423,xdo:null,nodalCorrection:"x",aliases:[]},{name:"6MSN12",speed:175.4648959,xdo:null,nodalCorrection:"x",aliases:["4MSL12"]},{name:"3MNKS12",speed:175.4741785,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MSN12",speed:175.547033,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MST12",speed:175.8953503,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4M2S12",speed:175.936417,xdo:null,nodalCorrection:"x",aliases:[]},{name:"4MSK12",speed:176.0185542,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3(MS)12",speed:176.9523127,xdo:null,nodalCorrection:"x",aliases:[]},{name:"3M2SK12",speed:177.03445,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MSN14",speed:203.3602507,xdo:null,nodalCorrection:"x",aliases:[]},{name:"5MNK14",speed:203.442388,xdo:null,nodalCorrection:"x",aliases:[]},{name:"6MS14",speed:203.9046254,xdo:null,nodalCorrection:"x",aliases:[]}])Ko(e);var pe=g,de=e=>{if(e instanceof Date)return e;if(typeof e=="number")return new Date(e*1e3);throw new Error("Invalid date format, should be a Date object, or timestamp")},wo=(e,o,n=600)=>{let a=[],s=Math.ceil(o.getTime()/1e3/n)*n,l=Math.floor(e.getTime()/1e3/n)*n,i=l,t=[];for(;i<=s;)a.push(new Date(i*1e3)),t.push((i-l)/3600),i+=n;return{items:a,hours:t}},j=({harmonicConstituents:e,constituentModels:o=pe,offset:n,fundamentals:a=H,prominenceThreshold:s})=>{if(!Array.isArray(e))throw new Error("Harmonic constituents are not an array");let l=[];e.forEach(x=>{if(typeof x.name>"u")throw new Error("Harmonic constituents must have a name property");o[x.name]!==void 0&&l.push({...x,phase:r*x.phase})}),n!==!1&&l.push({name:"Z0",phase:0,amplitude:n});let i=new Date,t=new Date,d={};return d.setTimeSpan=(x,p)=>{if(i=de(x),t=de(p),i.getTime()>=t.getTime())throw new Error("Start time must be before end time");return d},d.prediction=x=>{let p=typeof x<"u"?x:{timeFidelity:600},C=wo(i,t,p.timeFidelity);return po({timeline:C,constituents:l,constituentModels:o,start:C.items[0]??i,fundamentals:a,prominenceThreshold:p.prominenceThreshold??s})},Object.freeze(d)};function V(e,o={}){let{nodeCorrections:n,...a}=o,s={harmonicConstituents:e,fundamentals:lo(n),offset:!1,...a};return{getTimelinePrediction:({start:l,end:i,timeFidelity:t,offsets:d})=>j(s).setTimeSpan(l,i).prediction({timeFidelity:t}).getTimelinePrediction({offsets:d}),getExtremesPrediction:({start:l,end:i,labels:t,offsets:d})=>j(s).setTimeSpan(l,i).prediction().getExtremesPrediction({labels:t,offsets:d}),getWaterLevelAtTime:({time:l,offsets:i})=>{let t=new Date(l.getTime()+6e5);return j(s).setTimeSpan(l,t).prediction().getTimelinePrediction({offsets:i})[0]}}}V.constituents=pe;return Ne(To);})();
+/*! Bundled license information:
+
+@neaps/tide-predictor/dist/index.js:
+  (* v8 ignore if -- @preserve *)
+*/
+</script>
+<script>
+const STATIONS = [{"id":"8574680","name":"Baltimore Inner Harbor","area":"Chesapeake Bay, MD","group":"Chesapeake","sp":"blue","lat":39.2667,"lon":-76.5783,"tz":"America/New_York","off":0.244,"gt":0.506,"hc":[["M2",0.152,336.3],["S2",0.024,8.3],["N2",0.035,313.1],["K1",0.064,7],["M4",0.009,243.7],["O1",0.054,14],["M6",0.003,356.4],["MK3",0.005,180.2],["MN4",0.004,212.6],["NU2",0.006,311.4],["MU2",0.003,310.3],["2N2",0.004,294.9],["OO1",0.003,26.3],["LAM2",0.004,12.9],["S1",0.018,291.6],["M1",0.003,67.7],["J1",0.003,341.2],["SSA",0.039,49.5],["SA",0.133,132.6],["RHO",0.002,339.1],["Q1",0.013,358.5],["T2",0.002,333.3],["2Q1",0.003,277.2],["P1",0.02,2.2],["L2",0.008,357.6],["2MK3",0.004,160.1],["K2",0.009,8.9],["MS4",0.002,277]]},{"id":"8575512","name":"Annapolis","area":"Chesapeake Bay, MD","group":"Chesapeake","sp":"blue","lat":38.9839,"lon":-76.48,"tz":"America/New_York","off":0.219,"gt":0.438,"hc":[["M2",0.131,289.9],["S2",0.02,322.8],["N2",0.028,270.5],["K1",0.055,356.7],["M4",0.003,58.6],["O1",0.046,6.8],["M6",0.003,157.1],["MK3",0.003,117.5],["NU2",0.006,266.2],["MU2",0.002,329.5],["2N2",0.003,264.7],["OO1",0.002,56.3],["LAM2",0.003,316.7],["S1",0.018,290.2],["M1",0.002,61.7],["J1",0.003,354],["SSA",0.042,54.7],["SA",0.132,134.5],["Q1",0.011,347.1],["T2",0.002,274.6],["2Q1",0.002,293.1],["P1",0.018,343.9],["L2",0.008,296.3],["2MK3",0.003,112.1],["K2",0.007,322.8]]},{"id":"8577330","name":"Solomons Island","area":"Patuxent River, MD","group":"Chesapeake","sp":"blue","lat":38.3167,"lon":-76.4517,"tz":"America/New_York","off":0.231,"gt":0.449,"hc":[["M2",0.171,199.2],["S2",0.025,224.1],["N2",0.036,174.6],["K1",0.027,319.1],["M4",0.006,279],["O1",0.024,333.7],["M6",0.003,301.8],["MK3",0.004,328.6],["MN4",0.002,255.5],["NU2",0.008,177.7],["2N2",0.004,159],["LAM2",0.004,233.3],["S1",0.012,292.3],["SSA",0.044,48],["SA",0.108,136.9],["Q1",0.006,317.5],["T2",0.002,198.3],["P1",0.011,312],["L2",0.01,226.5],["2MK3",0.003,327.1],["K2",0.008,224.2],["MS4",0.002,329.9]]},{"id":"8571892","name":"Cambridge","area":"Choptank River, MD","group":"Chesapeake","sp":"blue","lat":38.5725,"lon":-76.0617,"tz":"America/New_York","off":0.31,"gt":0.622,"hc":[["M2",0.234,256.8],["S2",0.034,285.5],["N2",0.047,234.1],["K1",0.049,341],["M4",0.013,81.2],["O1",0.04,350.5],["M6",0.002,182.7],["MK3",0.005,80.9],["MN4",0.005,51.3],["NU2",0.01,239.3],["2N2",0.006,211.5],["OO1",0.002,357.5],["LAM2",0.006,281.9],["S1",0.017,300.7],["M1",0.002,36.9],["J1",0.003,317.5],["SSA",0.037,46.8],["SA",0.106,140],["RHO",0.002,323.8],["Q1",0.01,338.7],["T2",0.003,272.3],["2Q1",0.003,249],["P1",0.018,326.1],["M3",0.002,10.9],["L2",0.018,283.3],["2MK3",0.005,71.6],["K2",0.011,287.9],["MS4",0.004,126.3]]},{"id":"8635750","name":"Lewisetta","area":"Potomac River, VA","group":"Chesapeake","sp":"blue","lat":37.9961,"lon":-76.4644,"tz":"America/New_York","off":0.231,"gt":0.458,"hc":[["M2",0.181,176.3],["S2",0.027,202.8],["N2",0.039,154.3],["K1",0.021,280.5],["M4",0.004,214],["O1",0.018,299.4],["M6",0.004,263.9],["MK3",0.002,312.1],["MN4",0.002,181.2],["NU2",0.008,153.5],["MU2",0.002,143.6],["2N2",0.005,142.7],["OO1",0.002,294.2],["LAM2",0.004,204],["S1",0.008,304.3],["SSA",0.052,42],["SA",0.097,131.1],["Q1",0.004,283],["T2",0.002,181.8],["P1",0.008,288.6],["L2",0.009,194.6],["2MK3",0.002,306.6],["K2",0.008,200.8]]},{"id":"8632200","name":"Kiptopeke","area":"Lower Bay, VA","group":"Chesapeake","sp":"blue","lat":37.1652,"lon":-75.9884,"tz":"America/New_York","off":0.434,"gt":0.896,"hc":[["M2",0.383,32.7],["S2",0.066,57.5],["N2",0.086,14.3],["K1",0.057,194.3],["M4",0.004,290.4],["O1",0.047,215.5],["M6",0.005,293.5],["MK3",0.004,74.7],["S4",0.003,317.9],["MN4",0.003,265.3],["NU2",0.017,11.6],["MU2",0.009,23.3],["2N2",0.011,3.2],["OO1",0.003,223.2],["LAM2",0.005,50.9],["S1",0.006,106.9],["M1",0.003,238.2],["J1",0.004,197.6],["SSA",0.05,44.7],["SA",0.089,156],["RHO",0.002,204.2],["Q1",0.012,195.7],["T2",0.005,36.7],["R2",0.002,288.6],["2Q1",0.002,190.5],["P1",0.018,196.6],["M3",0.003,85.5],["L2",0.015,36.3],["2MK3",0.004,88.2],["K2",0.019,54.6],["MS4",0.002,155.9]]},{"id":"8638610","name":"Sewells Point","area":"Norfolk, VA","group":"Chesapeake","sp":"blue","lat":36.9428,"lon":-76.3286,"tz":"America/New_York","off":0.412,"gt":0.841,"hc":[["M2",0.35,47.1],["S2",0.064,76.2],["N2",0.08,27.5],["K1",0.051,199.8],["M4",0.004,308.9],["O1",0.04,223.8],["M6",0.002,3.2],["MK3",0.003,74.4],["S4",0.002,360],["MN4",0.003,294.5],["NU2",0.014,23.2],["MU2",0.01,47.6],["2N2",0.011,11.3],["OO1",0.002,197.2],["LAM2",0.006,57.2],["S1",0.011,101.6],["M1",0.003,243.3],["J1",0.003,230.8],["SSA",0.06,45.4],["SA",0.087,150.1],["RHO",0.003,189.5],["Q1",0.011,209.5],["T2",0.006,72],["2Q1",0.002,171.7],["P1",0.015,198],["M3",0.003,113.2],["L2",0.015,61.2],["2MK3",0.004,102.1],["K2",0.017,71.8],["MS4",0.002,221.7]]},{"id":"8557380","name":"Lewes","area":"Delaware Bay, DE","group":"Mid-Atlantic","sp":"blue","lat":38.7828,"lon":-75.1193,"tz":"America/New_York","off":0.68,"gt":1.418,"hc":[["M2",0.588,31.2],["S2",0.105,57.2],["N2",0.132,9.3],["K1",0.102,202.2],["M4",0.011,191.2],["O1",0.081,189.4],["M6",0.005,349.1],["MK3",0.002,131.3],["S4",0.003,287.5],["MN4",0.007,176.2],["NU2",0.025,10.9],["MU2",0.013,13.9],["2N2",0.018,350.6],["OO1",0.002,226.9],["LAM2",0.008,49.4],["S1",0.006,134.8],["M1",0.004,196.7],["J1",0.006,198.1],["SSA",0.046,47],["SA",0.093,148.1],["RHO",0.002,166.7],["Q1",0.015,178.9],["T2",0.01,32],["R2",0.002,286.8],["2Q1",0.002,129.8],["P1",0.033,198.1],["2SM2",0.002,46.2],["M3",0.004,86.9],["L2",0.025,53.7],["2MK3",0.002,105],["K2",0.028,57.9],["M8",0.002,222.8],["MS4",0.004,209.4]]},{"id":"8536110","name":"Cape May","area":"Cape May, NJ","group":"Mid-Atlantic","sp":"blue","lat":38.9683,"lon":-74.96,"tz":"America/New_York","off":0.783,"gt":1.659,"hc":[["M2",0.697,28.6],["S2",0.122,56],["N2",0.151,8.8],["K1",0.104,200.2],["M4",0.012,102.2],["O1",0.082,186.8],["M6",0.008,25.4],["MK3",0.003,165.4],["MN4",0.004,104.9],["NU2",0.031,7],["MU2",0.012,44.7],["2N2",0.02,351.6],["OO1",0.003,226.3],["LAM2",0.01,44.2],["S1",0.006,162.6],["M1",0.003,200.6],["J1",0.006,198.1],["SSA",0.04,45.7],["SA",0.084,149.7],["RHO",0.003,156.6],["Q1",0.015,179.4],["T2",0.01,28.6],["R2",0.003,314],["2Q1",0.002,122],["P1",0.035,197.3],["2SM2",0.002,55.7],["M3",0.005,98],["L2",0.036,43.7],["2MK3",0.004,111.4],["K2",0.034,55.1],["M8",0.003,205.8],["MS4",0.005,140.8]]},{"id":"8534720","name":"Atlantic City","area":"Atlantic City, NJ","group":"Mid-Atlantic","sp":"blue","lat":39.3567,"lon":-74.4181,"tz":"America/New_York","off":0.675,"gt":1.403,"hc":[["M2",0.581,355.5],["S2",0.115,20.1],["N2",0.137,337.3],["K1",0.109,181.3],["M4",0.009,180.1],["O1",0.074,167.4],["M6",0.005,74.8],["MK3",0.003,59.1],["S4",0.002,207.5],["MN4",0.005,157.5],["NU2",0.024,337],["S6",0.002,109.4],["MU2",0.02,344.1],["2N2",0.02,325.9],["OO1",0.002,185.5],["LAM2",0.004,359.7],["S1",0.006,107.2],["M1",0.003,183.6],["J1",0.006,172.6],["SSA",0.041,60.7],["SA",0.097,149.5],["RHO",0.002,148.7],["Q1",0.014,165.8],["T2",0.009,359.8],["2Q1",0.002,166.5],["P1",0.034,179.1],["2SM2",0.003,5],["M3",0.006,41.3],["L2",0.018,354.6],["2MK3",0.003,20.7],["K2",0.031,18.3],["MS4",0.003,173.3]]},{"id":"8531680","name":"Sandy Hook","area":"Raritan Bay, NJ","group":"Mid-Atlantic","sp":"blue","lat":40.4669,"lon":-74.0094,"tz":"America/New_York","off":0.785,"gt":1.593,"hc":[["M2",0.679,5.6],["S2",0.13,32.4],["N2",0.156,350],["K1",0.103,173.9],["M4",0.015,255.8],["O1",0.051,172.1],["M6",0.016,83.6],["MK3",0.006,48.8],["S4",0.011,11],["MN4",0.007,268.5],["NU2",0.029,348.6],["MU2",0.024,12.9],["2N2",0.023,338.8],["OO1",0.003,205.1],["LAM2",0.009,342.8],["S1",0.01,129.3],["M1",0.005,235.1],["J1",0.005,193.6],["SSA",0.036,71.6],["SA",0.098,142.3],["Q1",0.012,189.6],["T2",0.011,20.1],["2Q1",0.003,229.2],["P1",0.033,174.1],["M3",0.01,55],["L2",0.026,356.7],["2MK3",0.006,23.6],["K2",0.036,32.5],["MS4",0.011,231.4]]},{"id":"8570283","name":"Ocean City Inlet","area":"Ocean City, MD","group":"Mid-Atlantic","sp":"blue","lat":38.3283,"lon":-75.0917,"tz":"America/New_York","off":0.387,"gt":0.749,"hc":[["M2",0.304,8.6],["S2",0.055,31.5],["N2",0.07,348.5],["K1",0.055,210.5],["M4",0.02,171.6],["O1",0.052,200],["M6",0.002,268.2],["MK3",0.006,359.5],["S4",0.003,210.9],["MN4",0.009,152.5],["NU2",0.014,346],["MU2",0.009,342],["2N2",0.01,333.4],["OO1",0.002,203.7],["LAM2",0.003,20.4],["S1",0.003,153.8],["J1",0.003,197.8],["MM",0.027,69.5],["SSA",0.045,69.2],["SA",0.088,147.2],["RHO",0.003,181.6],["Q1",0.008,191.3],["T2",0.006,6.9],["R2",0.003,249.8],["P1",0.019,198.9],["M3",0.002,13],["L2",0.012,28.2],["2MK3",0.007,0.9],["K2",0.015,30.5],["M8",0.002,346.3],["MS4",0.004,187.9]]},{"id":"8652587","name":"Oregon Inlet Marina","area":"Outer Banks, NC","group":"Southeast","sp":"blue","lat":35.7957,"lon":-75.5482,"tz":"America/New_York","off":0.177,"gt":0.36,"hc":[["M2",0.12,16.6],["S2",0.019,32.5],["N2",0.028,358.9],["K1",0.028,190.9],["M4",0.009,346.3],["O1",0.02,194.1],["M6",0.004,209.5],["MK3",0.004,166.1],["MN4",0.003,327.9],["NU2",0.006,351.5],["MU2",0.004,27.4],["2N2",0.004,351.7],["LAM2",0.002,41],["S1",0.012,248.9],["M1",0.002,210.3],["J1",0.003,211.2],["MM",0.019,56.5],["SSA",0.032,56.9],["SA",0.074,154.6],["RHO",0.002,218.4],["Q1",0.003,219.8],["T2",0.002,14.4],["R2",0.003,238.2],["P1",0.013,218.6],["L2",0.003,34.2],["2MK3",0.002,185.5],["K2",0.004,23.4],["MS4",0.004,28.2]]},{"id":"8656483","name":"Beaufort","area":"Beaufort, NC","group":"Southeast","sp":"blue","lat":34.7173,"lon":-76.6707,"tz":"America/New_York","off":0.521,"gt":1.079,"hc":[["M2",0.456,6.4],["S2",0.072,30],["N2",0.102,349.4],["K1",0.082,197.8],["M4",0.004,294.8],["O1",0.064,205],["M6",0.007,54.4],["MK3",0.003,15.5],["S4",0.006,302.3],["MN4",0.003,228.6],["NU2",0.02,345.6],["MU2",0.011,14.7],["2N2",0.014,338.4],["OO1",0.003,218.4],["LAM2",0.006,6.7],["S1",0.01,178.1],["M1",0.003,222.2],["J1",0.005,198.7],["SSA",0.051,43.7],["SA",0.091,166.4],["RHO",0.003,209.6],["Q1",0.013,199.6],["T2",0.007,15.3],["R2",0.004,243.1],["2Q1",0.002,187.6],["P1",0.027,198.8],["2SM2",0.002,28.7],["M3",0.005,33.7],["L2",0.02,8],["2MK3",0.004,17],["K2",0.02,27.3],["M8",0.002,118.2],["MS4",0.006,132.2]]},{"id":"8658120","name":"Wilmington","area":"Cape Fear River, NC","group":"Southeast","sp":"blue","lat":34.2267,"lon":-77.9533,"tz":"America/New_York","off":0.743,"gt":1.427,"hc":[["M2",0.651,59.5],["S2",0.083,96.2],["N2",0.13,49.1],["K1",0.085,227.2],["M4",0.056,344],["O1",0.066,231.6],["M6",0.035,271.7],["MK3",0.018,104.8],["S4",0.005,127.5],["MN4",0.025,340.5],["NU2",0.028,37],["MU2",0.026,139.7],["2N2",0.016,52.8],["OO1",0.004,265.7],["LAM2",0.021,52],["S1",0.021,194.6],["M1",0.005,276.7],["J1",0.005,242.1],["SSA",0.059,56.1],["SA",0.088,158.4],["RHO",0.002,228.1],["Q1",0.013,226.2],["T2",0.009,74.2],["R2",0.005,324.8],["2Q1",0.003,209.1],["P1",0.028,228.2],["2SM2",0.002,180],["M3",0.007,139.8],["L2",0.056,52.3],["2MK3",0.018,89.1],["K2",0.024,89.1],["M8",0.005,229.7],["MS4",0.02,17.4]]},{"id":"8665530","name":"Charleston","area":"Charleston Harbor, SC","group":"Southeast","sp":"blue","lat":32.7808,"lon":-79.9236,"tz":"America/New_York","off":0.89,"gt":1.757,"hc":[["M2",0.767,10.1],["S2",0.116,36],["N2",0.175,354.9],["K1",0.105,198.4],["M4",0.038,207.8],["O1",0.079,202],["M6",0.008,129.1],["MK3",0.009,10.6],["S4",0.003,333.8],["MN4",0.016,198.8],["NU2",0.034,351.5],["MU2",0.023,38.1],["2N2",0.024,345.5],["OO1",0.004,227.4],["LAM2",0.015,358.8],["S1",0.019,171.6],["M1",0.005,219.1],["J1",0.007,212.8],["SSA",0.076,49.2],["SA",0.101,173.2],["RHO",0.002,191.2],["Q1",0.016,199.2],["T2",0.013,16.8],["R2",0.008,275.7],["P1",0.034,197.5],["2SM2",0.002,79.4],["M3",0.014,116.7],["L2",0.042,3.5],["2MK3",0.011,28.3],["K2",0.03,36],["MS4",0.011,239.7]]},{"id":"8670870","name":"Fort Pulaski","area":"Savannah, GA","group":"Southeast","sp":"blue","lat":32.0347,"lon":-80.903,"tz":"America/New_York","off":1.164,"gt":2.287,"hc":[["M2",1.01,17.5],["S2",0.16,45.3],["N2",0.227,2.1],["K1",0.109,200],["M4",0.043,241.4],["O1",0.08,205.2],["M6",0.007,76],["MK3",0.01,37.9],["S4",0.007,43.3],["MN4",0.02,234.7],["NU2",0.045,357.4],["MU2",0.031,48.3],["2N2",0.031,351.7],["OO1",0.004,232],["LAM2",0.02,11.6],["S1",0.02,168.5],["M1",0.003,231.6],["J1",0.007,220.2],["SSA",0.086,52.9],["SA",0.109,174.2],["RHO",0.003,206.1],["Q1",0.016,203.4],["T2",0.018,25.9],["R2",0.015,291],["2Q1",0.002,167.6],["P1",0.037,198.6],["2SM2",0.004,88.6],["M3",0.022,153.4],["L2",0.058,9.4],["2MK3",0.011,71.1],["K2",0.039,45.1],["M8",0.002,242.8],["MS4",0.022,272.9]]},{"id":"8720218","name":"Mayport","area":"Jacksonville, FL","group":"Southeast","sp":"blue","lat":30.3982,"lon":-81.4279,"tz":"America/New_York","off":0.752,"gt":1.511,"hc":[["M2",0.667,26.4],["S2",0.105,49.9],["N2",0.144,8.2],["K1",0.084,204.3],["M4",0.031,163.8],["O1",0.058,211],["M6",0.009,195.7],["MK3",0.008,22.2],["S4",0.004,288.9],["MN4",0.01,161.2],["NU2",0.031,5.8],["MU2",0.015,30.9],["2N2",0.018,349.2],["OO1",0.003,245.5],["LAM2",0.009,39.4],["S1",0.012,170.8],["M1",0.003,249.7],["J1",0.005,209.2],["SSA",0.093,52.8],["SA",0.114,188.2],["RHO",0.002,240.4],["Q1",0.012,207.6],["T2",0.012,40.1],["R2",0.006,285.7],["2Q1",0.002,198.4],["P1",0.029,201],["2SM2",0.003,73.3],["M3",0.008,155.8],["L2",0.023,29.9],["2MK3",0.005,44.8],["K2",0.027,47.6],["M8",0.003,353.1],["MS4",0.012,179.7]]},{"id":"8726520","name":"St. Petersburg","area":"Tampa Bay, FL","group":"Gulf Coast","sp":"blue","lat":27.7606,"lon":-82.6269,"tz":"America/New_York","off":0.366,"gt":0.688,"hc":[["M2",0.166,199.4],["S2",0.052,214.8],["N2",0.027,190.4],["K1",0.161,49.8],["M4",0.003,237.1],["O1",0.146,36.6],["M6",0.002,218.2],["MK3",0.002,137.2],["NU2",0.008,203.2],["MU2",0.01,26.3],["2N2",0.003,176.2],["OO1",0.004,84.7],["LAM2",0.005,222.7],["S1",0.016,140.3],["M1",0.006,90.7],["J1",0.008,78.6],["SSA",0.033,55],["SA",0.103,152.9],["MSF",0.014,7.3],["RHO",0.008,7.6],["Q1",0.026,26.6],["T2",0.004,197],["2Q1",0.003,14.6],["P1",0.046,58.5],["2SM2",0.003,86],["M3",0.002,6.5],["L2",0.009,225],["2MK3",0.002,136.1],["K2",0.024,215.1]]},{"id":"8727520","name":"Cedar Key","area":"Cedar Key, FL","group":"Gulf Coast","sp":"blue","lat":29.135,"lon":-83.0317,"tz":"America/New_York","off":0.621,"gt":1.157,"hc":[["M2",0.38,188.9],["S2",0.121,225.7],["N2",0.066,181.9],["K1",0.169,35],["M4",0.008,252.4],["O1",0.159,26.9],["M6",0.004,195.7],["MK3",0.007,169.1],["MN4",0.003,229.5],["NU2",0.017,181],["MU2",0.014,292],["2N2",0.007,183.3],["OO1",0.003,106.4],["LAM2",0.009,233.1],["S1",0.007,135],["M1",0.005,90.7],["J1",0.009,58.6],["SSA",0.032,41.1],["SA",0.119,140],["RHO",0.008,359.5],["Q1",0.036,11.9],["T2",0.009,219.8],["R2",0.015,51.4],["2Q1",0.005,342],["P1",0.058,26.9],["2SM2",0.005,87.7],["L2",0.017,198.6],["2MK3",0.009,160.5],["K2",0.03,224.1],["MS4",0.005,292]]},{"id":"8728690","name":"Apalachicola","area":"Apalachicola Bay, FL","group":"Gulf Coast","sp":"blue","lat":29.7244,"lon":-84.9806,"tz":"America/New_York","off":0.277,"gt":0.492,"hc":[["M2",0.124,256.9],["S2",0.04,285],["N2",0.022,245.1],["K1",0.135,52.8],["M4",0.006,74.9],["O1",0.121,45.7],["MK3",0.008,254.9],["S4",0.002,190.8],["MN4",0.002,43.9],["NU2",0.006,262],["MU2",0.006,58.3],["2N2",0.002,258.6],["OO1",0.006,101.9],["LAM2",0.003,293.6],["S1",0.008,85.5],["M1",0.004,125.4],["J1",0.006,81.1],["SSA",0.049,45.5],["SA",0.109,145.5],["MSF",0.017,32.6],["RHO",0.006,16.8],["Q1",0.027,30.7],["T2",0.003,305.1],["R2",0.002,246.7],["2Q1",0.002,344.7],["P1",0.041,55.6],["2SM2",0.002,148.5],["M3",0.002,322.3],["L2",0.007,263.1],["2MK3",0.007,249.2],["K2",0.016,258],["MS4",0.002,94.6]]},{"id":"8735180","name":"Dauphin Island","area":"Mobile Bay, AL","group":"Gulf Coast","sp":"blue","lat":30.25,"lon":-88.075,"tz":"America/Chicago","off":0.174,"gt":0.372,"hc":[["M2",0.015,129.4],["S2",0.007,128],["N2",0.002,149.8],["K1",0.13,48.6],["M4",0.002,347.1],["O1",0.127,39.5],["MK3",0.002,130.4],["MN4",0.002,309.8],["OO1",0.007,32],["S1",0.004,291.9],["M1",0.006,82.1],["J1",0.005,70],["SSA",0.058,51.4],["SA",0.099,149.5],["RHO",0.005,29.8],["Q1",0.027,27.9],["2Q1",0.003,352.1],["P1",0.039,49.8],["2MK3",0.002,135],["K2",0.005,208.3]]},{"id":"8761724","name":"Grand Isle","area":"Grand Isle, LA","group":"Gulf Coast","sp":"blue","lat":29.2633,"lon":-89.9567,"tz":"America/Chicago","off":0.163,"gt":0.323,"hc":[["M2",0.017,160.9],["S2",0.009,147.8],["N2",0.005,169.2],["K1",0.122,34.8],["M4",0.003,1.6],["O1",0.12,27.9],["MK3",0.002,205],["MN4",0.002,335.2],["OO1",0.004,40.9],["S1",0.004,344.8],["M1",0.005,60.1],["J1",0.006,24.4],["SSA",0.067,57.1],["SA",0.096,150.7],["RHO",0.005,17.9],["Q1",0.028,11.4],["2Q1",0.004,351.2],["P1",0.039,34.4],["2MK3",0.002,202.2],["MS4",0.002,6.4]]},{"id":"8771450","name":"Galveston Pier 21","area":"Galveston Bay, TX","group":"Gulf Coast","sp":"blue","lat":29.31,"lon":-94.7933,"tz":"America/Chicago","off":0.252,"gt":0.429,"hc":[["M2",0.085,293.5],["S2",0.024,295.4],["N2",0.022,269.5],["K1",0.13,53.3],["M4",0.005,256.9],["O1",0.124,45],["MN4",0.002,209],["NU2",0.004,277.8],["MU2",0.004,227.9],["2N2",0.004,224.2],["OO1",0.007,82],["S1",0.009,326.6],["M1",0.004,71.9],["J1",0.006,37.2],["SSA",0.092,61.3],["SA",0.088,154.9],["RHO",0.005,39.2],["Q1",0.027,26.7],["T2",0.003,315.4],["2Q1",0.004,21.4],["P1",0.038,46.8],["L2",0.002,28.5],["K2",0.003,4.1],["MS4",0.002,265.9]]},{"id":"8774770","name":"Rockport","area":"Aransas Bay, TX","group":"Gulf Coast","sp":"blue","lat":28.0217,"lon":-97.0467,"tz":"America/Chicago","off":0.058,"gt":0.111,"hc":[["M2",0.007,331.1],["S2",0.002,342.5],["N2",0.002,307.7],["K1",0.03,105.9],["M4",0.002,225],["O1",0.032,101.1],["MK3",0.002,316],["OO1",0.003,137.1],["S1",0.004,0],["SSA",0.09,64.8],["SA",0.08,154.3],["Q1",0.007,80.1],["P1",0.008,102.8]]},{"id":"9414290","name":"San Francisco","area":"SF Bay, CA","group":"Pacific","sp":"dungeness","lat":37.8063,"lon":-122.4659,"tz":"America/Los_Angeles","off":0.951,"gt":1.78,"hc":[["M2",0.576,208.2],["S2",0.137,216.2],["N2",0.122,183.2],["K1",0.37,225.4],["M4",0.022,136.8],["O1",0.23,208.4],["M6",0.002,7.3],["MK3",0.018,124.1],["MN4",0.008,112],["NU2",0.026,189.9],["MU2",0.007,100.2],["2N2",0.013,153.3],["OO1",0.012,260],["LAM2",0.007,214.3],["S1",0.007,282.6],["M1",0.011,237.5],["J1",0.019,244.3],["SSA",0.03,272.3],["SA",0.044,200.2],["MF",0.015,153.1],["RHO",0.009,200],["Q1",0.041,202.4],["T2",0.009,204.6],["2Q1",0.006,208.6],["P1",0.114,222.1],["2SM2",0.003,37.3],["M3",0.003,37.6],["L2",0.018,229.6],["2MK3",0.014,92.2],["K2",0.04,206],["MS4",0.01,149]]},{"id":"9415020","name":"Point Reyes","area":"Marin Coast, CA","group":"Pacific","sp":"dungeness","lat":37.9942,"lon":-122.9736,"tz":"America/Los_Angeles","off":0.946,"gt":1.758,"hc":[["M2",0.55,190.4],["S2",0.137,196.3],["N2",0.121,164.1],["K1",0.383,219.9],["O1",0.235,204.1],["NU2",0.024,170],["MU2",0.013,124.5],["2N2",0.014,135.3],["OO1",0.012,249.8],["LAM2",0.003,221.1],["S1",0.016,316.3],["M1",0.013,227.2],["J1",0.023,233.8],["SSA",0.035,263.3],["SA",0.059,213.3],["RHO",0.008,198.4],["Q1",0.042,196.7],["T2",0.007,189.4],["2Q1",0.005,197.9],["P1",0.118,215],["M3",0.002,10.8],["L2",0.009,219.7],["K2",0.038,187]]},{"id":"9418767","name":"North Spit","area":"Humboldt Bay, CA","group":"Pacific","sp":"dungeness","lat":40.7669,"lon":-124.2173,"tz":"America/Los_Angeles","off":1.128,"gt":2.09,"hc":[["M2",0.7,215.1],["S2",0.175,236.6],["N2",0.148,190.5],["K1",0.401,233.4],["M4",0.012,200.6],["O1",0.249,217.2],["M6",0.006,284.7],["MK3",0.006,197.5],["MN4",0.005,177.4],["NU2",0.029,194.5],["MU2",0.01,173],["2N2",0.017,164.2],["OO1",0.013,265.9],["LAM2",0.006,215.8],["S1",0.012,35],["M1",0.013,252.4],["J1",0.022,248.3],["SSA",0.038,264.1],["SA",0.065,255],["MF",0.014,149],["RHO",0.008,210.3],["Q1",0.044,211.3],["T2",0.01,235.8],["R2",0.002,237.5],["2Q1",0.005,216.4],["P1",0.126,231.2],["L2",0.016,225.2],["K2",0.047,228.3],["MS4",0.006,239.1]]},{"id":"9419750","name":"Crescent City","area":"Crescent City, CA","group":"Pacific","sp":"dungeness","lat":41.7456,"lon":-124.1844,"tz":"America/Los_Angeles","off":1.13,"gt":2.095,"hc":[["M2",0.716,211],["S2",0.183,231.7],["N2",0.152,185.2],["K1",0.391,227.8],["O1",0.242,212.6],["NU2",0.03,191.2],["MU2",0.016,154],["2N2",0.017,158.8],["OO1",0.014,255],["LAM2",0.005,230.9],["S1",0.008,4.3],["M1",0.012,242.5],["J1",0.022,240],["SSA",0.041,262.1],["SA",0.071,261.4],["MF",0.014,152],["RHO",0.009,206.7],["Q1",0.043,205.5],["T2",0.01,225.8],["R2",0.002,232.4],["2Q1",0.005,204.9],["P1",0.123,225.2],["L2",0.013,235.6],["K2",0.051,223.6]]},{"id":"9432780","name":"Charleston","area":"Coos Bay, OR","group":"Pacific","sp":"dungeness","lat":43.345,"lon":-124.322,"tz":"America/Los_Angeles","off":1.244,"gt":2.323,"hc":[["M2",0.809,225.1],["S2",0.215,250.7],["N2",0.169,200.6],["K1",0.398,235.2],["M4",0.007,199.6],["O1",0.246,220.6],["M6",0.004,327.6],["MK3",0.004,190.8],["S4",0.002,347.6],["MN4",0.003,179.1],["NU2",0.034,203.5],["MU2",0.013,182.6],["2N2",0.019,174.2],["OO1",0.013,267.8],["LAM2",0.006,228.6],["S1",0.004,54],["M1",0.013,256.2],["J1",0.023,246.4],["SA",0.1,278.9],["RHO",0.008,214.7],["Q1",0.043,214.3],["T2",0.013,243.7],["R2",0.002,257],["2Q1",0.005,216.9],["P1",0.125,233.5],["2SM2",0.002,46.4],["L2",0.02,234.7],["K2",0.058,243.8],["MS4",0.004,248.1]]},{"id":"9435380","name":"South Beach","area":"Yaquina Bay, OR","group":"Pacific","sp":"dungeness","lat":44.6254,"lon":-124.0449,"tz":"America/Los_Angeles","off":1.358,"gt":2.543,"hc":[["M2",0.887,231.2],["S2",0.242,259.3],["N2",0.184,207.5],["K1",0.434,238.1],["M4",0.012,198.8],["O1",0.263,221.4],["M6",0.008,298.3],["MK3",0.003,196.9],["MN4",0.005,180.3],["NU2",0.037,210.4],["MU2",0.015,203.9],["2N2",0.021,182.5],["OO1",0.014,274.4],["LAM2",0.007,223.2],["S1",0.012,5.4],["M1",0.015,257.9],["J1",0.024,256],["SSA",0.027,234],["SA",0.122,285.9],["MF",0.025,183],["RHO",0.009,211.9],["Q1",0.046,214.2],["T2",0.015,251.7],["R2",0.002,213.6],["2Q1",0.005,214.4],["P1",0.134,233.9],["2SM2",0.002,54.2],["L2",0.022,235.9],["2MK3",0.002,349],["K2",0.064,250.6],["M8",0.002,260.4],["MS4",0.007,239.9]]},{"id":"9437540","name":"Garibaldi","area":"Tillamook Bay, OR","group":"Pacific","sp":"dungeness","lat":45.5545,"lon":-123.9189,"tz":"America/Los_Angeles","off":1.374,"gt":2.536,"hc":[["M2",0.877,242.6],["S2",0.235,273],["N2",0.178,220],["K1",0.418,245.8],["M4",0.029,250.4],["O1",0.253,229.1],["M6",0.016,358.5],["MK3",0.012,247.6],["S4",0.002,354.4],["MN4",0.012,229.9],["NU2",0.037,221.8],["MU2",0.014,252],["2N2",0.019,195.3],["OO1",0.013,285],["LAM2",0.01,223],["S1",0.012,7.7],["M1",0.014,272.7],["J1",0.021,266.3],["SSA",0.014,198],["SA",0.111,286.2],["MF",0.026,183.4],["RHO",0.009,217.1],["Q1",0.043,223.6],["T2",0.015,266.1],["R2",0.002,184.9],["2Q1",0.005,226.9],["P1",0.129,242.1],["2SM2",0.004,72.4],["M3",0.002,227.9],["L2",0.026,241.4],["2MK3",0.004,308.6],["K2",0.06,265.5],["M8",0.002,15.9],["MS4",0.018,286.6]]},{"id":"9439040","name":"Astoria","area":"Columbia River, OR","group":"Pacific","sp":"dungeness","lat":46.2073,"lon":-123.7683,"tz":"America/Los_Angeles","off":1.373,"gt":2.624,"hc":[["M2",0.965,261.6],["S2",0.242,293.8],["N2",0.184,239.5],["K1",0.403,254.5],["M4",0.009,109.1],["O1",0.244,239.6],["M6",0.012,124.1],["MK3",0.025,113.3],["S4",0.003,160],["MN4",0.005,79.1],["NU2",0.039,240.9],["MU2",0.019,356.5],["2N2",0.018,214],["OO1",0.012,294.3],["LAM2",0.022,257.3],["S1",0.011,24.5],["M1",0.014,302.6],["J1",0.015,282.8],["SSA",0.045,183],["SA",0.113,308.7],["MF",0.026,187.9],["RHO",0.007,239.9],["Q1",0.042,240],["T2",0.016,296.4],["R2",0.002,356.4],["2Q1",0.005,253.7],["P1",0.112,251.4],["2SM2",0.01,121.5],["M3",0.004,15.4],["L2",0.046,267.4],["2MK3",0.031,91.4],["K2",0.075,283.4],["MS4",0.006,107.6]]},{"id":"9440910","name":"Toke Point","area":"Willapa Bay, WA","group":"Pacific","sp":"dungeness","lat":46.7075,"lon":-123.9669,"tz":"America/Los_Angeles","off":1.458,"gt":2.72,"hc":[["M2",0.975,250.6],["S2",0.265,279.5],["N2",0.197,226.3],["K1",0.425,249],["M4",0.015,295.3],["O1",0.259,233.3],["M6",0.006,32.9],["MK3",0.007,249.3],["S4",0.002,6.9],["MN4",0.005,263.4],["NU2",0.043,226.8],["MU2",0.009,215.4],["2N2",0.024,200.5],["OO1",0.014,286],["LAM2",0.008,273],["S1",0.008,43.2],["M1",0.013,272.2],["J1",0.024,264.1],["SA",0.158,286.7],["RHO",0.008,233.1],["Q1",0.045,230],["T2",0.015,269.8],["R2",0.002,227.2],["2Q1",0.006,230.8],["P1",0.132,246.8],["M3",0.002,54.7],["L2",0.027,266.2],["2MK3",0.004,169.3],["K2",0.071,275.3],["MS4",0.01,330]]},{"id":"9444900","name":"Port Townsend","area":"Puget Sound, WA","group":"Pacific","sp":"dungeness","lat":48.1112,"lon":-122.7597,"tz":"America/Los_Angeles","off":1.522,"gt":2.597,"hc":[["M2",0.681,349.9],["S2",0.169,13.1],["N2",0.144,320.4],["K1",0.767,270.5],["M4",0.038,59.5],["O1",0.445,249.8],["M6",0.009,247],["MK3",0.027,332.4],["S4",0.003,93.7],["MN4",0.015,29.4],["NU2",0.028,332.2],["MU2",0.027,242.4],["2N2",0.016,292],["OO1",0.029,318.4],["LAM2",0.011,46.4],["S1",0.022,40.9],["M1",0.024,291.8],["J1",0.042,301.6],["MM",0.024,199],["SSA",0.019,209.9],["SA",0.079,282.6],["RHO",0.015,239.8],["Q1",0.074,241.7],["T2",0.011,13.6],["R2",0.002,342.1],["2Q1",0.009,251],["P1",0.241,269.7],["2SM2",0.004,292.4],["M3",0.004,100.3],["L2",0.028,46.9],["2MK3",0.019,341.3],["K2",0.051,16.7],["M8",0.002,188.4],["MS4",0.021,83.2]]},{"id":"9447130","name":"Seattle","area":"Elliott Bay, WA","group":"Pacific","sp":"dungeness","lat":47.6026,"lon":-122.3393,"tz":"America/Los_Angeles","off":2.024,"gt":3.462,"hc":[["M2",1.063,10.8],["S2",0.268,36.8],["N2",0.214,341.1],["K1",0.834,276.8],["M4",0.021,200.7],["O1",0.459,254.6],["M6",0.009,312.8],["MK3",0.036,79.3],["S4",0.002,254.3],["MN4",0.009,172.7],["NU2",0.044,355.5],["MU2",0.034,238.9],["2N2",0.023,313.1],["OO1",0.031,330.2],["LAM2",0.02,49.9],["S1",0.021,45],["M1",0.024,304.1],["J1",0.043,313.4],["SSA",0.024,217],["SA",0.07,283.2],["MF",0.015,157],["RHO",0.015,245],["Q1",0.073,248.9],["T2",0.016,38],["R2",0.003,11.2],["2Q1",0.01,265.5],["P1",0.257,276.2],["2SM2",0.008,284.4],["M3",0.004,178],["L2",0.049,58.7],["2MK3",0.035,48.5],["K2",0.079,37.7],["MS4",0.012,229.3]]},{"id":"9449880","name":"Friday Harbor","area":"San Juan Islands, WA","group":"Pacific","sp":"dungeness","lat":48.5453,"lon":-123.0125,"tz":"America/Los_Angeles","off":1.387,"gt":2.364,"hc":[["M2",0.557,10.6],["S2",0.132,35.7],["N2",0.12,343],["K1",0.76,280.4],["M4",0.016,124.6],["O1",0.434,258.7],["M6",0.005,237.2],["MK3",0.012,27.5],["S4",0.002,157],["MN4",0.007,92],["NU2",0.024,350.1],["MU2",0.017,266.6],["2N2",0.013,309.4],["OO1",0.03,325.7],["LAM2",0.008,60],["S1",0.024,26.8],["M1",0.025,298],["J1",0.042,315.1],["MM",0.009,168.8],["SSA",0.022,227.5],["SA",0.076,274.5],["MSF",0.007,265.1],["MF",0.021,156.4],["RHO",0.013,245.9],["Q1",0.073,250.7],["T2",0.011,39.9],["R2",0.002,313.6],["2Q1",0.008,253.5],["P1",0.235,278],["2SM2",0.002,289.1],["L2",0.021,52.4],["2MK3",0.009,19.5],["K2",0.035,44],["MS4",0.01,134]]}];
+
+/* ---------- regions, species and seasons ---------- */
+const REGIONS = ["Chesapeake", "Mid-Atlantic", "Southeast", "Gulf Coast", "Pacific"];
+const SPECIES = { blue: "Blue crab", dungeness: "Dungeness" };
+// Typical monthly activity, Jan..Dec (0–1). Blue crabs follow water temperature; Dungeness are fullest in late summer and fall.
+const SEASON = {
+  "Chesapeake":   [.10,.10,.20,.40,.62,.82,.95,1,1,.80,.45,.15],
+  "Mid-Atlantic": [.10,.10,.20,.38,.58,.80,.95,1,1,.78,.42,.15],
+  "Southeast":    [.35,.40,.55,.72,.85,.90,.95,1,1,.92,.72,.48],
+  "Gulf Coast":   [.40,.45,.62,.80,.90,.95,.95,.95,1,1,.80,.55],
+  "Pacific":      [.70,.65,.60,.60,.65,.75,.85,.90,1,1,.90,.80],
+};
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const TIPS = {
+  blue: { title: "Blue crab tips", items: [
+    "The incoming tide is prime. Crabs ride rising water into shallows and creek mouths to feed.",
+    "Work the last couple of hours of the incoming tide through the high-tide turn, then follow them out early on the outgoing tide.",
+    "Chicken necks or bunker on a hand line or collapsible trap. Check traps every 15–30 minutes.",
+    "Blue crabs slow down below about 60°F water and mostly stop feeding below 50°F.",
+  ] },
+  dungeness: { title: "Dungeness tips", items: [
+    "Fish around the tide turn, especially at high tide. Strong current drags rings and buries pots.",
+    "Small tides (around the quarter moons) give longer calm windows than big tides.",
+    "Fish carcasses, turkey legs or clam bait in a bait box. Soak rings 15–20 minutes and pots an hour or more.",
+    "Late summer and fall crabs are fullest. Soft-shell crabs right after a molt have little meat.",
+  ] },
+};
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" stroke-linejoin="round"/></svg>';
+
+/* ---------- Pinchy, the Dungeness crab ---------- */
+// Moods: party (excellent), happy (good), ok (fair), sleepy (slow), puzzled (no results).
+function crab(mood = "happy", size = 120) {
+  const top = x => 58 - 20 * Math.sqrt(Math.max(0, 1 - ((x - 60) / 40) ** 2));
+  let bumps = ""; for (let x = 25; x <= 95; x += 7.8) bumps += `<circle cx="${x.toFixed(1)}" cy="${(top(x) + 1.6).toFixed(1)}" r="3.5"/>`;
+  let legs = "";
+  for (const [x, y, dx, dy] of [[30, 66, -15, 4], [33, 70, -14, 10], [38, 73, -11, 15], [45, 75, -6, 18]]) {
+    legs += `<path d="M${x} ${y}q${(dx * .6).toFixed(1)} ${(dy * .1 - 4).toFixed(1)} ${dx} ${dy}"/><path d="M${120 - x} ${y}q${(-dx * .6).toFixed(1)} ${(dy * .1 - 4).toFixed(1)} ${-dx} ${dy}"/>`;
+  }
+  // Dungeness claws have white tips.
+  const claw = (cx, cy, rot, wave) => `<g transform="translate(${cx} ${cy}) rotate(${rot})"><g class="${wave ? "wave" : ""}"><ellipse rx="9.5" ry="7.5" fill="var(--crab)"/><ellipse cx="-4.6" cy="-8" rx="3.7" ry="6.6" transform="rotate(-18 -4.6 -8)" fill="var(--crab)"/><ellipse cx="4.6" cy="-9" rx="3.9" ry="7.2" transform="rotate(16 4.6 -9)" fill="var(--crab)"/><circle cx="-6.2" cy="-13.2" r="2.4" fill="var(--claw)"/><circle cx="6.8" cy="-15.2" r="2.5" fill="var(--claw)"/><ellipse cx="-2.5" cy="-1.5" rx="3" ry="2" fill="#fff" opacity=".22"/></g></g>`;
+  const leftUp = mood !== "sleepy";
+  const rightUp = mood === "party" || mood === "happy" || mood === "puzzled";
+  let arms = "", claws = "";
+  if (leftUp) { arms += `<path d="M24 55Q12 51 13 41"/>`; claws += claw(13, 34, -12, mood !== "puzzled"); }
+  else { arms += `<path d="M24 59Q12 61 10 66"/>`; claws += claw(9, 68, -104); }
+  if (rightUp) { arms += `<path d="M96 55Q108 51 107 41"/>`; claws += claw(107, 34, 12, false); }
+  else { arms += `<path d="M96 59Q108 61 110 66"/>`; claws += claw(111, 68, 104); }
+  const eye = x => mood === "sleepy"
+    ? `<circle cx="${x}" cy="27" r="6.5" fill="var(--crab)"/><path d="M${x - 4.5} 27.5q4.5 3.5 9 0" fill="none" stroke="var(--pupil)" stroke-width="2" stroke-linecap="round"/>`
+    : `<circle cx="${x}" cy="27" r="6.8" fill="#fff" stroke="var(--crab-dark)" stroke-width="1.4"/><circle cx="${x + (mood === "puzzled" ? (x < 60 ? 1.8 : -1.2) : .8)}" cy="${mood === "puzzled" ? 25.5 : 28}" r="${mood === "party" ? 4 : 3.5}" fill="var(--pupil)"/><circle cx="${x + 2}" cy="26" r="1.4" fill="#fff"/>`;
+  const mouth = {
+    party: `<path d="M52.5 59q7.5 10 15 0z" fill="var(--pupil)"/><path d="M56.2 62.4q3.8 2.4 7.6 0" fill="var(--cheek)"/>`,
+    happy: `<path d="M53.5 60q6.5 6.5 13 0" fill="none" stroke="var(--pupil)" stroke-width="2.3" stroke-linecap="round"/>`,
+    ok: `<path d="M55 61.5q5 3 10 0" fill="none" stroke="var(--pupil)" stroke-width="2.2" stroke-linecap="round"/>`,
+    sleepy: `<ellipse cx="60" cy="62" rx="2.4" ry="1.8" fill="var(--pupil)"/>`,
+    puzzled: `<path d="M55 62q2.5-2 5 0t5 0" fill="none" stroke="var(--pupil)" stroke-width="2.1" stroke-linecap="round"/>`,
+  }[mood];
+  const star = (x, y, k) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0-5L1.3-1.3 5 0 1.3 1.3 0 5-1.3 1.3-5 0-1.3-1.3Z" fill="var(--sun)"/>`;
+  const extra = mood === "party" ? star(28, 12, 1) + star(96, 8, .8) + star(104, 24, .55)
+    : mood === "sleepy" ? `<text x="80" y="20" font-family="var(--font-display)" font-weight="700" font-size="11" fill="var(--muted)">z</text><text x="88" y="11" font-family="var(--font-display)" font-weight="700" font-size="8" fill="var(--muted)">z</text>`
+    : mood === "puzzled" ? `<text x="84" y="16" font-family="var(--font-display)" font-weight="700" font-size="15" fill="var(--muted)">?</text>` : "";
+  return `<svg class="crab" width="${size}" height="${Math.round(size * 96 / 136)}" viewBox="-8 0 136 96" role="img" aria-label="Pinchy the crab">
+    ${extra}<g class="bob">
+    <g fill="none" stroke="var(--crab-dark)" stroke-width="4.2" stroke-linecap="round">${legs}</g>
+    <g fill="none" stroke="var(--crab)" stroke-width="5.5" stroke-linecap="round">${arms}</g>
+    <g stroke="var(--crab-dark)" stroke-width="3.4" stroke-linecap="round"><path d="M52 45L49.5 31"/><path d="M68 45L70.5 31"/></g>
+    <ellipse cx="60" cy="58" rx="40" ry="20" fill="var(--crab)"/><g fill="var(--crab)">${bumps}</g>
+    <path d="M24 62q36 22 72 0q-4 14-36 16q-32-2-36-16z" fill="var(--crab-dark)" opacity=".28"/>
+    <ellipse cx="45" cy="48" rx="12" ry="4" fill="#fff" opacity=".2"/>
+    ${eye(49.5)}${eye(70.5)}
+    <ellipse cx="41" cy="61" rx="5.2" ry="3.1" fill="var(--cheek)" opacity=".75"/><ellipse cx="79" cy="61" rx="5.2" ry="3.1" fill="var(--cheek)" opacity=".75"/>
+    ${mouth}${claws}</g></svg>`;
+}
+const moodOf = n => n >= 80 ? "party" : n >= 65 ? "happy" : n >= 50 ? "ok" : "sleepy";
+function ring(n) {
+  const C = 2 * Math.PI * 38;
+  return `<svg class="ring" viewBox="0 0 88 88" width="92" height="92" aria-hidden="true"><circle cx="44" cy="44" r="38" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="44" cy="44" r="38" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C * n / 100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 44 44)"/><text x="44" y="54" text-anchor="middle" class="ringn">${n}</text></svg>`;
+}
+
+const slug = s => (s.name + " " + s.area.split(",").pop()).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+STATIONS.forEach(s => { s.slug = slug(s); s.state = s.area.split(",").pop().trim(); s.search = (s.name + " " + s.area + " " + s.group + " " + SPECIES[s.sp]).toLowerCase(); });
+
+/* ---------- small storage helpers (per viewer, optional) ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
+
+/* ---------- time zone helpers ---------- */
+const fmtCache = {};
+function partsFmt(tz) {
+  return fmtCache["p" + tz] ||= new Intl.DateTimeFormat("en-US", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+function tzOffsetMin(ms, tz) {
+  const p = partsFmt(tz).formatToParts(new Date(ms)); const g = k => +p.find(x => x.type === k).value;
+  return (Date.UTC(g("year"), g("month") - 1, g("day"), g("hour") % 24, g("minute"), g("second")) - Math.floor(ms / 1000) * 1000) / 60000;
+}
+function zoned(y, m, d, h, tz) {
+  const guess = Date.UTC(y, m - 1, d, h);
+  const t = guess - tzOffsetMin(guess, tz) * 60000;
+  return guess - tzOffsetMin(t, tz) * 60000;
+}
+function fmtTime(ms, tz) {
+  const f = fmtCache["t" + tz] ||= new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" });
+  return f.format(new Date(ms));
+}
+// "4:20–6:20 PM" or "11:40 AM–1:40 PM"
+function fmtRange(a, b, tz) {
+  const A = fmtTime(a, tz), B = fmtTime(b, tz);
+  const [at, ap] = A.split(" "), [, bp] = B.split(" ");
+  return ap === bp ? `${at}–${B}` : `${A}–${B}`;
+}
+function fmtHour(ms, tz) {
+  const f = fmtCache["h" + tz] ||= new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric" });
+  return f.format(new Date(ms)).replace(" AM", "a").replace(" PM", "p");
+}
+const tzAbbr = (ms, tz) => new Intl.DateTimeFormat("en-US", { timeZone: tz, timeZoneName: "short" }).formatToParts(new Date(ms)).find(p => p.type === "timeZoneName").value;
+const ymdParse = s => s.split("-").map(Number);
+function ymdAdd(s, n) { const [y, m, d] = ymdParse(s); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10); }
+function localToday() { const n = new Date(); return new Date(n.getTime() - n.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
+function ymdLabel(s, opts) { const [y, m, d] = ymdParse(s); return new Date(Date.UTC(y, m - 1, d, 12)).toLocaleDateString("en-US", { timeZone: "UTC", ...opts }); }
+function daysBetween(a, b) { const [y1, m1, d1] = ymdParse(a), [y2, m2, d2] = ymdParse(b); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000); }
+const dur = ms => { const m = Math.max(0, Math.round(ms / 60000)); const h = Math.floor(m / 60); return h ? `${h} hr ${m % 60} min` : `${m} min`; };
+
+/* ---------- sun and moon ---------- */
+function sunTimes(y, m, d, lat, lon) {
+  const rad = Math.PI / 180;
+  const jd = Date.UTC(y, m - 1, d, 12) / 86400000 + 2440587.5;
+  const n = Math.round(jd - 2451545.0 + 0.0008);
+  const js = n - lon / 360;
+  const M = (357.5291 + 0.98560028 * js) % 360;
+  const C = 1.9148 * Math.sin(M * rad) + 0.02 * Math.sin(2 * M * rad) + 0.0003 * Math.sin(3 * M * rad);
+  const lam = (M + C + 180 + 102.9372) % 360;
+  const jt = 2451545.0 + js + 0.0053 * Math.sin(M * rad) - 0.0069 * Math.sin(2 * lam * rad);
+  const dec = Math.asin(Math.sin(lam * rad) * Math.sin(23.4397 * rad));
+  const cw = (Math.sin(-0.833 * rad) - Math.sin(lat * rad) * Math.sin(dec)) / (Math.cos(lat * rad) * Math.cos(dec));
+  const w = Math.acos(Math.max(-1, Math.min(1, cw))) / rad;
+  const toMs = j => (j - 2440587.5) * 86400000;
+  return { rise: toMs(jt - w / 360), set: toMs(jt + w / 360) };
+}
+const SYNODIC = 29.530588853, NEW_MOON = Date.UTC(2000, 0, 6, 18, 14);
+function moon(ms) {
+  const age = (((ms - NEW_MOON) / 86400000) % SYNODIC + SYNODIC) % SYNODIC;
+  const p = age / SYNODIC, k = (1 - Math.cos(2 * Math.PI * p)) / 2;
+  const names = ["New moon","Waxing crescent","First quarter","Waxing gibbous","Full moon","Waning gibbous","Last quarter","Waning crescent"];
+  return { p, k, name: names[Math.round(p * 8) % 8] };
+}
+function moonSvg(mo, size = 18) {
+  const r = size / 2 - 1, c = size / 2, waxing = mo.p < .5, cres = mo.k < .5;
+  const rx = Math.abs(1 - 2 * mo.k) * r;
+  const outer = waxing ? 1 : 0, inner = waxing ? (cres ? 0 : 1) : (cres ? 1 : 0);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="vertical-align:-3px;flex:none" aria-label="${mo.name}" role="img"><circle cx="${c}" cy="${c}" r="${r}" fill="var(--line)" stroke="var(--muted)" stroke-width=".6"/>` +
+    (mo.k > .01 ? `<path d="M${c} ${c - r}A${r} ${r} 0 0 ${outer} ${c} ${c + r}A${rx} ${r} 0 0 ${inner} ${c} ${c - r}Z" fill="var(--ink)"/>` : "") + `</svg>`;
+}
+
+/* ---------- live data (only where the page may reach the internet) ---------- */
+const LIVE = { wx: null, wxAt: 0, water: {} };
+const COMPASS = ["N","NE","E","SE","S","SW","W","NW"];
+const compass = deg => COMPASS[Math.round(((deg % 360) + 360) % 360 / 45) % 8];
+async function getJSON(url, ms = 9000) {
+  const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), ms);
+  try { const r = await fetch(url, { signal: ctl.signal }); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  finally { clearTimeout(tm); }
+}
+async function loadWeather() {
+  const lat = STATIONS.map(s => s.lat).join(","), lon = STATIONS.map(s => s.lon).join(",");
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&timeformat=unixtime&timezone=GMT&past_days=1&forecast_days=8`;
+  try {
+    const data = await getJSON(url, 12000);
+    const arr = Array.isArray(data) ? data : [data];
+    const wx = {};
+    arr.forEach((d, i) => { const h = d.hourly; if (!h) return; wx[STATIONS[i].id] = { t0: h.time[0] * 1000, n: h.time.length, temp: h.temperature_2m, rain: h.precipitation_probability, wind: h.wind_speed_10m, gust: h.wind_gusts_10m, dir: h.wind_direction_10m }; });
+    if (!Object.keys(wx).length) throw new Error("empty");
+    LIVE.wx = wx; LIVE.wxAt = Date.now(); dayCache.clear(); setLive(); render();
+  } catch (e) { setLive(); }
+}
+function wxAt(s, t) {
+  const w = LIVE.wx && LIVE.wx[s.id]; if (!w) return null;
+  const i = Math.floor((t - w.t0) / 3600000); if (i < 0 || i >= w.n || w.wind[i] == null) return null;
+  return { wind: w.wind[i], gust: w.gust[i], dir: w.dir[i], temp: w.temp[i], rain: w.rain[i] };
+}
+function wxFactor(x) {
+  if (!x) return 1;
+  const eff = Math.max(x.wind, (x.gust || 0) * .7);
+  const wf = eff < 8 ? 1 : eff < 12 ? .93 : eff < 16 ? .82 : eff < 20 ? .68 : eff < 25 ? .52 : .4;
+  const rf = x.rain > 70 ? .88 : x.rain > 40 ? .95 : 1;
+  return wf * rf;
+}
+const windWord = x => { const e = Math.max(x.wind, (x.gust || 0) * .7); return e < 8 ? "Light wind" : e < 12 ? "Breezy" : e < 16 ? "Windy" : e < 20 ? "Very windy" : "Too windy"; };
+const wxText = x => `${Math.round(x.wind)} mph ${compass(x.dir)}${x.gust > x.wind + 5 ? `, gusts ${Math.round(x.gust)}` : ""}`;
+const NOAA = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?application=gettn_crabby&format=json&time_zone=gmt&units=english&date=latest&station=";
+async function loadWater(s) {
+  const rec = LIVE.water[s.id];
+  if (rec && Date.now() - rec.at < 10 * 60000) return;
+  LIVE.water[s.id] = { at: Date.now(), pending: true };
+  const pick = d => d && d.data && d.data[0] && d.data[0].v !== "" ? { v: +d.data[0].v, t: Date.parse(d.data[0].t.replace(" ", "T") + "Z") } : null;
+  const [temp, level] = await Promise.all([
+    getJSON(NOAA + s.id + "&product=water_temperature").then(pick).catch(() => null),
+    getJSON(NOAA + s.id + "&product=water_level&datum=MLLW").then(pick).catch(() => null),
+  ]);
+  LIVE.water[s.id] = { at: Date.now(), temp, level };
+  if (temp || level) { setLive(); if (state.sel === s) renderDetail(); }
+}
+function setLive() {
+  const el = $("live"), on = !!LIVE.wx || Object.values(LIVE.water).some(w => w.temp || w.level);
+  el.classList.toggle("on", on);
+  el.querySelector("span").textContent = on ? "Live wind and water data" : "Tide forecast";
+  el.title = on ? "Scores include the wind and rain forecast" : "Live wind and water data aren't available here, so scores use tides, light, moon and season.";
+}
+
+/* ---------- tides and scoring ---------- */
+const FT = 3.28084;
+const predictors = {};
+function predictor(s) {
+  return predictors[s.id] ||= TidePredictor.createTidePredictor(s.hc.map(([name, amplitude, phase]) => ({ name, amplitude, phase })), { offset: s.off });
+}
+// Tide stage curves over one cycle: 0 = low-tide turn, .5 = high-tide turn, back to 1.
+const STAGE = {
+  blue:      [[0,.30],[.12,.50],[.30,.82],[.42,.95],[.50,.95],[.58,.82],[.72,.55],[.88,.32],[1,.30]],
+  dungeness: [[0,.80],[.10,.62],[.25,.28],[.40,.72],[.50,1],[.60,.72],[.75,.28],[.90,.62],[1,.80]],
+};
+const interp = (pts, x) => { for (let i = 1; i < pts.length; i++) if (x <= pts[i][0]) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; return y0 + (y1 - y0) * (x - x0) / (x1 - x0); } return pts[pts.length - 1][1]; };
+function stageName(c) {
+  if (c < .08 || c >= .92) return "Low-tide turn";
+  if (c < .2) return "Early incoming"; if (c < .38) return "Incoming"; if (c < .46) return "Late incoming";
+  if (c < .54) return "High-tide turn"; if (c < .62) return "Early outgoing"; if (c < .8) return "Outgoing"; return "Late outgoing";
+}
+function lightOf(t, sun, sp) {
+  const D = 75 * 60000;
+  if (Math.abs(t - sun.rise) <= D) return { name: "Dawn", v: 1 };
+  if (Math.abs(t - sun.set) <= D) return { name: "Dusk", v: 1 };
+  if (t > sun.rise && t < sun.set) {
+    const x = Math.abs(t - (sun.rise + sun.set) / 2) / ((sun.set - sun.rise) / 2);
+    return { name: "Daylight", v: sp === "blue" ? .62 + .3 * x : .78 + .15 * x };
+  }
+  return { name: "Dark", v: sp === "blue" ? .8 : .85 };
+}
+const rangeScore = (r, sp) => sp === "dungeness" ? Math.max(.35, Math.min(1, 1.3 - .55 * r)) : Math.max(.4, 1 - .55 * Math.abs(r - 1));
+const rangeName = r => r > 1.15 ? "Big tides" : r < .85 ? "Small tides" : "Normal tides";
+const quality = n => n >= 80 ? ["excellent", "Excellent"] : n >= 65 ? ["good", "Good"] : n >= 50 ? ["fair", "Fair"] : ["slow", "Slow"];
+
+const dayCache = new Map();
+function dayData(s, ymd) {
+  const key = s.id + ymd; if (dayCache.has(key)) return dayCache.get(key);
+  const [y, m, d] = ymdParse(ymd), [y2, m2, d2] = ymdParse(ymdAdd(ymd, 1));
+  const start = zoned(y, m, d, 0, s.tz), end = zoned(y2, m2, d2, 0, s.tz);
+  const p = predictor(s);
+  const ext = p.getExtremesPrediction({ start: new Date(start - 16 * 3600e3), end: new Date(end + 16 * 3600e3) }).map(e => ({ t: e.time.getTime(), ft: e.level * FT, high: e.high }));
+  const tl = p.getTimelinePrediction({ start: new Date(start), end: new Date(end), timeFidelity: 600 });
+  const inDay = ext.filter(e => e.t >= start && e.t < end);
+  const lv = tl.map(x => x.level * FT);
+  const rangeFt = inDay.length >= 2 ? Math.max(...inDay.map(e => e.ft)) - Math.min(...inDay.map(e => e.ft)) : Math.max(...lv) - Math.min(...lv);
+  const ratio = rangeFt / (s.gt * FT);
+  const R = rangeScore(ratio, s.sp);
+  const S = SEASON[s.group][m - 1];
+  const sun = sunTimes(y, m, d, s.lat, s.lon);
+  let hasWx = false;
+  const samples = tl.map((x, i) => {
+    const t = x.time.getTime();
+    let j = ext.findIndex(e => e.t > t); if (j < 1) j = 1;
+    const e0 = ext[j - 1], e1 = ext[j] || e0;
+    const f = e1.t > e0.t ? Math.min(1, Math.max(0, (t - e0.t) / (e1.t - e0.t))) : 0;
+    const c = e0.high ? .5 + .5 * f : .5 * f;
+    const T = interp(STAGE[s.sp], c);
+    const L = lightOf(t, sun, s.sp);
+    const wx = wxAt(s, t); if (wx) hasWx = true;
+    const base = .55 * T + .25 * L.v + .20 * R;
+    const score = Math.round(100 * Math.pow(base, 1.6) * (.15 + .85 * S) * wxFactor(wx));
+    return { t, ft: lv[i], c, T, L, wx, score, next: e1 };
+  });
+  // Best two-hour windows (12 samples) between first light and an hour after sunset.
+  const W = 12, lo = sun.rise - 90 * 60000, hi = sun.set + 60 * 60000;
+  const cands = [];
+  for (let i = 0; i + W <= samples.length; i++) {
+    if (samples[i].t < lo || samples[i + W - 1].t > hi) continue;
+    let sum = 0; for (let k = i; k < i + W; k++) sum += samples[k].score;
+    cands.push({ i, avg: sum / W });
+  }
+  cands.sort((a, b) => b.avg - a.avg);
+  const wins = [];
+  for (const cnd of cands) { if (wins.every(w => Math.abs(w.i - cnd.i) >= W + 6)) wins.push(cnd); if (wins.length === 2) break; }
+  const windows = wins.map(w => {
+    const mid = samples[w.i + W / 2];
+    return { start: samples[w.i].t, end: samples[w.i + W - 1].t + 600000, score: Math.round(w.avg), stage: stageName(mid.c), c: mid.c, light: mid.L.name, T: mid.T, L: mid.L.v, wx: mid.wx };
+  }).sort((a, b) => b.score - a.score);
+  const out = { s, ymd, start, end, ext, inDay, samples, sun, rangeFt, ratio, R, S, month: m - 1, windows, hasWx,
+    dayScore: windows[0] ? windows[0].score : Math.max(...samples.map(x => x.score)), moon: moon((start + end) / 2) };
+  dayCache.set(key, out);
+  if (dayCache.size > 400) dayCache.delete(dayCache.keys().next().value);
+  return out;
+}
+const sampleAt = (dd, t) => dd.samples[Math.max(0, Math.min(dd.samples.length - 1, Math.round((t - dd.start) / 600000)))];
+const heat = n => `color-mix(in oklab, var(--accent) ${Math.max(6, Math.min(100, (n - 25) * 1.6))}%, var(--line))`;
+const pill = n => { const [k, l] = quality(n); return `<span class="pill q-${k}"><span class="n">${n}</span>${l}</span>`; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// One plain-English sentence for the day.
+function verdict(dd) {
+  const s = dd.s, w = dd.windows[0]; if (!w) return "";
+  const tz = s.tz, [, ql] = quality(dd.dayScore);
+  const turn = dd.inDay.find(e => e.t >= w.start - 45 * 60000 && e.t <= w.end + 45 * 60000);
+  let tide;
+  if (turn) tide = `${turn.high ? "High" : "Low"} tide is at ${fmtTime(turn.t, tz)}`;
+  else tide = w.c < .5 ? "The tide is coming in" : "The tide is going out";
+  if (!turn && w.c < .5) { const nx = dd.ext.find(e => e.t > w.start); if (nx) tide += `, high at ${fmtTime(nx.t, tz)}`; }
+  const light = { Dawn: ", right around sunrise", Dusk: ", as the sun goes down", Dark: ", after dark", Daylight: "" }[w.light];
+  let lead = `<b>Go ${fmtRange(w.start, w.end, tz)}.</b> ${tide}${light}.`;
+  if (w.wx) lead += ` ${windWord(w.wx)} (${wxText(w.wx)}).`;
+  let tail = "";
+  if (dd.S < .35) tail = ` ${MONTHS[dd.month]} is off-season here, so expect few crabs.`;
+  else if (ql === "Slow") tail = " A slow day overall. Another day this week may be better.";
+  else if (ql === "Excellent") tail = " One of the better days to go.";
+  return lead + tail;
+}
+
+/* ---------- state ---------- */
+const state = { ymd: localToday(), region: store.get("pt-region", "All"), sort: "day", sel: null, q: "", weekAnchor: null, here: null, hover: null };
+if (state.region !== "All" && state.region !== "Saved" && !REGIONS.includes(state.region)) state.region = "All";
+let saved = new Set(store.get("pt-saved", []));
+const fromHash = () => STATIONS.find(s => s.slug === location.hash.slice(1));
+state.sel = fromHash() || STATIONS.find(s => s.slug === store.get("pt-last", "")) || null;
+if (state.sel && state.region !== "All" && (state.region === "Saved" ? !saved.has(state.sel.slug) : state.sel.group !== state.region)) state.region = "All";
+if (state.region === "Saved" && !saved.size) state.region = "All";
+const isToday = () => state.ymd === localToday();
+const $ = id => document.getElementById(id);
+
+function distMi(a, b) {
+  const R = 3958.8, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/* ---------- render: filters + list ---------- */
+function renderFilters() {
+  const opts = ["All", ...(saved.size ? ["Saved"] : []), ...REGIONS];
+  $("filters").innerHTML = opts.map(r => {
+    const sp = r === "All" ? STATIONS.length + " spots" : r === "Saved" ? saved.size : r === "Pacific" ? "Dungeness" : "Blue crab";
+    return `<button class="chip" data-region="${r}" aria-pressed="${state.region === r}">${r === "Saved" ? "★ Saved" : r}<span class="sp">${sp}</span></button>`;
+  }).join("");
+}
+function visible() {
+  const q = state.q.trim().toLowerCase();
+  return STATIONS.filter(s => (state.region === "All" || (state.region === "Saved" ? saved.has(s.slug) : s.group === state.region)) && (!q || q.split(/\s+/).every(w => s.search.includes(w))));
+}
+function renderList() {
+  const now = Date.now();
+  const items = visible().map(s => { const dd = dayData(s, state.ymd); return { s, dd, nowScore: isToday() ? sampleAt(dd, now).score : null, mi: state.here ? distMi(state.here, s) : null }; });
+  if (state.sort === "now" && isToday()) items.sort((a, b) => b.nowScore - a.nowScore);
+  else if (state.sort === "near" && state.here) items.sort((a, b) => a.mi - b.mi);
+  else if (state.sort === "az") items.sort((a, b) => a.s.name.localeCompare(b.s.name));
+  else items.sort((a, b) => b.dd.dayScore - a.dd.dayScore);
+  if (!state.sel && items.length) state.sel = items[0].s;
+  $("sortNow").disabled = !isToday();
+  $("sortNow").title = isToday() ? "" : "Switch to today to rank by right now";
+  const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "short", month: "short", day: "numeric" });
+  $("listtitle").textContent = state.sort === "now" && isToday() ? "Best spots right now" : state.sort === "near" ? "Closest to you" : state.sort === "az" ? "All spots A–Z" : "Best spots " + (isToday() ? "today" : "on " + when);
+  if (!items.length) {
+    $("rows").innerHTML = `<li class="empty">${crab("puzzled", 90)}No spots match “${esc(state.q)}”${state.region !== "All" ? ` in ${esc(state.region)}` : ""}.<br><button class="btn" id="clearq" style="margin-top:10px">Show all spots</button></li>`;
+    return;
+  }
+  const ranked = state.sort === "day" || state.sort === "now";
+  $("rows").innerHTML = items.map(({ s, dd, nowScore, mi }, i) => {
+    const hours = []; for (let h = 0; h < 24; h++) { const sl = dd.samples.slice(h * 6, h * 6 + 6); hours.push(Math.round(sl.reduce((a, x) => a + x.score, 0) / (sl.length || 1))); }
+    const w = dd.windows[0];
+    const shown = state.sort === "now" && nowScore != null ? nowScore : dd.dayScore;
+    const right = mi != null ? `${mi < 10 ? mi.toFixed(1) : Math.round(mi)} mi away` : nowScore != null && state.sort !== "now" ? `Now ${nowScore}` : "";
+    return `<li class="row" role="option" tabindex="0" data-slug="${s.slug}" aria-selected="${s === state.sel}">
+      <span class="rank">${ranked ? i + 1 : ""}</span>
+      <span class="rname"><b>${esc(s.name)}</b><small>${esc(s.area)} · ${SPECIES[s.sp]}</small></span>
+      <span style="display:inline-flex;align-items:center;gap:6px">${pill(shown)}<button class="star" data-star="${s.slug}" aria-pressed="${saved.has(s.slug)}" aria-label="${saved.has(s.slug) ? "Remove from" : "Add to"} saved spots">${STAR}</button></span>
+      <span class="strip" aria-hidden="true">${hours.map(n => `<i style="background:${heat(n)}"></i>`).join("")}</span>
+      <span class="rmeta"><span>Best <span class="mono">${w ? fmtRange(w.start, w.end, s.tz) : "—"}</span></span><span>${right}</span></span>
+    </li>`;
+  }).join("");
+}
+
+/* ---------- render: detail ---------- */
+const CH = { W: 720, H: 270, L: 38, R: 12, T: 34, B: 40 };
+function chartSvg(dd) {
+  const s = dd.s, { W, H, L, R, T, B } = CH, ph = H - T - B;
+  const span = dd.end - dd.start;
+  const x = t => L + (t - dd.start) / span * (W - L - R);
+  const lv = dd.samples.map(p => p.ft);
+  let mn = Math.min(...lv), mx = Math.max(...lv);
+  const rg = Math.max(.6, mx - mn); mx += rg * .26; mn -= rg * .24;
+  const y = v => T + (mx - v) / (mx - mn) * ph;
+  dd.chart = { x, y };
+  const stepFt = (mx - mn) > 8 ? 2 : (mx - mn) > 3 ? 1 : .5;
+  let g = "";
+  g += `<rect x="${L}" y="${T}" width="${Math.max(0, x(dd.sun.rise) - L)}" height="${ph}" fill="var(--night)"/>`;
+  g += `<rect x="${x(dd.sun.set)}" y="${T}" width="${Math.max(0, W - R - x(dd.sun.set))}" height="${ph}" fill="var(--night)"/>`;
+  for (let v = Math.ceil(mn / stepFt) * stepFt; v <= mx; v += stepFt) {
+    g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${+v.toFixed(1)}</text>`;
+  }
+  const lx = dd.windows.map(w => (x(w.start) + x(w.end)) / 2);
+  dd.windows.forEach((w, i) => {
+    g += `<rect x="${x(w.start)}" y="${T}" width="${x(w.end) - x(w.start)}" height="${ph}" fill="var(--accent)" opacity="${i ? .08 : .16}"/>`;
+    if (i && Math.abs(lx[1] - lx[0]) < 130) return;
+    g += `<text x="${(x(w.start) + x(w.end)) / 2}" y="${T - 12}" text-anchor="middle" style="fill:var(--accent);font-weight:500">${i ? "Also good" : "Best"} · ${w.score}</text>`;
+  });
+  const pts = dd.samples.map(p => `${x(p.t).toFixed(1)},${y(p.ft).toFixed(1)}`);
+  g += `<path d="M${pts[0]}L${pts.join("L")}L${x(dd.samples.at(-1).t)},${T + ph}L${L},${T + ph}Z" fill="var(--water)" opacity=".14"/>`;
+  g += `<path d="M${pts.join("L")}" fill="none" stroke="var(--water)" stroke-width="2.2" stroke-linejoin="round"/>`;
+  dd.inDay.forEach(e => {
+    const ex = x(e.t), ey = y(e.ft), up = e.high;
+    const anchor = ex < L + 40 ? "start" : ex > W - R - 40 ? "end" : "middle";
+    g += `<circle cx="${ex}" cy="${ey}" r="3.5" fill="var(--surface)" stroke="var(--water)" stroke-width="2"/>`;
+    g += `<text class="ext" x="${ex}" y="${up ? ey - 18 : ey + 16}" text-anchor="${anchor}">${up ? "High" : "Low"} ${fmtTime(e.t, s.tz)}</text>`;
+    g += `<text x="${ex}" y="${up ? ey - 7 : ey + 27}" text-anchor="${anchor}">${e.ft.toFixed(1)} ft</text>`;
+  });
+  const by = T + ph + 6, bw = (W - L - R) / dd.samples.length;
+  dd.samples.forEach((p, i) => { g += `<rect x="${(L + i * bw).toFixed(2)}" y="${by}" width="${(bw + .4).toFixed(2)}" height="9" fill="${heat(p.score)}"/>`; });
+  for (let h = 0; h <= 24; h += 3) {
+    const t = dd.start + h * 3600e3; if (t > dd.end) break;
+    g += `<line x1="${x(t)}" x2="${x(t)}" y1="${by + 9}" y2="${by + 14}" stroke="var(--muted)"/><text x="${x(t)}" y="${by + 27}" text-anchor="${h === 0 ? "start" : h === 24 ? "end" : "middle"}">${fmtHour(t, s.tz)}</text>`;
+  }
+  const now = Date.now();
+  if (now >= dd.start && now < dd.end) {
+    const p = sampleAt(dd, now);
+    g += `<line x1="${x(now)}" x2="${x(now)}" y1="${T}" y2="${by + 9}" stroke="var(--ink)" stroke-dasharray="3 3"/><circle cx="${x(now)}" cy="${y(p.ft)}" r="4.5" fill="var(--ink)"/><text x="${x(now) + 6}" y="${T + 12}" class="ext">Now</text>`;
+  }
+  g += `<g id="guide" visibility="hidden"><line id="gl" y1="${T}" y2="${by + 9}" stroke="var(--accent)" stroke-width="1.5"/><circle id="gc" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/></g>`;
+  g += `<rect id="hit" x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent"/>`;
+  return `<svg class="chart" id="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Tide height and crabbing score through the day. Tap or hover for details.">${g}</svg>`;
+}
+function readoutText(dd, p) {
+  const tz = dd.s.tz, [, ql] = quality(p.score);
+  let t = `<b>${fmtTime(p.t, tz)}</b> · ${p.ft.toFixed(1)} ft, ${stageName(p.c).toLowerCase()} · ${p.L.name.toLowerCase()} · <b>score ${p.score}</b> (${ql.toLowerCase()})`;
+  if (p.wx) t += ` · ${wxText(p.wx)}, ${Math.round(p.temp ?? p.wx.temp)}°F`;
+  return t;
+}
+function defaultReadout(dd) {
+  const now = Date.now();
+  if (now >= dd.start && now < dd.end) return readoutText(dd, sampleAt(dd, now));
+  return "Tap or hover on the chart to see the tide and score at any time.";
+}
+function moveGuide(ev) {
+  const svg = $("chart"); if (!svg) return;
+  const dd = dayData(state.sel, state.ymd); if (!dd.chart) return;
+  const r = svg.getBoundingClientRect();
+  const vx = (ev.clientX - r.left) / r.width * CH.W;
+  const t = dd.start + (vx - CH.L) / (CH.W - CH.L - CH.R) * (dd.end - dd.start);
+  if (t < dd.start || t > dd.end) return;
+  const p = sampleAt(dd, t);
+  const gx = dd.chart.x(p.t);
+  $("guide").setAttribute("visibility", "visible");
+  $("gl").setAttribute("x1", gx); $("gl").setAttribute("x2", gx);
+  $("gc").setAttribute("cx", gx); $("gc").setAttribute("cy", dd.chart.y(p.ft));
+  $("readout").innerHTML = readoutText(dd, p);
+}
+function hideGuide() {
+  const g = $("guide"); if (g) g.setAttribute("visibility", "hidden");
+  if ($("readout") && state.sel) $("readout").innerHTML = defaultReadout(dayData(state.sel, state.ymd));
+}
+
+function renderDetail() {
+  const s = state.sel;
+  if (!s) { $("detail").innerHTML = `<div class="card">Pick a spot from the list to see its best crabbing times.</div>`; return; }
+  const dd = dayData(s, state.ymd);
+  const [qk, ql] = quality(dd.dayScore);
+  const now = Date.now();
+  const water = LIVE.water[s.id] || {};
+  let nowLine = "";
+  if (now >= dd.start && now < dd.end) {
+    const p = sampleAt(dd, now), [, nl] = quality(p.score);
+    let line = `<span>Right now: <b>${p.score}, ${nl.toLowerCase()}</b>. ${stageName(p.c)} tide at <span class="mono">${p.ft.toFixed(1)} ft</span>. ${p.next.high ? "High" : "Low"} tide in ${dur(p.next.t - now)} (${fmtTime(p.next.t, s.tz)}).</span>`;
+    const extra = [];
+    if (water.level && now - water.level.t < 3 * 3600e3) {
+      const pred = predictor(s).getTimelinePrediction({ start: new Date(water.level.t), end: new Date(water.level.t + 60000), timeFidelity: 60 })[0].level * FT;
+      const diff = water.level.v - pred;
+      extra.push(Math.abs(diff) < .3 ? "Water is running close to the prediction" : `Water is running <b>${Math.abs(diff).toFixed(1)} ft ${diff > 0 ? "above" : "below"}</b> the prediction${diff > 0 ? " (often onshore wind or rain runoff)" : " (often offshore wind)"}`);
+    }
+    if (water.temp && now - water.temp.t < 6 * 3600e3) {
+      const wt = water.temp.v;
+      const comment = s.sp === "blue" ? (wt < 50 ? ", too cold for most blue crabs" : wt < 60 ? ", cool, so crabs will be sluggish" : wt > 85 ? ", very warm" : ", good for blue crabs") : (wt > 62 ? ", warm for Dungeness" : "");
+      extra.push(`Water temperature <b>${wt.toFixed(0)}°F</b>${comment}`);
+    }
+    if (extra.length) line += `<span>${extra.join(". ")}. <span style="font-size:12px">NOAA, ${Math.round((now - Math.max(water.level?.t || 0, water.temp?.t || 0)) / 60000)} min ago</span></span>`;
+    nowLine = `<div class="nowline">${line}</div>`;
+  }
+  const winHtml = dd.windows.map((w, i) => `<div class="win${i ? "" : " primary"}"><span class="eyebrow">${i ? "Also good" : "Best time"}</span><span class="t">${fmtRange(w.start, w.end, s.tz)}</span><small>${w.stage} · ${w.light}${w.wx ? " · " + Math.round(w.wx.wind) + " mph" : ""} · score ${w.score}</small></div>`).join("");
+  const best = dd.windows[0];
+  const seasonPeak = SEASON[s.group].indexOf(Math.max(...SEASON[s.group]));
+  const facts = [
+    ["Tide", best ? best.stage : "—", s.sp === "blue" ? "Blue crabs move in on rising water" : "Pots hold best when the current is slack", best ? best.T : 0],
+    ["Light", best ? best.light : "—", `Sunrise ${fmtTime(dd.sun.rise, s.tz)} · Sunset ${fmtTime(dd.sun.set, s.tz)}`, best ? best.L : 0],
+    ["Tide size", rangeName(dd.ratio), `${dd.rangeFt.toFixed(1)} ft today, ${(s.gt * FT).toFixed(1)} ft usual`, dd.R],
+    ["Season", `${MONTHS[dd.month]}: ${dd.S >= .9 ? "peak" : dd.S >= .6 ? "active" : dd.S >= .35 ? "slowing" : "off-season"}`, `Usually best ${MONTHS[seasonPeak]}–${MONTHS[(seasonPeak + 1) % 12]}`, dd.S],
+  ];
+  if (best && best.wx) facts.push(["Weather", windWord(best.wx), `${wxText(best.wx)} · ${Math.round(best.wx.temp)}°F · ${best.wx.rain ?? 0}% rain`, wxFactor(best.wx)]);
+  const ws = state.weekAnchor && daysBetween(state.weekAnchor, state.ymd) >= 0 && daysBetween(state.weekAnchor, state.ymd) < 7 ? state.weekAnchor : state.ymd;
+  const week = []; for (let i = 0; i < 7; i++) week.push(dayData(s, ymdAdd(ws, i)));
+  const bestDay = week.reduce((a, b) => b.dayScore > a.dayScore ? b : a);
+  const tip = TIPS[s.sp];
+  const shallow = s.gt * FT < 2;
+  const isSaved = saved.has(s.slug);
+  $("detail").innerHTML = `
+    <div class="card hero">
+      <div>
+        <span class="eyebrow">${esc(s.group)} · ${SPECIES[s.sp]}</span>
+        <div class="titlerow"><h2>${esc(s.name)}</h2><button class="star" data-star="${s.slug}" aria-pressed="${isSaved}" aria-label="${isSaved ? "Remove from" : "Add to"} saved spots" title="${isSaved ? "Saved" : "Save this spot"}">${STAR}</button></div>
+        <div class="where">${esc(s.area)} · ${ymdLabel(state.ymd, { weekday: "long", month: "long", day: "numeric" })}</div>
+      </div>
+      <div class="big q-${qk}" aria-label="Score ${dd.dayScore} out of 100, ${ql}">${ring(dd.dayScore)}<div class="lbl">${ql} day</div></div>
+      <div class="say"><div class="saycrab">${crab(moodOf(dd.dayScore), 88)}</div><p class="verdict">${verdict(dd)}</p></div>
+      <div class="windows">${winHtml}</div>
+      ${nowLine}
+      <div class="herofoot">
+        <details class="explain"><summary>What the score means</summary>
+          <div class="bands">${pill(85)}<span>Go if you can. Tide, light and season all line up.</span>${pill(70)}<span>A solid time to crab.</span>${pill(55)}<span>Worth it if you're close by.</span>${pill(40)}<span>Expect slow crabbing.</span></div>
+        </details>
+        <button class="btn change" id="change">Change spot</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sectionhead"><h3>Tide and score through the day</h3><small>Feet above low water · ${tzAbbr(dd.start + 43200e3, s.tz)}</small></div>
+      <div class="readout" id="readout" aria-live="off">${defaultReadout(dd)}</div>
+      <div class="chartwrap">${chartSvg(dd)}</div>
+      <div class="legend"><span><i style="background:var(--water);opacity:.5"></i>Tide height</span><span><i style="background:var(--accent);opacity:.35"></i>Best times</span><span><i style="background:var(--night)"></i>Dark</span><span><i style="background:linear-gradient(90deg, ${heat(30)}, ${heat(85)})"></i>Score, low to high</span></div>
+    </div>
+    <div class="card">
+      <div class="sectionhead"><h3>Next 7 days</h3><small>Best day: ${bestDay.ymd === localToday() ? "today" : ymdLabel(bestDay.ymd, { weekday: "long" })}. Tap a day to see it.</small></div>
+      <div class="week">${week.map(w => { const [k, l] = quality(w.dayScore); const bw = w.windows[0]; return `<button class="day" data-ymd="${w.ymd}" aria-pressed="${w.ymd === state.ymd}" aria-label="${ymdLabel(w.ymd, { weekday: "long", month: "long", day: "numeric" })}, score ${w.dayScore}, ${l}"><span class="dow">${w.ymd === localToday() ? "Today" : ymdLabel(w.ymd, { weekday: "short" })}</span><span class="dt">${ymdLabel(w.ymd, { month: "short", day: "numeric" })}</span><span class="ds q-${k}">${w.dayScore}</span><span class="dq q-${k}">${l}</span><span class="dbar q-${k}"><i style="width:${w.dayScore}%"></i></span><span class="dw">${bw ? fmtTime(bw.start, s.tz).replace(" ", "").toLowerCase() : "—"}</span>${bw && bw.wx ? `<span class="dwind">${Math.round(bw.wx.wind)} mph</span>` : ""}${moonSvg(w.moon)}</button>`; }).join("")}</div>
+    </div>
+    <div class="card">
+      <div class="sectionhead"><h3>Why ${best ? fmtRange(best.start, best.end, s.tz) : "this day"} scores ${best ? best.score : dd.dayScore}</h3><small style="display:inline-flex;gap:6px;align-items:center">${moonSvg(dd.moon, 14)} ${dd.moon.name}, ${Math.round(dd.moon.k * 100)}% lit</small></div>
+      <div class="facts">${facts.map(([k, v, sub, f]) => `<div class="fact"><span class="eyebrow">${k}</span><span class="v">${v}</span><div class="bar"><i style="width:${Math.round(f * 100)}%"></i></div><span class="s">${sub}</span></div>`).join("")}</div>
+    </div>
+    <div class="card tips">
+      <div><h3>${tip.title}</h3><ul>${tip.items.map(t => `<li>${t}</li>`).join("")}</ul></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${shallow ? `<div class="note">Tides here only rise and fall about ${(s.gt * FT).toFixed(1)} ft, so wind often moves more water than the tide does. Treat the times as a guide.</div>` : ""}
+        ${dd.S < .35 ? `<div class="note">${MONTHS[dd.month]} is usually slow here. Crabs go deep or bury in mud when the water is cold.</div>` : ""}
+        <div class="eyebrow">Tides for ${isToday() ? "today" : ymdLabel(state.ymd, { month: "short", day: "numeric" })}</div>
+        <div class="mono tidetable">${dd.inDay.map(e => `<span>${e.high ? "High" : "Low"}</span><span>${fmtTime(e.t, s.tz)}</span><span>${e.ft.toFixed(1)} ft</span>`).join("")}</div>
+        <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=${s.id}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13.5px">NOAA station ${s.id} →</a>
+      </div>
+    </div>
+    <details class="card explain" id="gloss">
+      <summary>Tide words explained</summary>
+      <dl class="gloss">
+        <dt>Incoming tide</dt><dd>Water is rising toward high tide. Also called the flood.</dd>
+        <dt>Outgoing tide</dt><dd>Water is falling toward low tide. Also called the ebb.</dd>
+        <dt>Tide turn</dt><dd>The quiet half hour or so around high or low tide when the current stops before changing direction. Also called slack water.</dd>
+        <dt>Big tides</dt><dd>Larger than usual rises and falls, with stronger currents. They happen near the new and full moon (spring tides).</dd>
+        <dt>Small tides</dt><dd>Gentler tides with weaker currents, near the half moons (neap tides).</dd>
+        <dt>Feet above low water</dt><dd>Heights are measured from the average of the lowest daily tide (MLLW), the zero on nautical charts. A negative number means an extra-low tide.</dd>
+      </dl>
+    </details>`;
+  if (state.glossOpen) $("gloss").open = true;
+}
+
+function renderBubble() {
+  const pool = saved.size ? STATIONS.filter(s => saved.has(s.slug)) : STATIONS;
+  const best = pool.map(s => dayData(s, state.ymd)).reduce((a, b) => b.dayScore > a.dayScore ? b : a);
+  const w = best.windows[0];
+  const when = isToday() ? "today" : ymdLabel(state.ymd, { weekday: "long" });
+  $("bubble").dataset.slug = best.s.slug;
+  $("bubble").innerHTML = `<span class="eyebrow">${saved.size ? "Your best saved spot" : "Pinchy's pick"} ${when}</span><b>${esc(best.s.name)}</b>, ${esc(best.s.state)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
+  $("bubble").setAttribute("aria-label", `Open ${best.s.name}, the best ${saved.size ? "saved " : ""}spot ${when}`);
+  $("pinch").innerHTML = crab(moodOf(best.dayScore) === "sleepy" ? "sleepy" : "party", 150);
+}
+$("bubble").onclick = () => { const sl = $("bubble").dataset.slug; if (sl) { if (state.region !== "All" && state.region !== "Saved") state.region = "All"; renderFilters(); pick(sl, true); } };
+
+function render() {
+  $("date").value = state.ymd;
+  $("today").classList.toggle("on", isToday());
+  if (state.sort === "now" && !isToday()) state.sort = "day";
+  ["sortDay", "sortNow", "sortAz"].forEach(id => $(id).setAttribute("aria-pressed", { sortDay: "day", sortNow: "now", sortAz: "az" }[id] === state.sort));
+  renderFilters(); renderList(); renderDetail(); renderBubble();
+}
+
+/* ---------- events ---------- */
+const smooth = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+const narrow = () => matchMedia("(max-width: 900px)").matches;
+function setDate(ymd, keepWeek) { if (!keepWeek) state.weekAnchor = null; state.ymd = ymd; render(); }
+$("prev").onclick = () => setDate(ymdAdd(state.ymd, -1));
+$("next").onclick = () => setDate(ymdAdd(state.ymd, 1));
+$("today").onclick = () => setDate(localToday());
+$("date").onchange = e => { if (e.target.value) setDate(e.target.value); };
+$("sortDay").onclick = () => { state.sort = "day"; render(); };
+$("sortNow").onclick = () => { if (isToday()) { state.sort = "now"; render(); } };
+$("sortAz").onclick = () => { state.sort = "az"; render(); };
+$("q").oninput = e => { state.q = e.target.value; renderList(); };
+$("q").onkeydown = e => { if (e.key === "Enter") { const first = $("rows").querySelector("[data-slug]"); if (first) pick(first.dataset.slug, true); } };
+$("filters").onclick = e => { const b = e.target.closest("[data-region]"); if (!b) return; state.region = b.dataset.region; store.set("pt-region", state.region); render(); };
+function toggleSave(sl) {
+  saved.has(sl) ? saved.delete(sl) : saved.add(sl);
+  store.set("pt-saved", [...saved]);
+  if (state.region === "Saved" && !saved.size) state.region = "All";
+  renderFilters(); renderList(); renderDetail(); renderBubble();
+}
+function pick(sl, scroll) {
+  const s = STATIONS.find(x => x.slug === sl); if (!s) return;
+  state.sel = s; store.set("pt-last", s.slug);
+  if (location.hash.slice(1) !== s.slug) { try { history.replaceState(null, "", "#" + s.slug); } catch (e) { location.hash = s.slug; } }
+  renderList(); renderDetail(); loadWater(s);
+  if (scroll !== false && narrow()) $("detail").scrollIntoView({ behavior: smooth(), block: "start" });
+}
+$("rows").onclick = e => {
+  const st = e.target.closest("[data-star]"); if (st) { e.stopPropagation(); toggleSave(st.dataset.star); return; }
+  if (e.target.closest("#clearq")) { state.q = ""; $("q").value = ""; state.region = "All"; render(); return; }
+  const r = e.target.closest("[data-slug]"); if (r) pick(r.dataset.slug);
+};
+$("rows").onkeydown = e => {
+  const r = e.target.closest("[data-slug]"); if (!r || e.target.closest("button")) return;
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(r.dataset.slug); }
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); const n = e.key === "ArrowDown" ? r.nextElementSibling : r.previousElementSibling; if (n) n.focus(); }
+};
+$("detail").onclick = e => {
+  const st = e.target.closest("[data-star]"); if (st) { toggleSave(st.dataset.star); return; }
+  if (e.target.closest("#change")) { $("list").scrollIntoView({ behavior: smooth(), block: "start" }); setTimeout(() => $("q").focus({ preventScroll: true }), 350); return; }
+  const d = e.target.closest("[data-ymd]"); if (d) { if (!state.weekAnchor) { const a = state.ymd; state.weekAnchor = a; } setDate(d.dataset.ymd, true); }
+};
+$("detail").addEventListener("toggle", e => { if (e.target.id === "gloss") state.glossOpen = e.target.open; }, true);
+$("detail").addEventListener("pointermove", e => { if (e.target.closest("#chart")) moveGuide(e); });
+$("detail").addEventListener("pointerdown", e => { if (e.target.closest("#chart")) moveGuide(e); });
+$("detail").addEventListener("pointerleave", e => { if (e.target.id === "chart" && e.pointerType === "mouse") hideGuide(); }, true);
+addEventListener("hashchange", () => { const s = fromHash(); if (s && s !== state.sel) { if (state.region !== "All") state.region = "All"; state.sel = s; render(); loadWater(s); } });
+
+$("near").onclick = () => {
+  const msg = $("msg");
+  if (!navigator.geolocation) { msg.textContent = "Your browser can't share location. Try searching instead."; return; }
+  msg.textContent = "Finding you…";
+  navigator.geolocation.getCurrentPosition(pos => {
+    state.here = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+    state.sort = "near"; state.region = "All"; state.q = ""; $("q").value = "";
+    const nearest = STATIONS.reduce((a, b) => distMi(state.here, b) < distMi(state.here, a) ? b : a);
+    msg.textContent = `Closest spot: ${nearest.name}, ${Math.round(distMi(state.here, nearest))} mi away.`;
+    ["sortDay", "sortNow", "sortAz"].forEach(id => $(id).setAttribute("aria-pressed", "false"));
+    state.sel = nearest; renderFilters(); renderList(); renderDetail(); loadWater(nearest);
+  }, () => { msg.textContent = "Location isn't available here. Search for a town or bay instead."; }, { timeout: 10000, maximumAge: 600000 });
+};
+
+render();
+setLive();
+if (state.sel) loadWater(state.sel);
+loadWeather();
+// Keep "now" current: refresh every minute, roll over at midnight, refresh live data every 30 minutes.
+let lastToday = localToday();
+setInterval(() => {
+  const t = localToday();
+  if (t !== lastToday) { if (state.ymd === lastToday) state.ymd = t; lastToday = t; dayCache.clear(); render(); return; }
+  if (isToday()) { renderList(); renderDetail(); }
+  if (LIVE.wx && Date.now() - LIVE.wxAt > 30 * 60000) loadWeather();
+  if (state.sel && isToday()) loadWater(state.sel);
+}, 60000);
+</script>
+</body>
+</html>
