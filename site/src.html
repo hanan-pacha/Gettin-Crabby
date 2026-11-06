@@ -148,11 +148,11 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .findrow { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 11px 14px; color: var(--accent); font-weight: 600; text-align: left; }
 .findrow svg { flex: none; }
 .why { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 4px; }
-.why ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 14px; }
+.why ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 14px; max-width: 60ch; }
 .why li { display: flex; gap: 7px; align-items: baseline; }
 .why li::before { content: "✓"; color: var(--excellent); font-weight: 700; flex: none; width: 1em; text-align: center; }
 .why li.down::before { content: "−"; color: var(--fair); }
-.why .pts { margin-left: auto; padding-left: 8px; font-family: var(--font-data); font-size: 12.5px; color: var(--fair); white-space: nowrap; }
+.why .pts { padding-left: 2px; font-family: var(--font-data); font-size: 12.5px; color: var(--fair); white-space: nowrap; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .day .dwhy { font-size: 11px; line-height: 1.2; color: var(--muted); min-height: 1.2em; }
 .day .dwhy.ok { color: var(--excellent); }
