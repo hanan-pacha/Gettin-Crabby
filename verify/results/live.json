@@ -41,10 +41,10 @@
      "note": "Daily API request limit exceeded. Please try again tomorrow."
     },
     "marine": {
-     "status": 429,
+     "status": 200,
      "cors": "*",
-     "shape": false,
-     "note": "Daily API request limit exceeded. Please try again tomorrow."
+     "shape": true,
+     "note": ""
     },
     "geocoding": {
      "status": 200,
@@ -83,18 +83,18 @@
     "status": 200,
     "deployed": "e1d6ee4c1ea7892c",
     "committed": "e1d6ee4c1ea7892c",
-    "workingCopy": "e1d6ee4c1ea7892c"
+    "workingCopy": "d81f7f01f895939c"
    }
   },
   {
    "label": "End to end: live data indicator turns on and names only the sources that loaded",
    "pass": true,
-   "detail": "Live water data"
+   "detail": "Live surf and water data"
   },
   {
    "label": "End to end: Fort Point shows NOAA's live water reading",
    "pass": true,
-   "detail": "Right now: 58, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 39 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 9 min ago"
+   "detail": "Right now: 61, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 6 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 7 min ago"
   },
   {
    "label": "End to end: typing 'baker' finds Baker Beach",
@@ -109,7 +109,7 @@
    "label": "End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results",
    "pass": true,
    "detail": [
-    "Ocean Beach San Francisco · favorite 9 Slow",
+    "Ocean Beach San Francisco · favorite 3 Slow",
     "Ocean Beach beach · San Francisco, CA Tides 1.3 mi away",
     "Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away"
    ]
@@ -155,10 +155,10 @@
    "note": "Daily API request limit exceeded. Please try again tomorrow."
   },
   "Open-Meteo marine": {
-   "status": 429,
+   "status": 200,
    "cors": "*",
-   "shape": false,
-   "note": "Daily API request limit exceeded. Please try again tomorrow."
+   "shape": true,
+   "note": ""
   },
   "water": [
    {
@@ -313,11 +313,11 @@
    "status": 200,
    "deployed": "e1d6ee4c1ea7892c",
    "committed": "e1d6ee4c1ea7892c",
-   "workingCopy": "e1d6ee4c1ea7892c"
+   "workingCopy": "d81f7f01f895939c"
   },
   "e2e": {
-   "live": "Live water data",
-   "nowLine": "Right now: 58, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 39 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 9 min ago",
+   "live": "Live surf and water data",
+   "nowLine": "Right now: 61, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 6 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 7 min ago",
    "weatherFact": [
     "SURF Sheltered Ocean swell doesn't reach this spot"
    ],
@@ -327,7 +327,7 @@
     "Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away"
    ],
    "searchOcean": [
-    "Ocean Beach San Francisco · favorite 9 Slow",
+    "Ocean Beach San Francisco · favorite 3 Slow",
     "Ocean Beach beach · San Francisco, CA Tides 1.3 mi away",
     "Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away"
    ],

@@ -56,6 +56,23 @@ const { openSite, ymdList, save, check } = require("./lib.cjs");
     out.bayAlwaysRock = STATIONS.filter(s => s.bay).every(s => dayData(s, "2027-08-15").sp === "rock");
     state.target = "dungeness"; dayCache.clear();
     out.bayAlwaysRock = out.bayAlwaysRock && STATIONS.filter(s => s.bay).every(s => dayData(s, "2027-08-15").sp === "rock");
+
+    // "Why it scores N": short, and naming the right main reason in controlled cases.
+    let wins = 0, maxLines = 0, maxLen = 0, empty = 0;
+    for (const s of STATIONS) for (const d of season) { const dd = dayData(s, d); for (const w of dd.windows) { const ex = explain(dd, w.p, w.score); wins++; const all = [...ex.good, ...ex.bad]; if (!all.length) empty++; maxLines = Math.max(maxLines, all.length); for (const x of all) maxLen = Math.max(maxLen, x.text.length); } }
+    out.whyShort = { windows: wins, maxLines, maxLen, empty };
+    const jetty = STATIONS.find(x => x.name === "North Jetty"), dd = dayData(jetty, "2026-11-10"), set = dd.setting;
+    const sample = (mv, hn, light, extra = {}) => ({ mv, hn, rising: true, L: light, T: tideFactor(mv, hn, true, set), wx: null, sea: null, ...extra });
+    const dawnL = { name: "Dawn", v: 1 }, dayL = { name: "Daylight", v: .9 };
+    const top = (d0, p) => { const ex = explain(d0, p); return ex.bad.length ? ex.bad[0].k : "none"; };
+    out.whyCases = {
+      strongCurrent: top(dd, sample(1.4, .5, dayL)),
+      strongWind: top(dd, sample(.1, .9, dayL, { wx: { wind: 18, gust: 24, rain: 0, r48: 0, temp: 55, dir: 270 } })),
+      bigSurf: top({ ...dd, exposed: true }, sample(.1, .9, dayL, { sea: { h: 7, p: 12 } })),
+      closedSeason: top(dayData(jetty, "2027-09-15"), sample(.1, .9, dawnL)),
+      protectedArea: top({ ...dd, noTake: true }, sample(.1, .9, dawnL)),
+      perfectDawn: top(dd, sample(.05, .95, dawnL)),
+    };
     return out;
   }, { year, season });
 
@@ -92,6 +109,9 @@ const { openSite, ymdList, save, check } = require("./lib.cjs");
     check("The domoic acid closure keeps Shelter Cove at 15 or below all season", r.closureMax <= 15, { maxDayScore: r.closureMax }),
     check("Rock crab is open all year, even inside the Dungeness closure", r.rockOpenAllYear > 40, { minDayScore: r.rockOpenAllYear }),
     check("SF Bay spots are always scored for rock crab, whichever crab is selected", r.bayAlwaysRock, r.bayAlwaysRock),
+    check("'Why it scores N' stays short: at most 4 reasons of at most 60 characters, never empty", r.whyShort.maxLines <= 4 && r.whyShort.maxLen <= 60 && r.whyShort.empty === 0, r.whyShort),
+    check("'Why it scores N' names the right main drag: current, wind, surf, closed season, protected area, none at a perfect dawn",
+      r.whyCases.strongCurrent === "move" && r.whyCases.strongWind === "wind" && r.whyCases.bigSurf === "surf" && r.whyCases.closedSeason === "season" && r.whyCases.protectedArea === "mpa" && r.whyCases.perfectDawn === "none", r.whyCases),
     check("Rankings are robust: ±20% on any one model number keeps day rankings (median Spearman ≥ 0.85) and best-window times (≥ 80% within an hour)", sens.every(v => v.medianRho >= .85 && v.bestWindowSame >= .8), sens),
   ];
   save("model.json", { checks, details: r, sensitivity: sens });

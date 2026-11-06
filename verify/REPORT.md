@@ -1,6 +1,6 @@
 # Verification report
 
-Run 2026-11-05 23:27 UTC against the build in `docs/index.html`. **41 of 42 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
+Run 2026-11-06 00:01 UTC against the build in `docs/index.html`. **43 of 44 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
 
 ## 1. Tide predictions vs NOAA
 
@@ -45,13 +45,13 @@ Run 2026-11-05 23:27 UTC against the build in `docs/index.html`. **41 of 42 chec
 | ✅ Pass | NOAA tide predictions: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
 | ✅ Pass | Photon place search: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
 | ✅ Pass | Nominatim place search: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
-| ✅ Pass | Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine | forecast: status: 429; cors: *; shape: false; note: Daily API request limit exceeded. Please try again tomorrow.; marine: status: 429; cors: *; shape: false; note: Daily API request limit exceeded. Please try again tomorrow.; geocoding: status: 200; cors: *; shape: true; note: HTTP 429 'daily limit' applies to this shared test IP; each visitor's browser has its own limit |
+| ✅ Pass | Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine | forecast: status: 429; cors: *; shape: false; note: Daily API request limit exceeded. Please try again tomorrow.; marine: status: 200; cors: *; shape: true; geocoding: status: 200; cors: *; shape: true; note: HTTP 429 'daily limit' applies to this shared test IP; each visitor's browser has its own limit |
 | ✅ Pass | NOAA live water data: at least one favorite has water temperature and water level | withTemp: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Alameda Shoreline; withLevel: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Fort Point; Alameda Shoreline |
-| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: e1d6ee4c1ea7892c; committed: e1d6ee4c1ea7892c; workingCopy: e1d6ee4c1ea7892c |
-| ✅ Pass | End to end: live data indicator turns on and names only the sources that loaded | Live water data |
-| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 58, fair. Low-tide turn tide at 0.7 ft, slack water. High tide in 5 hr 39 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 9 min ago |
+| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: e1d6ee4c1ea7892c; committed: e1d6ee4c1ea7892c; workingCopy: d81f7f01f895939c |
+| ✅ Pass | End to end: live data indicator turns on and names only the sources that loaded | Live surf and water data |
+| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 61, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 6 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 7 min ago |
 | ✅ Pass | End to end: typing 'baker' finds Baker Beach | Fort Baker Sausalito · favorite 86 Excellent; Baker Beach beach · San Francisco Tides 1.3 mi away; Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away |
-| ✅ Pass | End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results | Ocean Beach San Francisco · favorite 9 Slow; Ocean Beach beach · San Francisco, CA Tides 1.3 mi away; Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away |
+| ✅ Pass | End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results | Ocean Beach San Francisco · favorite 3 Slow; Ocean Beach beach · San Francisco, CA Tides 1.3 mi away; Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away |
 | ✅ Pass | End to end: no page errors and no sideways scrolling on a phone | errors: none; scrollWidth: 390 |
 
 ## 5. Snaring score behavior
@@ -67,4 +67,6 @@ Run 2026-11-05 23:27 UTC against the build in `docs/index.html`. **41 of 42 chec
 | ✅ Pass | The domoic acid closure keeps Shelter Cove at 15 or below all season | maxDayScore: 10 |
 | ✅ Pass | Rock crab is open all year, even inside the Dungeness closure | minDayScore: 76 |
 | ✅ Pass | SF Bay spots are always scored for rock crab, whichever crab is selected | true |
+| ✅ Pass | 'Why it scores N' stays short: at most 4 reasons of at most 60 characters, never empty | windows: 9912; maxLines: 4; maxLen: 43; empty: 0 |
+| ✅ Pass | 'Why it scores N' names the right main drag: current, wind, surf, closed season, protected area, none at a perfect dawn | strongCurrent: move; strongWind: wind; bigSurf: surf; closedSeason: season; protectedArea: mpa; perfectDawn: none |
 | ✅ Pass | Rankings are robust: ±20% on any one model number keeps day rankings (median Spearman ≥ 0.85) and best-window times (≥ 80% within an hour) | change wTide ×0.80, medianRho 0.996, minRho 0.995, bestWindowSame 0.889; change wTide ×1.20, medianRho 0.995, minRho 0.994, bestWindowSame 0.985; change exp ×0.80, medianRho 0.998, minRho 0.997, bestWindowSame 0.997; change exp ×1.20, medianRho 0.998, minRho 0.997, bestWindowSame 0.998; change kMove ×0.80, medianRho 0.999, minRho 0.998, bestWindowSame 0.995; change kMove ×1.20, medianRho 0.999, minRho 0.998, bestWindowSame 0.995 … (12) |

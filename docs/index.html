@@ -153,6 +153,15 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .pfoot a { color: inherit; }
 .findrow { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 11px 14px; color: var(--accent); font-weight: 600; text-align: left; }
 .findrow svg { flex: none; }
+.why { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 4px; }
+.why ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 14px; }
+.why li { display: flex; gap: 7px; align-items: baseline; }
+.why li::before { content: "✓"; color: var(--excellent); font-weight: 700; flex: none; width: 1em; text-align: center; }
+.why li.down::before { content: "−"; color: var(--fair); }
+.why .pts { margin-left: auto; padding-left: 8px; font-family: var(--font-data); font-size: 12.5px; color: var(--fair); white-space: nowrap; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.day .dwhy { font-size: 11px; line-height: 1.2; color: var(--muted); min-height: 1.2em; }
+.day .dwhy.ok { color: var(--excellent); }
 .stationline { grid-column: 1 / -1; font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
 .stationline select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; max-width: 100%; }
 .empty { padding: 24px 16px; text-align: center; color: var(--muted); }
@@ -233,7 +242,6 @@ svg .ext { fill: var(--ink); font-weight: 500; }
 .dbar { width: 70%; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
 .dbar i { display: block; height: 100%; background: currentColor; border-radius: 2px; }
 .day .dw { font-family: var(--font-data); font-size: 11px; color: var(--muted); }
-.day .dwind { font-size: 11px; color: var(--muted); }
 
 .sectionhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
 .sectionhead h3 { font-size: 19px; font-weight: 600; }
@@ -586,13 +594,11 @@ const surfWord = x => x.h < 2 ? "Calm" : x.h < 4 ? "Small surf" : x.h < 6 ? "Mod
 const surfText = x => `${x.h.toFixed(1)} ft${x.p ? ` @ ${Math.round(x.p)} s` : ""}`;
 // Muddy water after heavy rain makes it harder for crabs to find bait.
 const clarityFactor = x => !x || x.r48 == null ? 1 : x.r48 > 1 ? .85 : x.r48 > .4 ? .93 : 1;
-function wxFactor(x) {
-  if (!x) return 1;
-  const eff = Math.max(x.wind, (x.gust || 0) * .7);
-  const wf = eff < 8 ? 1 : eff < 12 ? .92 : eff < 16 ? .78 : eff < 20 ? .6 : eff < 25 ? .45 : .3;   // casting a light snare into wind
-  const rf = x.rain > 70 ? .88 : x.rain > 40 ? .95 : 1;
-  return wf * rf;
-}
+const effWind = x => Math.max(x.wind, (x.gust || 0) * .7);
+// Casting a light snare into wind.
+function windPart(x) { if (!x) return 1; const e = effWind(x); return e < 8 ? 1 : e < 12 ? .92 : e < 16 ? .78 : e < 20 ? .6 : e < 25 ? .45 : .3; }
+const rainPart = x => !x ? 1 : x.rain > 70 ? .88 : x.rain > 40 ? .95 : 1;
+const wxFactor = x => windPart(x) * rainPart(x);
 const windWord = x => { const e = Math.max(x.wind, (x.gust || 0) * .7); return e < 8 ? "Light wind" : e < 12 ? "Breezy" : e < 16 ? "Windy" : e < 20 ? "Very windy" : "Too windy"; };
 const wxText = x => `${Math.round(x.wind)} mph ${compass(x.dir)}${x.gust > x.wind + 5 ? `, gusts ${Math.round(x.gust)}` : ""}`;
 const NOAA = "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?application=gettn_crabby&format=json&time_zone=gmt&units=english&date=latest&station=";
@@ -701,7 +707,7 @@ function dayData(s, ymd) {
     const sea = exposed ? surfAt(s, t) : null;
     const base = MODEL.wTide * T + (1 - MODEL.wTide) * L.v;
     const score = noTake ? 0 : Math.round(100 * Math.pow(base, MODEL.exp) * seasonMult * wxFactor(wx) * surfFactor(setting, sea) * clarityFactor(wx));
-    return { t, ft: lv[i], c, mv, T, L, wx, sea, score, next: e1 };
+    return { t, ft: lv[i], c, mv, hn, rising: !e0.high, T, L, wx, sea, score, next: e1 };
   });
   // Best two-hour windows (12 samples) between first light and an hour after sunset.
   const W = 12, lo = sun.rise - 90 * 60000, hi = sun.set + 60 * 60000;
@@ -716,7 +722,7 @@ function dayData(s, ymd) {
   for (const cnd of cands) { if (wins.every(w => Math.abs(w.i - cnd.i) >= W + 6)) wins.push(cnd); if (wins.length === 2) break; }
   const windows = wins.map(w => {
     const mid = samples[w.i + W / 2];
-    return { start: samples[w.i].t, end: samples[w.i + W - 1].t + 600000, score: Math.round(w.avg), stage: stageName(mid.c), c: mid.c, mv: mid.mv, light: mid.L.name, T: mid.T, L: mid.L.v, wx: mid.wx, sea: mid.sea };
+    return { start: samples[w.i].t, end: samples[w.i + W - 1].t + 600000, score: Math.round(w.avg), stage: stageName(mid.c), c: mid.c, mv: mid.mv, light: mid.L.name, T: mid.T, L: mid.L.v, wx: mid.wx, sea: mid.sea, p: mid };
   }).sort((a, b) => b.score - a.score);
   const out = { s, ymd, sp, setting, exposed, mpa, noTake, start, end, ext, inDay, samples, sun, rangeFt, ratio, S, season, month: m - 1, windows, hasWx,
     dayScore: windows[0] ? windows[0].score : Math.max(...samples.map(x => x.score)), moon: moon((start + end) / 2, start, end) };
@@ -728,6 +734,57 @@ const sampleAt = (dd, t) => dd.samples[Math.max(0, Math.min(dd.samples.length - 
 const heat = n => `color-mix(in oklab, var(--accent) ${Math.max(6, Math.min(100, (n - 25) * 1.6))}%, var(--line))`;
 const pill = n => { const [k, l] = quality(n); return `<span class="pill q-${k}"><span class="n">${n}</span>${l}</span>`; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// Why a moment scores what it does: what helps, what holds it back, and about how many points each drag costs.
+// Points come from the score formula itself: the score with that one factor perfect, minus the actual score.
+function explain(dd, p, scoreFor) {
+  if (!p) return { good: [], bad: [] };
+  if (dd.noTake) return { good: [], bad: [{ k: "mpa", loss: 100, text: "Protected area: snaring isn't allowed here", short: "protected area" }] };
+  const W = MODEL.wTide, E = MODEL.exp, setting = dd.setting, shore = SHORE.has(setting);
+  const sm = dd.season.open ? .3 + .7 * dd.S : .1, wp = windPart(p.wx), rp = rainPart(p.wx), sf = dd.exposed ? surfFactor(setting, p.sea) : 1, cf = clarityFactor(p.wx);
+  const mult = sm * wp * rp * sf * cf, base = W * p.T + (1 - W) * p.L.v, pw = Math.pow(base, E), S0 = 100 * pw * mult;
+  const k = S0 > 0 && scoreFor != null ? scoreFor / S0 : 1;          // scale to the window's average score
+  const tideLoss = 100 * (Math.pow(W + (1 - W) * p.L.v, E) - pw) * mult * k;
+  const lightLoss = 100 * (Math.pow(W * p.T + (1 - W), E) - pw) * mult * k;
+  const M = Math.max(MODEL.moveFloor, Math.min(1, 1 - MODEL.kMove * p.mv)), [l0, l1] = shore ? MODEL.shoreLevel : MODEL.deepLevel;
+  const a = -MODEL.moveExp * Math.log(M), b = -Math.log(l0 + l1 * p.hn), c = p.rising ? 0 : -Math.log(MODEL.ebb), tot = a + b + c || 1;
+  const cost = f => (f > 0 ? S0 / f - S0 : 100) * k;
+  // Judge drags as if the season were open, so a closure doesn't make everything else look fine.
+  const big = (loss, min = 2) => loss / sm >= min;
+  const items = [], add = (key, loss, bad, text, short) => items.push({ k: key, loss, bad, text, short });
+  const mvL = tideLoss * a / tot, lvL = tideLoss * b / tot, dirL = tideLoss * c / tot;
+  add("move", mvL, p.mv >= .25 && big(mvL), p.mv < .25 || mvL < 2 ? "Slack water: your snare stays put" : p.mv < .6 ? "Slow current: the snare drifts a little" : p.mv < 1 ? "Moving water: the snare drags" : "Strong current: the snare drags and rolls", "current");
+  add("level", lvL, p.hn < .7 && big(lvL), p.hn >= .7 ? (shore ? "High water: crabs are within casting range" : "High water: crabs move in close") : p.hn >= .35 ? "Mid-tide: crabs are partly in range" : shore ? "Low water: crabs are out past your cast" : "Low water: crabs are farther out", "low water");
+  if (p.rising) add("dir", 0, false, "Incoming tide: crabs move in to feed", "");
+  else add("dir", dirL, big(dirL, 3), "Falling tide: crabs drift back out", "falling tide");
+  const ln = p.L.name;
+  if (ln === "Dawn" || ln === "Dusk") add("light", 0, false, `${ln}: crabs feed most in low light`, "");
+  else if (big(lightLoss)) add("light", lightLoss, true, ln === "Dark" ? (shore ? "After dark: hard to see your line and footing" : "After dark: harder to see your line") : "Daylight: crabs feed less than at dawn", ln === "Dark" ? "darkness" : "daylight");
+  if (dd.sp === "rock") add("season", 0, false, "Rock crab: open all year", "");
+  else if (dd.season.closure) add("season", cost(sm), true, `${dd.season.closure.name}: no Dungeness here`, "closed");
+  else if (!dd.season.open) add("season", cost(sm), true, `Dungeness is closed until ${dd.season.opens}`, "closed");
+  else if (dd.S >= .9) add("season", 0, false, dd.month === 10 ? "Opening weeks: crabs are full and plentiful" : "Early season: crabs are full", "");
+  else add("season", cost(sm), true, "Later season: fewer keepers left", "late season");
+  if (p.wx) {
+    const e = Math.round(effWind(p.wx));
+    if (wp < 1) add("wind", cost(wp), big(cost(wp)), e < 12 ? `Breezy (${e} mph): casting is a bit harder` : e < 20 ? `Windy (${e} mph): hard to cast and feel bites` : `Strong wind (${e} mph): tough, risky casting`, "wind");
+    else add("wind", 0, false, "Light wind: easy casting", "");
+    if (rp < 1) add("rain", cost(rp), big(cost(rp)), `Rain likely (${p.wx.rain}%)`, "rain");
+    if (cf < 1) add("clarity", cost(cf), big(cost(cf)), `Heavy rain lately (${p.wx.r48.toFixed(1)} in): murky water`, "murky water");
+  }
+  if (!dd.exposed) add("surf", 0, false, "Sheltered: no ocean swell here", "");
+  else if (p.sea) {
+    const h = Math.round(p.sea.h), long = p.sea.p >= 14 && p.sea.h >= 5 ? " in long-period swell" : "";
+    if (sf >= .999) add("surf", 0, false, `Small surf (${h} ft): easy to hold bottom`, "");
+    else add("surf", cost(sf), big(cost(sf)), p.sea.h >= 8 && setting !== "pier" ? `${h} ft surf${long}: dangerous, stay back` : setting === "pier" ? `${h} ft surf${long}: the snare rolls on the bottom` : `${h} ft surf${long}: the snare rolls, footing gets wet`, "surf");
+  }
+  const order = ["move", "level", "light", "season", "surf", "wind", "dir"];
+  const bad = items.filter(i => i.bad && (i.loss >= 2 || i.k === "season")).sort((x, y) => y.loss - x.loss).slice(0, 3);
+  const good = items.filter(i => !i.bad).sort((x, y) => order.indexOf(x.k) - order.indexOf(y.k)).slice(0, Math.max(1, 4 - bad.length));
+  return { good, bad };
+}
+const whyList = (ex, score) => `<div class="why"><span class="eyebrow">Why it scores ${score}</span><ul>${ex.good.map(i => `<li class="up"><span class="sr">Helps: </span>${i.text}</li>`).join("")}${ex.bad.map(i => `<li class="down"><span class="sr">Holds it back: </span>${i.text}<span class="pts">−${Math.max(1, Math.round(i.loss))}</span></li>`).join("")}</ul></div>`;
+const mainDrag = (ex, min = 4) => ex.bad.length && ex.bad[0].loss >= min ? ex.bad[0].short : "";
 
 // One plain-English sentence for the day.
 function verdict(dd) {
@@ -1166,6 +1223,8 @@ function readoutText(dd, p) {
   let t = `<b>${fmtTime(p.t, tz)}</b> · ${p.ft.toFixed(1)} ft, ${stageName(p.c).toLowerCase()}, ${movementWord(p.mv).toLowerCase()} · ${p.L.name.toLowerCase()} · <b>score ${p.score}</b> (${ql.toLowerCase()})`;
   if (p.sea && dd.exposed) t += ` · ${surfText(p.sea)} surf`;
   if (p.wx) t += ` · ${wxText(p.wx)}, ${Math.round(p.temp ?? p.wx.temp)}°F`;
+  const drag = mainDrag(explain(dd, p));
+  if (drag) t += ` · held back by <b>${drag}</b>`;
   return t;
 }
 function defaultReadout(dd) {
@@ -1202,7 +1261,8 @@ function renderDetail() {
   let nowLine = "";
   if (now >= dd.start && now < dd.end) {
     const p = sampleAt(dd, now), [, nl] = quality(p.score);
-    let line = `<span>Right now: <b>${p.score}, ${nl.toLowerCase()}</b>. ${stageName(p.c)} tide at <span class="mono">${p.ft.toFixed(1)} ft</span>, ${movementWord(p.mv).toLowerCase()}. ${p.next.high ? "High" : "Low"} tide in ${dur(p.next.t - now)} (${fmtTime(p.next.t, s.tz)}).</span>`;
+    const drag = mainDrag(explain(dd, p));
+    let line = `<span>Right now: <b>${p.score}, ${nl.toLowerCase()}</b>${drag ? ` (held back by ${drag})` : ""}. ${stageName(p.c)} tide at <span class="mono">${p.ft.toFixed(1)} ft</span>, ${movementWord(p.mv).toLowerCase()}. ${p.next.high ? "High" : "Low"} tide in ${dur(p.next.t - now)} (${fmtTime(p.next.t, s.tz)}).</span>`;
     const extra = [];
     if (water.level && now - water.level.t < 3 * 3600e3) {
       const pred = sampleAt(dd, water.level.t).ft;
@@ -1246,6 +1306,7 @@ function renderDetail() {
       <div class="big q-${qk}" aria-label="Score ${dd.dayScore} out of 100, ${ql}">${ring(dd.dayScore)}<div class="lbl">${dd.noTake ? ql : ql + " day"}</div></div>
       <div class="say"><div class="saycrab">${crab(moodOf(dd.dayScore), 88)}</div><p class="verdict">${verdict(dd)}</p></div>
       <div class="windows">${winHtml}</div>
+      ${best || dd.noTake ? whyList(explain(dd, best ? best.p : dd.samples[0], best ? best.score : 0), best ? best.score : dd.dayScore) : ""}
       ${nowLine}
       <div class="herofoot">
         <details class="explain"><summary>What the score means</summary>
@@ -1262,10 +1323,10 @@ function renderDetail() {
     </div>
     <div class="card">
       <div class="sectionhead"><h3>Next 7 days</h3><small>Best day: ${bestDay.ymd === localToday() ? "today" : ymdLabel(bestDay.ymd, { weekday: "long" })}. Tap a day to see it.</small></div>
-      <div class="week">${week.map(w => { const [k, l] = quality(w.dayScore); const bw = w.windows[0]; return `<button class="day" data-ymd="${w.ymd}" aria-pressed="${w.ymd === state.ymd}" aria-label="${ymdLabel(w.ymd, { weekday: "long", month: "long", day: "numeric" })}, score ${w.dayScore}, ${l}"><span class="dow">${w.ymd === localToday() ? "Today" : ymdLabel(w.ymd, { weekday: "short" })}</span><span class="dt">${ymdLabel(w.ymd, { month: "short", day: "numeric" })}</span><span class="ds q-${k}">${w.dayScore}</span><span class="dq q-${k}">${l}</span><span class="dbar q-${k}"><i style="width:${w.dayScore}%"></i></span><span class="dw">${bw ? fmtTime(bw.start, s.tz).replace(" ", "").toLowerCase() : "—"}</span>${bw && bw.wx ? `<span class="dwind">${Math.round(bw.wx.wind)} mph</span>` : ""}${moonSvg(w.moon)}</button>`; }).join("")}</div>
+      <div class="week">${week.map(w => { const [k, l] = quality(w.dayScore); const bw = w.windows[0]; return `<button class="day" data-ymd="${w.ymd}" aria-pressed="${w.ymd === state.ymd}" aria-label="${ymdLabel(w.ymd, { weekday: "long", month: "long", day: "numeric" })}, score ${w.dayScore}, ${l}"><span class="dow">${w.ymd === localToday() ? "Today" : ymdLabel(w.ymd, { weekday: "short" })}</span><span class="dt">${ymdLabel(w.ymd, { month: "short", day: "numeric" })}</span><span class="ds q-${k}">${w.dayScore}</span><span class="dq q-${k}">${l}</span><span class="dbar q-${k}"><i style="width:${w.dayScore}%"></i></span><span class="dw">${bw ? fmtTime(bw.start, s.tz).replace(" ", "").toLowerCase() : "—"}</span>${(() => { const d = bw ? mainDrag(explain(w, bw.p, bw.score), 6) : w.noTake ? "protected area" : ""; return `<span class="dwhy${d ? "" : " ok"}">${d || "✓ top conditions"}</span>`; })()}${moonSvg(w.moon)}</button>`; }).join("")}</div>
     </div>
     <div class="card">
-      <div class="sectionhead"><h3>Why ${best ? fmtRange(best.start, best.end, s.tz) : "this day"} scores ${best ? best.score : dd.dayScore}</h3><small style="display:inline-flex;gap:6px;align-items:center">${moonSvg(dd.moon, 14)} ${dd.moon.name}, ${Math.round(dd.moon.k * 100)}% lit</small></div>
+      <div class="sectionhead"><h3>Conditions ${best ? `at ${fmtRange(best.start, best.end, s.tz)}` : "today"}</h3><small style="display:inline-flex;gap:6px;align-items:center">${moonSvg(dd.moon, 14)} ${dd.moon.name}, ${Math.round(dd.moon.k * 100)}% lit</small></div>
       <div class="facts">${facts.map(([k, v, sub, f]) => `<div class="fact"><span class="eyebrow">${k}</span><span class="v">${v}</span><div class="bar"><i style="width:${Math.round(f * 100)}%"></i></div><span class="s">${sub}</span></div>`).join("")}</div>
     </div>
     <div class="card tips">

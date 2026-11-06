@@ -59,6 +59,23 @@ For each 10-minute moment:
 
 All tunable numbers are in the `MODEL` object and the factor functions in `site/src.html`.
 
+## "Why it scores N"
+
+Each spot's best time comes with a short list that teaches what drives the score.
+
+- **Helps (✓):** conditions at their best, such as slack water, high water, dawn or dusk, light wind, calm or sheltered water, or opening weeks.
+- **Holds it back (−):** the biggest drags, each with about how many points it costs.
+
+The points come from the score formula itself. A drag's cost is the score with that one factor perfect, minus the actual score. Tide costs are split between water movement, water level and tide direction in proportion to how much each lowers the tide factor.
+
+Drags are judged as if the season were open, so a closure doesn't hide other problems. The list shows at most four lines.
+
+The same calculation drives three other places:
+
+- **Right now** names what's holding the current time back.
+- **The chart readout** names what's holding back whatever time you tap.
+- **Each 7-day card** names its day's biggest drag, if it costs 6 points or more.
+
 ## Spot types and swell
 
 Each spot is a **beach**, a **jetty or rocks**, a **pier**, or a **harbor or bay**. A spot is open to ocean swell unless it is:

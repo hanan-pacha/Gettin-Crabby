@@ -83,6 +83,28 @@
    "detail": true
   },
   {
+   "label": "'Why it scores N' stays short: at most 4 reasons of at most 60 characters, never empty",
+   "pass": true,
+   "detail": {
+    "windows": 9912,
+    "maxLines": 4,
+    "maxLen": 43,
+    "empty": 0
+   }
+  },
+  {
+   "label": "'Why it scores N' names the right main drag: current, wind, surf, closed season, protected area, none at a perfect dawn",
+   "pass": true,
+   "detail": {
+    "strongCurrent": "move",
+    "strongWind": "wind",
+    "bigSurf": "surf",
+    "closedSeason": "season",
+    "protectedArea": "mpa",
+    "perfectDawn": "none"
+   }
+  },
+  {
    "label": "Rankings are robust: ±20% on any one model number keeps day rankings (median Spearman ≥ 0.85) and best-window times (≥ 80% within an hour)",
    "pass": true,
    "detail": [
@@ -195,7 +217,21 @@
   "closedDaysChecked": 1991,
   "closureMax": 10,
   "rockOpenAllYear": 76,
-  "bayAlwaysRock": true
+  "bayAlwaysRock": true,
+  "whyShort": {
+   "windows": 9912,
+   "maxLines": 4,
+   "maxLen": 43,
+   "empty": 0
+  },
+  "whyCases": {
+   "strongCurrent": "move",
+   "strongWind": "wind",
+   "bigSurf": "surf",
+   "closedSeason": "season",
+   "protectedArea": "mpa",
+   "perfectDawn": "none"
+  }
  },
  "sensitivity": [
   {
