@@ -31,6 +31,9 @@
   --cheek: #ff9e9e;
   --pupil: #12202a;
   --bubble: #fbfcfc;
+  --cage: #3f535d;        /* snare cage */
+  --loop: #eaf6fb;        /* nylon loops */
+  --sand: #c9b995;        /* sand grains */
   --shadow: 0 1px 2px rgba(18, 32, 42, .05), 0 12px 30px -18px rgba(18, 32, 42, .28);
   --font-display: "Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
   --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
@@ -39,12 +42,12 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
   --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
-  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; --cage: #6c8591; --sand: #b9a97f; color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --bg: #0d171d; --surface: #13212a; --ink: #e3ecef; --muted: #8fa3ad; --line: #24353f;
   --accent: #6fb3dd; --accent-ink: #0d171d; --water: #5aa9d6; --night: rgba(0, 0, 0, .28); --star: #f0a54a;
-  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; color-scheme: dark;
+  --excellent: #5ccb92; --good: #6fb3dd; --fair: #e2a748; --slow: #6f8590; --deep: #0b2a3c; --deep-ink: #e3ecef; --wave: #143749; --crab: #e0714f; --crab-dark: #a8482f; --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .6); --bubble: #20394a; --cage: #6c8591; --sand: #b9a97f; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15.5px; line-height: 1.45; }
@@ -62,7 +65,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 /* header band */
 .band { background: var(--deep); color: var(--deep-ink); position: relative; overflow: hidden; }
 .band::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 85% 0%, rgba(255,255,255,.10), transparent 60%); pointer-events: none; }
-.bandin { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding-block: 30px 70px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.bandin { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding-block: 30px 126px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
 .brand { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .brand h1 { font-size: clamp(36px, 6vw, 58px); font-weight: 700; letter-spacing: -.01em; color: var(--deep-ink); }
 .brand h1 span { color: var(--sun); }
@@ -76,26 +79,30 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 .live { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: color-mix(in oklab, var(--deep-ink) 70%, transparent); margin-left: 4px; }
 .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--slow); display: inline-block; }
 .live.on i { background: #5ccb92; box-shadow: 0 0 0 3px rgba(92,203,146,.25); }
-.mascot { display: flex; align-items: flex-end; gap: 4px; margin-bottom: -46px; flex: none; }
-.pinch svg { width: 150px; height: auto; display: block; overflow: visible; }
-.bubble { position: relative; background: var(--bubble); color: var(--ink); border: 0; border-radius: 16px; padding: 11px 15px; max-width: 250px; text-align: left; font-size: 14px; line-height: 1.35; box-shadow: 0 10px 30px -12px rgba(0,0,0,.45); margin-bottom: 92px; }
-.bubble::after { content: ""; position: absolute; right: -7px; bottom: 16px; border: 8px solid transparent; border-left-color: var(--bubble); border-right: 0; }
+.mascot { display: flex; align-items: flex-end; flex: none; }
+.bubble { position: relative; background: var(--bubble); color: var(--ink); border: 0; border-radius: 16px; padding: 11px 15px; max-width: 250px; text-align: left; font-size: 14px; line-height: 1.35; box-shadow: 0 10px 30px -12px rgba(0,0,0,.45); }
 .bubble .eyebrow { display: block; margin-bottom: 2px; color: var(--crab-dark); }
 .bubble:empty { visibility: hidden; }
 .bubble:hover { transform: translateY(-1px); }
 @media (max-width: 760px) {
-  .bandin { flex-direction: column; align-items: stretch; padding-block: 22px 56px; gap: 14px; }
-  .mascot { margin: 0 0 -40px; justify-content: flex-end; }
-  .pinch svg { width: 104px; }
-  .bubble { margin-bottom: 58px; max-width: none; flex: 1; }
+  .bandin { flex-direction: column; align-items: stretch; padding-block: 22px 120px; gap: 14px; }
+  .mascot { margin: 0; }
+  .bubble { max-width: none; flex: 1; }
 }
-@media (prefers-reduced-motion: no-preference) {
-  .pinch .bob { animation: bob 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
-  .pinch .wave { animation: wave 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
-  .bubble { transition: transform .15s; }
-  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-  @keyframes wave { 0%, 55%, 100% { transform: rotate(0); } 65% { transform: rotate(-16deg); } 75% { transform: rotate(10deg); } 85% { transform: rotate(-10deg); } }
-}
+@media (prefers-reduced-motion: no-preference) { .bubble { transition: transform .15s; } }
+.animtoggle { background: none; border: 0; padding: 6px; margin-left: 2px; font: inherit; font-size: 12.5px; color: color-mix(in oklab, var(--deep-ink) 70%, transparent); text-decoration: underline; text-underline-offset: 3px; border-radius: 6px; }
+.animtoggle:hover { color: var(--deep-ink); }
+
+/* header scene: Pinchy, the snare and the sand are placed by script (site/scene.js) */
+.stage { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.stage > svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
+.stage > .sandSvg { top: auto; left: 0; bottom: -1px; height: 64px; }
+.snare, .walker, .pop { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.snare { z-index: 2; } .walker { z-index: 3; }
+.snare svg, .walker svg, .pop svg { display: block; overflow: visible; }
+#lineSvg { z-index: 1; } #domeSvg, #sandSvg { z-index: 4; } #fx { z-index: 5; }
+.pop { z-index: 6; visibility: hidden; transform-origin: 50% 100%; }
+.bang { font: 700 26px var(--font-display); color: var(--sun); text-shadow: 0 1px 0 rgba(0,0,0,.4); line-height: 1; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .search { position: relative; flex: 1 1 200px; max-width: 420px; }
@@ -256,7 +263,7 @@ footer a { color: var(--accent); }
 @media (prefers-reduced-motion: no-preference) { .row, .day, .chip, .btn { transition: background-color .15s, border-color .15s; } }
 </style>
 
-<header class="band">
+<header class="band" id="band">
   <div class="bandin">
     <div class="brand">
       <h1>Gettin’ <span>Crabby!</span></h1>
@@ -267,14 +274,25 @@ footer a { color: var(--accent); }
       <button class="btn" id="next" aria-label="Next day">›</button>
       <button class="btn" id="today">Today</button>
       <span class="live" id="live" title=""><i></i><span>Tide forecast</span></span>
+      <button class="animtoggle" id="animToggle" type="button">Pause Pinchy</button>
     </div>
     </div>
     <div class="mascot">
       <button class="bubble" id="bubble" type="button"></button>
-      <div class="pinch" id="pinch" aria-hidden="true"></div>
     </div>
   </div>
-  <svg class="waves" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C180 18 360 78 540 48 S900 16 1080 48 S1350 74 1440 42 V90 H0Z" fill="var(--wave)"/><path d="M0 64 C200 44 420 90 640 64 S1010 42 1210 66 S1390 72 1440 58 V90 H0Z" fill="var(--bg)"/></svg>
+  <svg class="waves" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C180 18 360 78 540 48 S900 16 1080 48 S1350 74 1440 42 V90 H0Z" fill="var(--wave)"/><path id="shore" d="M0 64 C200 44 420 90 640 64 S1010 42 1210 66 S1390 72 1440 58 V90 H0Z" fill="var(--bg)"/></svg>
+  <div class="stage" id="stage" aria-hidden="true">
+    <svg id="lineSvg"><defs><linearGradient id="fade" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e4f0f4" stop-opacity=".9"/><stop offset="1" stop-color="#e4f0f4" stop-opacity=".25"/></linearGradient></defs><path id="fishLine" fill="none" stroke="url(#fade)" stroke-width="1.4" stroke-linecap="round"/><path id="strand" fill="none" stroke="var(--loop)" stroke-width="1.7" stroke-linecap="round" visibility="hidden"/></svg>
+    <div class="snare" id="snare"></div>
+    <div class="walker" id="walker"></div>
+    <!-- always on: a sand-colored copy of the shore, shifted down to the foot line. It hides Pinchy below the sand while he digs out, and covers nothing else. -->
+    <svg class="sandSvg" id="sandSvg" viewBox="0 0 1440 90" preserveAspectRatio="none"><path id="sandCover" d="M0 64 C200 44 420 90 640 64 S1010 42 1210 66 S1390 72 1440 58 V90 H0Z" fill="var(--bg)"/></svg>
+    <svg id="domeSvg"><path id="dome" fill="var(--bg)" stroke="var(--sand)" stroke-width="1.2" stroke-opacity=".8" visibility="hidden"/></svg>
+    <svg id="fx"></svg>
+    <div class="pop" id="thought"></div>
+    <div class="pop bang" id="bang">!</div>
+  </div>
 </header>
 <div class="wrap">
 
@@ -1364,7 +1382,6 @@ function renderBubble() {
   bub.dataset.slug = best.s.slug;
   bub.innerHTML = `<span class="eyebrow">${eyebrow}</span>${label}<b>${esc(best.s.name)}</b>, ${esc(best.s.area)}${w ? ` · ${fmtRange(w.start, w.end, best.s.tz)}` : ""} · score ${best.dayScore}`;
   bub.setAttribute("aria-label", `Open ${best.s.name}${bub.dataset.ymd ? " on opening day" : ""}`);
-  $("pinch").innerHTML = crab(moodOf(best.dayScore) === "sleepy" ? "sleepy" : "party", 150);
 }
 $("bubble").onclick = () => { const b = $("bubble"), sl = b.dataset.slug; if (!sl) return; if (state.region !== "All" && state.region !== "Saved") state.region = "All"; if (b.dataset.ymd && b.dataset.ymd !== state.ymd) { state.ymd = b.dataset.ymd; state.weekAnchor = null; render(); } else renderFilters(); pick(sl, true); };
 
@@ -1509,3 +1526,4 @@ setInterval(() => {
   if (state.sel && isToday()) loadWater(state.sel);
 }, 60000);
 </script>
+<script>/*__SCENE__*/</script>

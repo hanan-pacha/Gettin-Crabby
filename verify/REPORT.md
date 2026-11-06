@@ -1,6 +1,6 @@
 # Verification report
 
-Run 2026-11-06 00:04 UTC against the build in `docs/index.html`. **43 of 44 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
+Run 2026-11-06 04:42 UTC against the build in `docs/index.html`. **50 of 51 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
 
 ## 1. Tide predictions vs NOAA
 
@@ -47,10 +47,10 @@ Run 2026-11-06 00:04 UTC against the build in `docs/index.html`. **43 of 44 chec
 | ✅ Pass | Nominatim place search: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
 | ✅ Pass | Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine | forecast: status: 200; cors: *; shape: true; marine: status: 200; cors: *; shape: true; geocoding: status: 200; cors: *; shape: true |
 | ✅ Pass | NOAA live water data: at least one favorite has water temperature and water level | withTemp: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Alameda Shoreline; withLevel: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Fort Point; Alameda Shoreline |
-| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: f2f4955efe5bebc7; committed: f2f4955efe5bebc7; workingCopy: f2f4955efe5bebc7 |
+| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: f2f4955efe5bebc7; committed: f2f4955efe5bebc7; workingCopy: 9eec6587f7a90a4f |
 | ✅ Pass | End to end: live data indicator turns on and names only the sources that loaded | Live wind, surf and water data |
-| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 52, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 2 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 10 min ago |
-| ✅ Pass | End to end: typing 'baker' finds Baker Beach | Fort Baker Sausalito · favorite 86 Excellent; Baker Beach beach · San Francisco Tides 1.3 mi away; Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away |
+| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 67, good (held back by darkness). High-tide turn tide at 4.6 ft, slack water. High tide in 24 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 6 min ago |
+| ✅ Pass | End to end: typing 'baker' finds Baker Beach | Fort Baker Sausalito · favorite 86 Excellent; Baker Beach beach · San Francisco Tides 1.3 mi away |
 | ✅ Pass | End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results | Ocean Beach San Francisco · favorite 3 Slow; Ocean Beach beach · San Francisco, CA Tides 1.3 mi away; Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away |
 | ✅ Pass | End to end: no page errors and no sideways scrolling on a phone | errors: none; scrollWidth: 390 |
 
@@ -70,3 +70,15 @@ Run 2026-11-06 00:04 UTC against the build in `docs/index.html`. **43 of 44 chec
 | ✅ Pass | 'Why it scores N' stays short: at most 4 reasons of at most 60 characters, never empty | windows: 9912; maxLines: 4; maxLen: 43; empty: 0 |
 | ✅ Pass | 'Why it scores N' names the right main drag: current, wind, surf, closed season, protected area, none at a perfect dawn | strongCurrent: move; strongWind: wind; bigSurf: surf; closedSeason: season; protectedArea: mpa; perfectDawn: none |
 | ✅ Pass | Rankings are robust: ±20% on any one model number keeps day rankings (median Spearman ≥ 0.85) and best-window times (≥ 80% within an hour) | change wTide ×0.80, medianRho 0.996, minRho 0.995, bestWindowSame 0.889; change wTide ×1.20, medianRho 0.995, minRho 0.994, bestWindowSame 0.985; change exp ×0.80, medianRho 0.998, minRho 0.997, bestWindowSame 0.997; change exp ×1.20, medianRho 0.998, minRho 0.997, bestWindowSame 0.998; change kMove ×0.80, medianRho 0.999, minRho 0.998, bestWindowSame 0.995; change kMove ×1.20, medianRho 0.999, minRho 0.998, bestWindowSame 0.995 … (12) |
+
+## 6. Header animation
+
+| Result | Check | Measured |
+|---|---|---|
+| ✅ Pass | Loop seam: at the start and end of the loop no scene part is visible, and the two frames differ only by anti-aliasing noise (≤ 24 of 255 levels), phone and desktop, light and dark | width 1280, scheme light, cycleSeconds 14.82, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0; width 1280, scheme dark, cycleSeconds 14.82, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 46, maxDifference 3; width 390, scheme light, cycleSeconds 12.76, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0; width 390, scheme dark, cycleSeconds 12.76, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0 |
+| ✅ Pass | Handoffs: no pose value jumps between steps (position ≤ 1 px, angles ≤ 3°) at all 13 boundaries | 1280px light: 175 compared, 0 jumps ; 1280px dark: 175 compared, 0 jumps ; 390px light: 175 compared, 0 jumps ; 390px dark: 175 compared, 0 jumps  |
+| ✅ Pass | Real time: the scene moves on its own and raises no page errors | moved: true; pixelsChanged: 7951; errors: none |
+| ✅ Pass | Reduced motion: the scene stands still and offers 'Play Pinchy', which starts it | reducedLabel: Play Pinchy; reducedStill: true; playLabel: Pause Pinchy; playMoves: true; pausedLabel: Play Pinchy; pauseHolds: true; saved: off; afterReload: Play Pinchy |
+| ✅ Pass | Pause control: 'Pause Pinchy' freezes the scene, and the choice is remembered after a reload | reducedLabel: Play Pinchy; reducedStill: true; playLabel: Pause Pinchy; playMoves: true; pausedLabel: Play Pinchy; pauseHolds: true; saved: off; afterReload: Play Pinchy |
+| ✅ Pass | The scene never captures clicks (every scene element ignores the pointer) | none |
+| ✅ Pass | Desktop (1024, 1280, 1440 px): Pinchy, the snare and his bubbles never cross the title, text, date controls or speech bubble | none |

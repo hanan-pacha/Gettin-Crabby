@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const R = path.join(__dirname, "results");
-const groups = [["tides.json", "1. Tide predictions vs NOAA"], ["astro.json", "2. Sun, moon, clock and season"], ["places.json", "3. Built-in places"], ["live.json", "4. Live services and deployed site"], ["model.json", "5. Snaring score behavior"]];
+const groups = [["tides.json", "1. Tide predictions vs NOAA"], ["astro.json", "2. Sun, moon, clock and season"], ["places.json", "3. Built-in places"], ["live.json", "4. Live services and deployed site"], ["model.json", "5. Snaring score behavior"], ["scene.json", "6. Header animation"]];
 // Notes for checks that missed their pre-set criteria, explaining the cause and whether it matters.
 const NOTES = {
   "Favorites: high/low heights vs NOAA": "Median 0.053 ft against a 0.05 ft criterion (about half an inch; no bias, max 0.15 ft). Re-running with all 37 harmonic constituents gives the same difference, so it comes from small differences between the open-source tide library and NOAA's own prediction program, not from the data. Heights are shown to 0.1 ft and the score uses relative water level, so this does not change any forecast. Left as a recorded miss rather than loosening the criterion after the fact.",

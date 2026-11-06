@@ -19,16 +19,16 @@ const sameName = (a, b) => { const A = words(a), B = new Set(words(b)); return A
     const town = p.area.split(",")[0], plain = p.name.replace(/[’']/g, "");
     const queries = [...new Set([`${p.name} ${town}`, p.name, plain, `${plain} ${town}`])];
     const cands = [];
-    for (const q of queries) {
-      const r = await getJSON(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=${BOX}`);
+    for (const q of queries.slice(0, 2)) {
+      let r; try { r = await getJSON(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=${BOX}`); } catch (e) { r = { json: null, failed: true }; }
       for (const f of (r.json && r.json.features) || []) cands.push({ name: f.properties.name || "", lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0], src: "photon" });
-      await sleep(250);
+      await sleep(450);
     }
     let best = cands.filter(f => sameName(p.name, f.name)).map(f => ({ ...f, d: mi(p, f) })).sort((a, b) => a.d - b.d)[0];
     if (!best || best.d > 1) {                          // second opinion from Nominatim (1 request per second)
       for (const q of queries.slice(0, 3)) {
         await sleep(1100);
-        const n = await getJSON(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&countrycodes=us&viewbox=-124.7,42.05,-121.0,36.9&bounded=1&q=${encodeURIComponent(q)}`);
+        let n; try { n = await getJSON(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&countrycodes=us&viewbox=-124.7,42.05,-121.0,36.9&bounded=1&q=${encodeURIComponent(q)}`); } catch (e) { n = { json: null }; }
         for (const x of Array.isArray(n.json) ? n.json : []) cands.push({ name: x.name || x.display_name, lat: +x.lat, lon: +x.lon, src: "nominatim" });
       }
       best = cands.filter(f => sameName(p.name, f.name)).map(f => ({ ...f, d: mi(p, f) })).sort((a, b) => a.d - b.d)[0];

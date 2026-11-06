@@ -29,7 +29,7 @@ async function openSite(opts = {}) {
   const srv = await serve(path.join(ROOT, "docs"));
   const base = `http://127.0.0.1:${srv.address().port}`;
   const browser = await chromium.launch();
-  const ctx = await browser.newContext({ timezoneId: opts.timezoneId || "America/Los_Angeles", viewport: opts.viewport || { width: 1280, height: 900 } });
+  const ctx = await browser.newContext({ timezoneId: opts.timezoneId || "America/Los_Angeles", viewport: opts.viewport || { width: 1280, height: 900 }, colorScheme: opts.colorScheme || "light", reducedMotion: opts.reducedMotion || "no-preference" });
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", e => errors.push(e.message));
@@ -41,7 +41,7 @@ async function openSite(opts = {}) {
 }
 
 // HTTP GET through curl (it already uses this machine's proxy and CA settings).
-function get(url, { headers = [], timeout = 40 } = {}) {
+function getOnce(url, { headers = [], timeout = 40 } = {}) {
   return new Promise((resolve, reject) => {
     const args = ["-sS", "-L", "-m", String(timeout), "-A", UA, "-i"];
     for (const h of headers) args.push("-H", h);
@@ -61,6 +61,12 @@ function get(url, { headers = [], timeout = 40 } = {}) {
       resolve({ status, headers: head, body: buf.toString("utf8") });
     });
   });
+}
+// A dropped connection is retried (up to 4 tries); a real HTTP answer, even an error status, is returned as is.
+async function get(url, o) {
+  let err;
+  for (let k = 0; k < 4; k++) { try { return await getOnce(url, o); } catch (e) { err = e; await new Promise(r => setTimeout(r, 2000 * (k + 1))); } }
+  throw err;
 }
 async function getJSON(url, o) {
   const r = await get(url, o);
@@ -89,7 +95,18 @@ function ymdList(a, b) {
   while (d <= end) { out.push(d.toISOString().slice(0, 10)); d = new Date(d.getTime() + 86400000); }
   return out;
 }
+// Compares two screenshots in the browser. "real" counts pixels that differ by more than anti-aliasing noise (24 of 255).
+async function diffImages(page, a, b) {
+  return page.evaluate(async ([x, y]) => {
+    const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = "data:image/png;base64," + src; });
+    const [ia, ib] = await Promise.all([load(x), load(y)]);
+    const px = i => { const c = document.createElement("canvas"); c.width = i.width; c.height = i.height; const g = c.getContext("2d"); g.drawImage(i, 0, 0); return g.getImageData(0, 0, i.width, i.height).data; };
+    const A = px(ia), B = px(ib); let any = 0, real = 0, max = 0;
+    for (let k = 0; k < A.length; k += 4) { const d = Math.max(Math.abs(A[k] - B[k]), Math.abs(A[k + 1] - B[k + 1]), Math.abs(A[k + 2] - B[k + 2])); if (d) any++; if (d > 24) real++; if (d > max) max = d; }
+    return { total: A.length / 4, any, real, max, sameSize: ia.width === ib.width && ia.height === ib.height };
+  }, [a.toString("base64"), b.toString("base64")]);
+}
 function save(name, data) { fs.writeFileSync(path.join(OUT, name), JSON.stringify(data, null, 1)); }
 function check(label, pass, detail) { return { label, pass: !!pass, detail }; }
 
-module.exports = { ROOT, OUT, openSite, get, getJSON, sleep, pool, stats, ymdList, save, check };
+module.exports = { ROOT, OUT, openSite, diffImages, get, getJSON, sleep, pool, stats, ymdList, save, check };

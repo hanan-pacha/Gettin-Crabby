@@ -10,4 +10,5 @@ node verify/astro-dump.cjs
 node verify/places.cjs
 node verify/live.cjs
 node verify/model.cjs
+node verify/scene.cjs
 node verify/report.cjs

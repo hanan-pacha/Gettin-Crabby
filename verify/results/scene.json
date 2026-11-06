@@ -1,0 +1,196 @@
+{
+ "checks": [
+  {
+   "label": "Loop seam: at the start and end of the loop no scene part is visible, and the two frames differ only by anti-aliasing noise (≤ 24 of 255 levels), phone and desktop, light and dark",
+   "pass": true,
+   "detail": [
+    {
+     "width": 1280,
+     "scheme": "light",
+     "cycleSeconds": 14.82,
+     "visibleAtStart": [],
+     "visibleAtEnd": [],
+     "pixelsOverNoise": 0,
+     "noisePixels": 0,
+     "maxDifference": 0
+    },
+    {
+     "width": 1280,
+     "scheme": "dark",
+     "cycleSeconds": 14.82,
+     "visibleAtStart": [],
+     "visibleAtEnd": [],
+     "pixelsOverNoise": 0,
+     "noisePixels": 46,
+     "maxDifference": 3
+    },
+    {
+     "width": 390,
+     "scheme": "light",
+     "cycleSeconds": 12.76,
+     "visibleAtStart": [],
+     "visibleAtEnd": [],
+     "pixelsOverNoise": 0,
+     "noisePixels": 0,
+     "maxDifference": 0
+    },
+    {
+     "width": 390,
+     "scheme": "dark",
+     "cycleSeconds": 12.76,
+     "visibleAtStart": [],
+     "visibleAtEnd": [],
+     "pixelsOverNoise": 0,
+     "noisePixels": 0,
+     "maxDifference": 0
+    }
+   ]
+  },
+  {
+   "label": "Handoffs: no pose value jumps between steps (position ≤ 1 px, angles ≤ 3°) at all 13 boundaries",
+   "pass": true,
+   "detail": [
+    "1280px light: 175 compared, 0 jumps ",
+    "1280px dark: 175 compared, 0 jumps ",
+    "390px light: 175 compared, 0 jumps ",
+    "390px dark: 175 compared, 0 jumps "
+   ]
+  },
+  {
+   "label": "Real time: the scene moves on its own and raises no page errors",
+   "pass": true,
+   "detail": {
+    "moved": true,
+    "pixelsChanged": 7951,
+    "errors": []
+   }
+  },
+  {
+   "label": "Reduced motion: the scene stands still and offers 'Play Pinchy', which starts it",
+   "pass": true,
+   "detail": {
+    "reducedLabel": "Play Pinchy",
+    "reducedStill": true,
+    "playLabel": "Pause Pinchy",
+    "playMoves": true,
+    "pausedLabel": "Play Pinchy",
+    "pauseHolds": true,
+    "saved": "off",
+    "afterReload": "Play Pinchy"
+   }
+  },
+  {
+   "label": "Pause control: 'Pause Pinchy' freezes the scene, and the choice is remembered after a reload",
+   "pass": true,
+   "detail": {
+    "reducedLabel": "Play Pinchy",
+    "reducedStill": true,
+    "playLabel": "Pause Pinchy",
+    "playMoves": true,
+    "pausedLabel": "Play Pinchy",
+    "pauseHolds": true,
+    "saved": "off",
+    "afterReload": "Play Pinchy"
+   }
+  },
+  {
+   "label": "The scene never captures clicks (every scene element ignores the pointer)",
+   "pass": true,
+   "detail": []
+  },
+  {
+   "label": "Desktop (1024, 1280, 1440 px): Pinchy, the snare and his bubbles never cross the title, text, date controls or speech bubble",
+   "pass": true,
+   "detail": []
+  }
+ ],
+ "info": {
+  "seams": [
+   {
+    "width": 1280,
+    "scheme": "light",
+    "cycleSeconds": 14.82,
+    "visibleAtStart": [],
+    "visibleAtEnd": [],
+    "pixelsOverNoise": 0,
+    "noisePixels": 0,
+    "maxDifference": 0
+   },
+   {
+    "width": 1280,
+    "scheme": "dark",
+    "cycleSeconds": 14.82,
+    "visibleAtStart": [],
+    "visibleAtEnd": [],
+    "pixelsOverNoise": 0,
+    "noisePixels": 46,
+    "maxDifference": 3
+   },
+   {
+    "width": 390,
+    "scheme": "light",
+    "cycleSeconds": 12.76,
+    "visibleAtStart": [],
+    "visibleAtEnd": [],
+    "pixelsOverNoise": 0,
+    "noisePixels": 0,
+    "maxDifference": 0
+   },
+   {
+    "width": 390,
+    "scheme": "dark",
+    "cycleSeconds": 12.76,
+    "visibleAtStart": [],
+    "visibleAtEnd": [],
+    "pixelsOverNoise": 0,
+    "noisePixels": 0,
+    "maxDifference": 0
+   }
+  ],
+  "jumps": [
+   {
+    "width": 1280,
+    "scheme": "light",
+    "compared": 175,
+    "jumps": []
+   },
+   {
+    "width": 1280,
+    "scheme": "dark",
+    "compared": 175,
+    "jumps": []
+   },
+   {
+    "width": 390,
+    "scheme": "light",
+    "compared": 175,
+    "jumps": []
+   },
+   {
+    "width": 390,
+    "scheme": "dark",
+    "compared": 175,
+    "jumps": []
+   }
+  ],
+  "running": {
+   "moved": true,
+   "pixelsChanged": 7951,
+   "errors": []
+  },
+  "motion": {
+   "reducedLabel": "Play Pinchy",
+   "reducedStill": true,
+   "playLabel": "Pause Pinchy",
+   "playMoves": true,
+   "pausedLabel": "Play Pinchy",
+   "pauseHolds": true,
+   "saved": "off",
+   "afterReload": "Play Pinchy"
+  },
+  "layout": {
+   "blocked": [],
+   "overlaps": []
+  }
+ }
+}

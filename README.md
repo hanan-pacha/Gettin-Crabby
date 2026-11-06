@@ -33,6 +33,7 @@ Each spot has its own link, such as `…/#ocean-beach-san-francisco`, so people 
 
 ## Editing
 
+- **Header animation:** `site/scene.js` is Pinchy, the squid-packed snare and the sand, placed by script from the time `t` so any moment can be drawn and tested. It stands still for visitors who ask their device for reduced motion, pauses when off-screen, and has a "Pause Pinchy" control.
 - **Page source:** `site/src.html` (HTML, CSS and JS). Station data, protected areas and the tide library are placed into it at build time by `node site/build.mjs`, which writes `docs/index.html`.
 - **Favorites and searchable stations:** edit `FAV` in `site/extract.mjs`. Each favorite has a NOAA station, a name, an area, a region, a spot type, and whether it's open to ocean swell. Then, in a folder with `@neaps/tide-database` installed, run `node extract.mjs <repo>/site/stations.json <repo>/site/stations-all.json` and rebuild.
 - **Protected areas:** `site/extract-mpas.py` turns the text of 14 CCR §632 into `site/mpas.json`.

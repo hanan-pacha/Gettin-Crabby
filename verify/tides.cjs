@@ -8,13 +8,19 @@ const compact = ymd => ymd.replace(/-/g, "");
 const dayBefore = ymd => new Date(Date.parse(ymd + "T12:00:00Z") - 86400000).toISOString().slice(0, 10);
 const dayAfter = ymd => new Date(Date.parse(ymd + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
 
+// NOAA now and then answers "No Predictions data was found" for a station that has data a moment later, so each request gets up to 3 tries.
+async function getNoaa(url) {
+  let r;
+  for (let k = 0; k < 3; k++) { r = await getJSON(url); if (r.json && r.json.predictions) return r; await new Promise(z => setTimeout(z, 1200 * (k + 1))); }
+  return r;
+}
 async function noaaHilo(id, from, to) {
-  const r = await getJSON(q({ station: id, interval: "hilo", begin_date: compact(dayBefore(from)), end_date: compact(dayAfter(to)) }));
+  const r = await getNoaa(q({ station: id, interval: "hilo", begin_date: compact(dayBefore(from)), end_date: compact(dayAfter(to)) }));
   if (!r.json || !r.json.predictions) return { error: (r.json && r.json.error && r.json.error.message) || `HTTP ${r.status}` };
   return { ev: r.json.predictions.map(p => ({ t: Date.parse(p.t.replace(" ", "T") + "Z"), ft: +p.v, high: p.type === "H" })) };
 }
 async function noaaSix(id, from, to) {
-  const r = await getJSON(q({ station: id, interval: "6", begin_date: compact(from), end_date: compact(to) }));
+  const r = await getNoaa(q({ station: id, interval: "6", begin_date: compact(from), end_date: compact(to) }));
   if (!r.json || !r.json.predictions) return { error: (r.json && r.json.error && r.json.error.message) || `HTTP ${r.status}` };
   return { pts: r.json.predictions.map(p => ({ t: Date.parse(p.t.replace(" ", "T") + "Z"), ft: +p.v })) };
 }
