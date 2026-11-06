@@ -66,7 +66,9 @@ const sha = s => crypto.createHash("sha256").update(s).digest("hex").slice(0, 16
   };
   const site = await openSite({ route, hash: "#fort-point-san-francisco", viewport: { width: 390, height: 844 } });
   const { page } = site;
-  await page.waitForTimeout(6000);
+  await page.waitForTimeout(4000);
+  // The wind answer is large (21 spots) and this machine's proxy is slow: when the service is healthy, give the page up to 25 s to show it.
+  for (const [src, word] of [[omWx, "wind"], [omSea, "surf"]]) if (src.status === 200) await page.waitForFunction(w => new RegExp(w).test(document.getElementById("live").textContent), word, { timeout: 25000 }).catch(() => {});
   const e2e = {};
   e2e.live = await page.textContent("#live");
   e2e.nowLine = await page.$eval(".nowline", e => e.innerText.replace(/\s+/g, " ")).catch(() => "");

@@ -553,7 +553,7 @@ async function loadWeather() {
   const lat = STATIONS.map(s => s.lat).join(","), lon = STATIONS.map(s => s.lon).join(",");
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch&timeformat=unixtime&timezone=GMT&past_days=2&forecast_days=8`;
   try {
-    const data = await getJSON(url, 12000);
+    const data = await getJSON(url, 30000);
     const arr = Array.isArray(data) ? data : [data];
     const wx = {};
     arr.forEach((d, i) => { const w = wxFrom(d); if (w) wx[STATIONS[i].id] = w; });
@@ -575,7 +575,7 @@ async function loadSurf(list) {
   list.forEach(s => { s.seaLoading = true; });
   const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${list.map(s => s.lat).join(",")}&longitude=${list.map(s => s.lon).join(",")}&hourly=wave_height,wave_period&length_unit=imperial&timeformat=unixtime&timezone=GMT&past_days=1&forecast_days=8`;
   try {
-    const data = await getJSON(url, 12000);
+    const data = await getJSON(url, 20000);
     (Array.isArray(data) ? data : [data]).forEach((d, i) => { const h = d && d.hourly; if (h && h.time && list[i]) LIVE.sea[list[i].id] = { t0: h.time[0] * 1000, n: h.time.length, h: h.wave_height || [], p: h.wave_period || [] }; });
     for (const k of [...dayCache.keys()]) if (list.some(s => k.startsWith(s.id + "|"))) dayCache.delete(k);
     setLive(); renderList(); renderDetail(); renderBubble();

@@ -11,8 +11,8 @@
      "visibleAtStart": [],
      "visibleAtEnd": [],
      "pixelsOverNoise": 0,
-     "noisePixels": 0,
-     "maxDifference": 0
+     "noisePixels": 50,
+     "maxDifference": 20
     },
     {
      "width": 1280,
@@ -61,7 +61,7 @@
    "pass": true,
    "detail": {
     "moved": true,
-    "pixelsChanged": 7951,
+    "pixelsChanged": 8050,
     "errors": []
    }
   },
@@ -113,8 +113,8 @@
     "visibleAtStart": [],
     "visibleAtEnd": [],
     "pixelsOverNoise": 0,
-    "noisePixels": 0,
-    "maxDifference": 0
+    "noisePixels": 50,
+    "maxDifference": 20
    },
    {
     "width": 1280,
@@ -175,7 +175,7 @@
   ],
   "running": {
    "moved": true,
-   "pixelsChanged": 7951,
+   "pixelsChanged": 8050,
    "errors": []
   },
   "motion": {
