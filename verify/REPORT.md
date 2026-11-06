@@ -1,6 +1,6 @@
 # Verification report
 
-Run 2026-11-06 04:45 UTC against the build in `docs/index.html`. **49 of 51 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
+Run 2026-11-06 04:52 UTC against the build in `docs/index.html`. **50 of 51 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
 
 ## 1. Tide predictions vs NOAA
 
@@ -47,10 +47,10 @@ Run 2026-11-06 04:45 UTC against the build in `docs/index.html`. **49 of 51 chec
 | ✅ Pass | Nominatim place search: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
 | ✅ Pass | Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine | forecast: status: 200; cors: *; shape: true; marine: status: 200; cors: *; shape: true; geocoding: status: 200; cors: *; shape: true |
 | ✅ Pass | NOAA live water data: at least one favorite has water temperature and water level | withTemp: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Alameda Shoreline; withLevel: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Fort Point; Alameda Shoreline |
-| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: 9eec6587f7a90a4f; committed: 9eec6587f7a90a4f; workingCopy: 9eec6587f7a90a4f |
-| ❌ Miss | End to end: live data indicator turns on and names only the sources that loaded | Live surf and water data |
-| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 75, good (held back by darkness). High-tide turn tide at 4.7 ft, slack water. High tide in 20 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 10 min ago |
-| ✅ Pass | End to end: typing 'baker' finds Baker Beach | Fort Baker Sausalito · favorite 86 Excellent; Baker Beach beach · San Francisco Tides 1.3 mi away; Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away |
+| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: 5c9eaae902b0c457; committed: 5c9eaae902b0c457; workingCopy: 5c9eaae902b0c457 |
+| ✅ Pass | End to end: live data indicator turns on and names only the sources that loaded | Live wind, surf and water data |
+| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 69, good (held back by darkness). High-tide turn tide at 4.7 ft, slack water. High tide in 14 min (9:06 PM). Water is running 1.1 ft above the prediction (often onshore wind or rain runoff). NOAA, 5 min ago |
+| ✅ Pass | End to end: typing 'baker' finds Baker Beach | Fort Baker Sausalito · favorite 86 Excellent; Baker Beach beach · San Francisco Tides 1.3 mi away |
 | ✅ Pass | End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results | Ocean Beach San Francisco · favorite 3 Slow; Ocean Beach beach · San Francisco, CA Tides 1.3 mi away; Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away |
 | ✅ Pass | End to end: no page errors and no sideways scrolling on a phone | errors: none; scrollWidth: 390 |
 
@@ -75,9 +75,9 @@ Run 2026-11-06 04:45 UTC against the build in `docs/index.html`. **49 of 51 chec
 
 | Result | Check | Measured |
 |---|---|---|
-| ✅ Pass | Loop seam: at the start and end of the loop no scene part is visible, and the two frames differ only by anti-aliasing noise (≤ 24 of 255 levels), phone and desktop, light and dark | width 1280, scheme light, cycleSeconds 14.82, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0; width 1280, scheme dark, cycleSeconds 14.82, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 46, maxDifference 3; width 390, scheme light, cycleSeconds 12.76, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0; width 390, scheme dark, cycleSeconds 12.76, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0 |
+| ✅ Pass | Loop seam: at the start and end of the loop no scene part is visible, and the two frames differ only by anti-aliasing noise (≤ 24 of 255 levels), phone and desktop, light and dark | width 1280, scheme light, cycleSeconds 14.82, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 50, maxDifference 20; width 1280, scheme dark, cycleSeconds 14.82, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 46, maxDifference 3; width 390, scheme light, cycleSeconds 12.76, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0; width 390, scheme dark, cycleSeconds 12.76, visibleAtStart , visibleAtEnd , pixelsOverNoise 0, noisePixels 0, maxDifference 0 |
 | ✅ Pass | Handoffs: no pose value jumps between steps (position ≤ 1 px, angles ≤ 3°) at all 13 boundaries | 1280px light: 175 compared, 0 jumps ; 1280px dark: 175 compared, 0 jumps ; 390px light: 175 compared, 0 jumps ; 390px dark: 175 compared, 0 jumps  |
-| ✅ Pass | Real time: the scene moves on its own and raises no page errors | moved: true; pixelsChanged: 7951; errors: none |
+| ✅ Pass | Real time: the scene moves on its own and raises no page errors | moved: true; pixelsChanged: 8050; errors: none |
 | ✅ Pass | Reduced motion: the scene stands still and offers 'Play Pinchy', which starts it | reducedLabel: Play Pinchy; reducedStill: true; playLabel: Pause Pinchy; playMoves: true; pausedLabel: Play Pinchy; pauseHolds: true; saved: off; afterReload: Play Pinchy |
 | ✅ Pass | Pause control: 'Pause Pinchy' freezes the scene, and the choice is remembered after a reload | reducedLabel: Play Pinchy; reducedStill: true; playLabel: Pause Pinchy; playMoves: true; pausedLabel: Play Pinchy; pauseHolds: true; saved: off; afterReload: Play Pinchy |
 | ✅ Pass | The scene never captures clicks (every scene element ignores the pointer) | none |
