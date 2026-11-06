@@ -1,6 +1,6 @@
 # Verification report
 
-Run 2026-11-06 00:01 UTC against the build in `docs/index.html`. **43 of 44 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
+Run 2026-11-06 00:04 UTC against the build in `docs/index.html`. **43 of 44 checks passed.** The protocol, sources and criteria are in [README.md](README.md); the model is described in [../METHODOLOGY.md](../METHODOLOGY.md).
 
 ## 1. Tide predictions vs NOAA
 
@@ -45,11 +45,11 @@ Run 2026-11-06 00:01 UTC against the build in `docs/index.html`. **43 of 44 chec
 | ✅ Pass | NOAA tide predictions: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
 | ✅ Pass | Photon place search: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
 | ✅ Pass | Nominatim place search: answers, matches the parsed shape, allows browser access (CORS) | status: 200; cors: *; shape: true |
-| ✅ Pass | Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine | forecast: status: 429; cors: *; shape: false; note: Daily API request limit exceeded. Please try again tomorrow.; marine: status: 200; cors: *; shape: true; geocoding: status: 200; cors: *; shape: true; note: HTTP 429 'daily limit' applies to this shared test IP; each visitor's browser has its own limit |
+| ✅ Pass | Open-Meteo (weather, surf, geocoding): answers in the parsed shape, or is only rate-limiting this test machine | forecast: status: 200; cors: *; shape: true; marine: status: 200; cors: *; shape: true; geocoding: status: 200; cors: *; shape: true |
 | ✅ Pass | NOAA live water data: at least one favorite has water temperature and water level | withTemp: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Alameda Shoreline; withLevel: Crescent City Harbor; North Jetty; Point Arena Pier; Drakes Beach; Fort Point; Alameda Shoreline |
-| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: e1d6ee4c1ea7892c; committed: e1d6ee4c1ea7892c; workingCopy: d81f7f01f895939c |
-| ✅ Pass | End to end: live data indicator turns on and names only the sources that loaded | Live surf and water data |
-| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 61, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 6 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 7 min ago |
+| ✅ Pass | GitHub Pages serves the committed docs/index.html | status: 200; deployed: f2f4955efe5bebc7; committed: f2f4955efe5bebc7; workingCopy: f2f4955efe5bebc7 |
+| ✅ Pass | End to end: live data indicator turns on and names only the sources that loaded | Live wind, surf and water data |
+| ✅ Pass | End to end: Fort Point shows NOAA's live water reading | Right now: 52, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 2 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 10 min ago |
 | ✅ Pass | End to end: typing 'baker' finds Baker Beach | Fort Baker Sausalito · favorite 86 Excellent; Baker Beach beach · San Francisco Tides 1.3 mi away; Baker-Barry Tunnel tunnel · Marin, CA Tides 0.8 mi away |
 | ✅ Pass | End to end: typing 'ocean beach' finds San Francisco's Ocean Beach and no out-of-area results | Ocean Beach San Francisco · favorite 3 Slow; Ocean Beach beach · San Francisco, CA Tides 1.3 mi away; Ocean Beach Climate Change Adaptation Project construction · San Francisco, CA Tides 3.1 mi away |
 | ✅ Pass | End to end: no page errors and no sideways scrolling on a phone | errors: none; scrollWidth: 390 |

@@ -35,10 +35,10 @@
    "pass": true,
    "detail": {
     "forecast": {
-     "status": 429,
+     "status": 200,
      "cors": "*",
-     "shape": false,
-     "note": "Daily API request limit exceeded. Please try again tomorrow."
+     "shape": true,
+     "note": ""
     },
     "marine": {
      "status": 200,
@@ -52,7 +52,7 @@
      "shape": true,
      "note": ""
     },
-    "note": "HTTP 429 'daily limit' applies to this shared test IP; each visitor's browser has its own limit"
+    "note": ""
    }
   },
   {
@@ -81,20 +81,20 @@
    "pass": true,
    "detail": {
     "status": 200,
-    "deployed": "e1d6ee4c1ea7892c",
-    "committed": "e1d6ee4c1ea7892c",
-    "workingCopy": "d81f7f01f895939c"
+    "deployed": "f2f4955efe5bebc7",
+    "committed": "f2f4955efe5bebc7",
+    "workingCopy": "f2f4955efe5bebc7"
    }
   },
   {
    "label": "End to end: live data indicator turns on and names only the sources that loaded",
    "pass": true,
-   "detail": "Live surf and water data"
+   "detail": "Live wind, surf and water data"
   },
   {
    "label": "End to end: Fort Point shows NOAA's live water reading",
    "pass": true,
-   "detail": "Right now: 61, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 6 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 7 min ago"
+   "detail": "Right now: 52, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 2 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 10 min ago"
   },
   {
    "label": "End to end: typing 'baker' finds Baker Beach",
@@ -149,10 +149,10 @@
    "note": ""
   },
   "Open-Meteo forecast": {
-   "status": 429,
+   "status": 200,
    "cors": "*",
-   "shape": false,
-   "note": "Daily API request limit exceeded. Please try again tomorrow."
+   "shape": true,
+   "note": ""
   },
   "Open-Meteo marine": {
    "status": 200,
@@ -311,15 +311,16 @@
   ],
   "deployed": {
    "status": 200,
-   "deployed": "e1d6ee4c1ea7892c",
-   "committed": "e1d6ee4c1ea7892c",
-   "workingCopy": "d81f7f01f895939c"
+   "deployed": "f2f4955efe5bebc7",
+   "committed": "f2f4955efe5bebc7",
+   "workingCopy": "f2f4955efe5bebc7"
   },
   "e2e": {
-   "live": "Live surf and water data",
-   "nowLine": "Right now: 61, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 6 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 7 min ago",
+   "live": "Live wind, surf and water data",
+   "nowLine": "Right now: 52, fair (held back by low water). Early incoming tide at 1.0 ft, slow current. High tide in 5 hr 2 min (9:06 PM). Water is running 1.2 ft above the prediction (often onshore wind or rain runoff). NOAA, 10 min ago",
    "weatherFact": [
-    "SURF Sheltered Ocean swell doesn't reach this spot"
+    "SURF Sheltered Ocean swell doesn't reach this spot",
+    "WEATHER Light wind 5 mph E · 54°F · 0% rain · 0.7 in rain in 48 h"
    ],
    "searchBaker": [
     "Fort Baker Sausalito · favorite 86 Excellent",
